@@ -15,3 +15,5 @@ data class AppInfoDataNoTime (
     val appName: CharSequence,
     val appPackageName : String
 )
+
+

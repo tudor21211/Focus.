@@ -1,5 +1,10 @@
 package com.example.focus.Presentation
 
+import android.app.admin.DeviceAdminReceiver
+import android.app.admin.DevicePolicyManager
+import android.app.usage.UsageStatsManager
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
@@ -24,6 +29,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Lock
@@ -60,6 +66,7 @@ class GetAllAppsActivity : ComponentActivity() {
         if (!PermissionFunctions(this, packageName).isPackageUsageStatsPermissionEnabled()) {
             startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
         }
+        
         setContent {
             FocusTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
@@ -69,11 +76,18 @@ class GetAllAppsActivity : ComponentActivity() {
         }
     }
 
+
+
     @Composable
     fun getAllAppsScreen(packageManager: PackageManager) {
-        val myApps = GetAppsFunctions()
-        myApps.getInstalledApps(packageManager)
+        val myApps = GetAppsFunctions(this.packageManager, this.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager, this)
+        myApps.getInstalledApps()
         val nonSystemApps = myApps.getNonSystemApps()
+
+        for (name in nonSystemApps) {
+            println("NAME OF THE APPS ${name.packageName}")
+        }
+
 
         val appInfoList = remember {
             nonSystemApps.map { appInfo ->
@@ -89,15 +103,15 @@ class GetAllAppsActivity : ComponentActivity() {
         Column(Modifier.fillMaxSize()) {
             Button(
                 modifier = Modifier.padding(20.dp),
-                shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Cyan),
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF323941)),
                 onClick = { goToTimeSpent() }
             ) {
-                Text(text = "Show time spent")
+                Text(text = "Show time spent", color = Color.White)
             }
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.elevatedCardColors(containerColor = Color(0xFF323941)),
+                colors = CardDefaults.elevatedCardColors(containerColor = Color(0xFF111416)),
             ) {
                 LazyColumn(
                     content = {
@@ -128,7 +142,7 @@ class GetAllAppsActivity : ComponentActivity() {
                                     Image(
                                         painter = rememberDrawablePainter(icon),
                                         contentDescription = null,
-                                        modifier = Modifier.size(50.dp)
+                                        modifier = Modifier.size(55.dp)
                                     )
                                     Text(
                                         text = appName.toString(),

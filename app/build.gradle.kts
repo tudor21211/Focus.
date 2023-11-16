@@ -78,7 +78,6 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-drawablepainter:0.28.0")
     implementation ("io.github.raamcosta.compose-destinations:core:1.7.23-beta")
     implementation("io.github.raamcosta.compose-destinations:ksp:1.5.12-beta")
-    implementation("androidx.appcompat:appcompat:1.6.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

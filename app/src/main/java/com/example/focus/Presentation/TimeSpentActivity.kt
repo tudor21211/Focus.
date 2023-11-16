@@ -1,18 +1,23 @@
 package com.example.focus.Presentation
 
+
+
+
+import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,15 +29,27 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +63,10 @@ import com.example.focus.Data.AppInfoData
 import com.example.focus.Model.Permissions.GetAppsFunctions
 import com.example.focus.ui.theme.FocusTheme
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 class TimeSpentActivity() : ComponentActivity(){
 
@@ -58,7 +79,7 @@ class TimeSpentActivity() : ComponentActivity(){
                 Surface(
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    timeSpentScreen(packageManager ,this)
+                    timeSpentScreen(packageManager ,this, 1)
                 }
 
             }
@@ -71,46 +92,69 @@ class TimeSpentActivity() : ComponentActivity(){
     @Composable
     fun timeSpentScreen(
         packageManager : PackageManager,
-        context : Context
+        context : Context,
+        timeInterval : Int
     ) {
 
-        val myApps = GetAppsFunctions()
-        myApps.getInstalledApps(packageManager)
-        val nonSystemApps = myApps.getNonSystemApps()
 
-        val nameTimeMap = myApps.getTimeSpent(context)
 
-        val appInfoList = nonSystemApps.map { appInfo ->
+        val myApps = GetAppsFunctions(this.packageManager, this.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager, this)
+
+        myApps.getInstalledApps()
+        var nonSystemApps = myApps.getNonSystemApps()
+
+        val nameTimeMap = myApps.getTimeSpent(timeInterval)
+
+
+        var appInfoList = nonSystemApps.map { appInfo ->
             val icon: Drawable = packageManager.getApplicationIcon(appInfo.packageName)
             val appName: CharSequence = packageManager.getApplicationLabel(appInfo)
             val timeSpent: String =
-                GetAppsFunctions().formatMilliseconds(nameTimeMap[appInfo.packageName] ?: 0)
+                myApps.formatMilliseconds(nameTimeMap[appInfo.packageName] ?: 0)
 
-            val timeSpentLong : Long = GetAppsFunctions().formatMillisecondsLong(nameTimeMap[appInfo.packageName] ?: 0)
+            val timeSpentLong : Long = myApps.formatMillisecondsLong(nameTimeMap[appInfo.packageName] ?: 0)
             val packageName = appInfo.packageName
             AppInfoData(icon, appName, timeSpent, timeSpentLong, packageName)
-        }
+        }.sortedByDescending { it.timeSpentLong }
+
+
 
         Column(Modifier.fillMaxSize()) {
 
-            Row() {
-                Button(
-                    modifier = Modifier.padding(20.dp),
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Cyan),
-                    onClick = { reload() }) {
-                    Text(text = "Reload")
-                }
 
 
-                Button(
-                    modifier = Modifier.padding(20.dp),
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Cyan),
-                    onClick = { goToAllApps() }) {
-                    Text(text = "Main Screen")
+            Row(modifier = Modifier.fillMaxWidth()) {
+                IconButton(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .size(30.dp),
+                    onClick = { goToAllApps() }
+                ) {
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Go back")
                 }
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .size(30.dp),
+                    onClick = { reload() }
+                ) {
+                    Icon(Icons.Filled.Refresh, contentDescription = "Reload")
+                }
+
             }
+
+            var appInfoList by remember { mutableStateOf(appInfoList) }
+
+            dropdownMenu(
+                appInfoList,
+                myApps,
+                onAppInfoListUpdated = { updatedList ->
+                    appInfoList = updatedList
+                }
+            )
+
+
             ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -120,6 +164,9 @@ class TimeSpentActivity() : ComponentActivity(){
 
 
             ) {
+
+
+
                 LazyColumn(
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
                     content = {
@@ -184,8 +231,87 @@ class TimeSpentActivity() : ComponentActivity(){
 
     private fun reload() {
         val sendIntent = Intent(this, TimeSpentActivity::class.java)
+        finish()
         startActivity(sendIntent)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun dropdownMenu(
+        appInfoList: List<AppInfoData>,
+        myApps: GetAppsFunctions,
+        onAppInfoListUpdated: (List<AppInfoData>) -> Unit
+    ){
+
+        var expanded by remember { mutableStateOf(false) }
+        val timeInterval = arrayOf("1 day", "3 days", "7 days", "15 days", "1 month")
+        var selectedText by remember { mutableStateOf(timeInterval[0]) }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(3.dp)
+        ) {
+            Row{
+                Spacer(modifier = Modifier.weight(1f))
+                ExposedDropdownMenuBox(
+                    modifier = Modifier.fillMaxWidth(.5f),
+                    expanded = expanded,
+                    onExpandedChange = {
+                        expanded = !expanded
+                    }
+                ) {
+                    TextField(
+                        value = selectedText,
+                        onValueChange = {},
+                        readOnly = true,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        modifier = Modifier.menuAnchor()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        timeInterval.forEach { item ->
+                            DropdownMenuItem(
+                                text = { Text(text = item) },
+                                onClick = {
+
+                                    selectedText = item
+                                    expanded = false
+
+                                    val days = when (item) {
+                                        "1 day" -> 1
+                                        "3 days" -> 3
+                                        "7 days" -> 7
+                                        "15 days" -> 15
+                                        "1 month" -> 30
+                                        else -> 1
+                                    }
+
+                                    val nameTimeMap = myApps.getTimeSpent(days)
+                                    val updatedAppInfoList = appInfoList.map { appInfo ->
+                                        val timeSpent = myApps.formatMilliseconds(nameTimeMap[appInfo.packageName] ?: 0)
+                                        val timeSpentLong = myApps.formatMillisecondsLong(nameTimeMap[appInfo.packageName] ?: 0)
+
+                                        appInfo.copy(
+                                            timeSpent = timeSpent,
+                                            timeSpentLong = timeSpentLong
+                                        )
+                                    }
+
+                                    // Update the UI with the new list of apps
+                                    onAppInfoListUpdated(updatedAppInfoList)
+
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }
