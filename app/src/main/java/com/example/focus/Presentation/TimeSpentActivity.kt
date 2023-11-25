@@ -79,7 +79,7 @@ class TimeSpentActivity() : ComponentActivity(){
                 Surface(
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    timeSpentScreen(packageManager ,this, 1)
+                    timeSpentScreen(packageManager , 0)
                 }
 
             }
@@ -92,7 +92,6 @@ class TimeSpentActivity() : ComponentActivity(){
     @Composable
     fun timeSpentScreen(
         packageManager : PackageManager,
-        context : Context,
         timeInterval : Int
     ) {
 
@@ -177,8 +176,6 @@ class TimeSpentActivity() : ComponentActivity(){
                             val timeSpentLong = appInfo.timeSpentLong
                             val packageName = appInfo.packageName
 
-
-                            //println("IN FUNCTION TIME SPENT $timeSpent")
                             if (timeSpent != "0 h : 0 m : 0 s") {
                                 OutlinedCard(
                                     modifier = Modifier
@@ -283,7 +280,7 @@ class TimeSpentActivity() : ComponentActivity(){
                                     expanded = false
 
                                     val days = when (item) {
-                                        "1 day" -> 1
+                                        "1 day" -> 0
                                         "3 days" -> 3
                                         "7 days" -> 7
                                         "15 days" -> 15
@@ -300,7 +297,7 @@ class TimeSpentActivity() : ComponentActivity(){
                                             timeSpent = timeSpent,
                                             timeSpentLong = timeSpentLong
                                         )
-                                    }
+                                    }.sortedByDescending{ it.timeSpentLong}
 
                                     // Update the UI with the new list of apps
                                     onAppInfoListUpdated(updatedAppInfoList)

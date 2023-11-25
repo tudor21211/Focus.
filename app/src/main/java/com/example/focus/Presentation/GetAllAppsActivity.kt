@@ -66,7 +66,16 @@ class GetAllAppsActivity : ComponentActivity() {
         if (!PermissionFunctions(this, packageName).isPackageUsageStatsPermissionEnabled()) {
             startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
         }
-        
+
+        if (!PermissionFunctions(this, packageName).isAccessibilityServiceEnabled("com.example.focus.Services.MyAccessibilityService")) {
+            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+        }
+
+        if (!Settings.canDrawOverlays(this)) {
+            val myIntent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+            startActivity(myIntent)
+        }
+
         setContent {
             FocusTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
@@ -80,6 +89,7 @@ class GetAllAppsActivity : ComponentActivity() {
 
     @Composable
     fun getAllAppsScreen(packageManager: PackageManager) {
+
         val myApps = GetAppsFunctions(this.packageManager, this.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager, this)
         myApps.getInstalledApps()
         val nonSystemApps = myApps.getNonSystemApps()
@@ -126,7 +136,9 @@ class GetAllAppsActivity : ComponentActivity() {
                                 )
                             }
                             OutlinedCard(
-                                modifier = Modifier.fillMaxHeight(0.1f).padding(3.dp),
+                                modifier = Modifier
+                                    .fillMaxHeight(0.1f)
+                                    .padding(3.dp),
                                 colors =
                                 CardDefaults.outlinedCardColors(
                                     containerColor = Color(0xFF222429)
@@ -137,7 +149,9 @@ class GetAllAppsActivity : ComponentActivity() {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(5.dp),
-                                    modifier = Modifier.fillMaxWidth().padding(8.dp)
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
                                 ) {
                                     Image(
                                         painter = rememberDrawablePainter(icon),
@@ -169,7 +183,9 @@ class GetAllAppsActivity : ComponentActivity() {
                                             }
                                             isAppRestricted.value = !isAppRestricted.value
                                         },
-                                        modifier = Modifier.width(70.dp).height(70.dp)
+                                        modifier = Modifier
+                                            .width(71.dp)
+                                            .height(70.dp)
                                     ) {
                                         val icon =
                                             if (isAppRestricted.value) {
@@ -182,7 +198,9 @@ class GetAllAppsActivity : ComponentActivity() {
                                             icon,
                                             contentDescription =
                                             if (isAppRestricted.value) "UNBLOCK" else "BLOCK",
-                                            Modifier.width(60.dp).height(60.dp)
+                                            Modifier
+                                                .width(60.dp)
+                                                .height(60.dp)
                                         )
                                     }
                                 }

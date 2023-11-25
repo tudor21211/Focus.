@@ -1,0 +1,2 @@
+Am adaugat NavGraph si 2 clase pentru ecranul de timp petrecut in aplicatii si pentru ecranul de toate aplicatiile
+Trebuie facut setup si info daca e nevoie de Navigation pt app

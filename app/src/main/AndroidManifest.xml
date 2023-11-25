@@ -34,7 +34,7 @@
         android:theme="@style/Theme.Focus"
         tools:targetApi="31">
         <activity
-            android:name="com.example.focus.Presentation.GetAllAppsActivity"
+            android:name="com.example.focus.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Focus">
@@ -47,8 +47,32 @@
 
 
         <activity android:name="com.example.focus.Presentation.TimeSpentActivity">
-
         </activity>
+
+
+        <service
+            android:name=".Services.MyAccessibilityService"
+            android:label="@string/accessibility_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+
+
+
+        <receiver android:name = "com.example.listallapps.Receivers.RebootReceiver"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

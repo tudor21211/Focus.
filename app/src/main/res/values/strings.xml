@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Focus.</string>
+    <string name="accessibility_service_label">Focus.</string>
+    <string name="accessibility_service_description">Focus.</string>
 </resources>

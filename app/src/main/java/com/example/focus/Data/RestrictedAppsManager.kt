@@ -5,7 +5,7 @@ object RestrictedAppsManager {
 
     fun addRestrictedApp(packageName: String) {
         listOfRestrictedApps.add(packageName)
-        println(listOfRestrictedApps)
+        println("LISTA APLICATII RESTRICTED: $listOfRestrictedApps")
     }
 
     fun removeRestrictedApp(packageName : String) {
