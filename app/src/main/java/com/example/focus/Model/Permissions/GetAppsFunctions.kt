@@ -4,9 +4,14 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import com.example.focus.Data.AppInfoData
+import com.example.focus.Data.AppInfoDataNoTime
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.util.Calendar
@@ -82,6 +87,57 @@ class GetAppsFunctions (
     fun formatMillisecondsLong(milliseconds: Long): Long {
         val duration = Duration.ofMillis(milliseconds)
         return duration.toMillis()
+    }
+
+    @Composable
+    fun createAppList () : List<AppInfoDataNoTime> {
+
+        val myApps = GetAppsFunctions(context.packageManager, context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager, context)
+        myApps.getInstalledApps()
+        val nonSystemApps = myApps.getNonSystemApps()
+
+        for (name in nonSystemApps) {
+            println("NAME OF THE APPS ${name.packageName}")
+        }
+
+
+        val appInfoList = remember {
+            nonSystemApps.map { appInfo ->
+
+                val icon: Drawable = packageManager.getApplicationIcon(appInfo.packageName)
+                val appName: CharSequence = packageManager.getApplicationLabel(appInfo)
+                val appPackageName: String = appInfo.packageName
+
+                AppInfoDataNoTime(icon, appName, appPackageName)
+            }
+        }
+
+        return appInfoList
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @Composable
+    fun createAppListWithTimeSpent (timeInterval : Int) : List <AppInfoData>  {
+        val myApps = GetAppsFunctions(context.packageManager, context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager, context)
+
+        myApps.getInstalledApps()
+        var nonSystemApps = myApps.getNonSystemApps()
+
+        val nameTimeMap = myApps.getTimeSpent(timeInterval)
+
+
+        var appInfoList = nonSystemApps.map { appInfo ->
+            val icon: Drawable = packageManager.getApplicationIcon(appInfo.packageName)
+            val appName: CharSequence = packageManager.getApplicationLabel(appInfo)
+            val timeSpent: String =
+                myApps.formatMilliseconds(nameTimeMap[appInfo.packageName] ?: 0)
+
+            val timeSpentLong : Long = myApps.formatMillisecondsLong(nameTimeMap[appInfo.packageName] ?: 0)
+            val packageName = appInfo.packageName
+            AppInfoData(icon, appName, timeSpent, timeSpentLong, packageName)
+        }.sortedByDescending { it.timeSpentLong }
+
+        return appInfoList
     }
 
 

@@ -46,8 +46,7 @@
         </activity>
 
 
-        <activity android:name="com.example.focus.Presentation.TimeSpentActivity">
-        </activity>
+
 
 
         <service

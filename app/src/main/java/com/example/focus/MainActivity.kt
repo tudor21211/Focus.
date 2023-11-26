@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FocusTheme {
                 val navController = rememberNavController()
-                SetupNavGraph(navController = navController)
+                SetupNavGraph(navController = navController, this)
             }
         }
     }
