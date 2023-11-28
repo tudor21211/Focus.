@@ -23,11 +23,11 @@ class GetAppsFunctions (
 ){
     private var nonSystemApps : List<ApplicationInfo> = listOf()
 
-    fun getNonSystemApps() : List<ApplicationInfo> {
+    private fun getNonSystemApps() : List<ApplicationInfo> {
         return nonSystemApps
     }
 
-    fun getInstalledApps() {
+    private fun getInstalledApps() {
         var listInstalledApps: List<ApplicationInfo> = packageManager.getInstalledApplications(
             PackageManager.GET_ACTIVITIES
         )
@@ -89,7 +89,7 @@ class GetAppsFunctions (
         return duration.toMillis()
     }
 
-    @Composable
+
     fun createAppList () : List<AppInfoDataNoTime> {
 
         val myApps = GetAppsFunctions(context.packageManager, context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager, context)
@@ -101,8 +101,7 @@ class GetAppsFunctions (
         }
 
 
-        val appInfoList = remember {
-            nonSystemApps.map { appInfo ->
+        val appInfoList = nonSystemApps.map { appInfo ->
 
                 val icon: Drawable = packageManager.getApplicationIcon(appInfo.packageName)
                 val appName: CharSequence = packageManager.getApplicationLabel(appInfo)
@@ -110,13 +109,13 @@ class GetAppsFunctions (
 
                 AppInfoDataNoTime(icon, appName, appPackageName)
             }
-        }
+
 
         return appInfoList
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    @Composable
+
     fun createAppListWithTimeSpent (timeInterval : Int) : List <AppInfoData>  {
         val myApps = GetAppsFunctions(context.packageManager, context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager, context)
 

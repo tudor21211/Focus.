@@ -2,10 +2,13 @@ package com.example.focus
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -42,7 +45,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -53,17 +55,18 @@ import com.example.focus.Presentation.SetupNavGraph
 import com.example.focus.Presentation.allAppsScreen
 import com.example.focus.Presentation.landingPage
 import com.example.focus.ui.theme.FocusTheme
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalAnimationApi::class)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
-
-
         setContent {
             FocusTheme {
-                val navController = rememberNavController()
+                val navController = rememberAnimatedNavController()
                 SetupNavGraph(navController = navController, this)
             }
         }

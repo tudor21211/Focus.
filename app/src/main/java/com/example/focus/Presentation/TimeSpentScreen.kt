@@ -61,9 +61,15 @@ fun timeSpentScreen(
 ) {
 
 
-    val appInfoList = GetAppsFunctions(context.packageManager, context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager, context).createAppListWithTimeSpent(
-        timeInterval = timeInterval
-    )
+    val appInfoList = remember {
+        GetAppsFunctions(
+            context.packageManager,
+            context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager,
+            context
+        ).createAppListWithTimeSpent(
+            timeInterval = timeInterval
+        )
+    }
 
 
     Column(
@@ -81,7 +87,11 @@ fun timeSpentScreen(
                     .size(30.dp)
                     ,
 
-                onClick = { navController.navigate(Screen.AllAppsScreen.route)}
+                onClick = { navController.navigate(Screen.AllAppsScreen.route) {
+                    popUpTo(Screen.AllAppsScreen.route) {// dam remove din backstack la screen dupa ce am navigat inapoi la all apps screen
+                        inclusive = true
+                    }
+                } }
             ) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = "Go back", tint = Color.White)
             }
@@ -165,85 +175,6 @@ fun timeSpentScreen(
                 },
             )
 
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun dropdownMenu(
-        appInfoList: List<AppInfoData>,
-        myApps: GetAppsFunctions,
-        onAppInfoListUpdated: (List<AppInfoData>) -> Unit
-    ){
-
-        var expanded by remember { mutableStateOf(false) }
-        val timeInterval = arrayOf("1 day", "3 days", "7 days", "15 days", "1 month")
-        var selectedText by remember { mutableStateOf(timeInterval[0]) }
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(3.dp)
-        ) {
-            Row{
-                Spacer(modifier = Modifier.weight(1f))
-                ExposedDropdownMenuBox(
-                    modifier = Modifier.fillMaxWidth(.5f),
-                    expanded = expanded,
-                    onExpandedChange = {
-                        expanded = !expanded
-                    }
-                ) {
-                    TextField(
-                        value = selectedText,
-                        onValueChange = {},
-                        readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                        modifier = Modifier.menuAnchor()
-                    )
-
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        timeInterval.forEach { item ->
-                            DropdownMenuItem(
-                                text = { Text(text = item) },
-                                onClick = {
-
-                                    selectedText = item
-                                    expanded = false
-
-                                    val days = when (item) {
-                                        "1 day" -> 0
-                                        "3 days" -> 3
-                                        "7 days" -> 7
-                                        "15 days" -> 15
-                                        "1 month" -> 30
-                                        else -> 1
-                                    }
-
-                                    val nameTimeMap = myApps.getTimeSpent(days)
-                                    val updatedAppInfoList = appInfoList.map { appInfo ->
-                                        val timeSpent = myApps.formatMilliseconds(nameTimeMap[appInfo.packageName] ?: 0)
-                                        val timeSpentLong = myApps.formatMillisecondsLong(nameTimeMap[appInfo.packageName] ?: 0)
-
-                                        appInfo.copy(
-                                            timeSpent = timeSpent,
-                                            timeSpentLong = timeSpentLong
-                                        )
-                                    }.sortedByDescending{ it.timeSpentLong}
-
-                                    // Update the UI with the new list of apps
-                                    onAppInfoListUpdated(updatedAppInfoList)
-
-                                }
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 

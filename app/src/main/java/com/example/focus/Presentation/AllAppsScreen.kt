@@ -50,8 +50,13 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
 @Composable
 fun allAppsScreen(context : Context, navController: NavController) {
 
-    val appInfoList = GetAppsFunctions(context.packageManager, context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager, context).createAppList()
-
+    val appInfoList = remember {
+        GetAppsFunctions(
+            context.packageManager,
+            context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager,
+            context
+        ).createAppList()
+    }
     Column(
         Modifier
             .fillMaxSize()
@@ -67,7 +72,7 @@ fun allAppsScreen(context : Context, navController: NavController) {
         }
         ElevatedCard(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.elevatedCardColors(containerColor = Color(0xFF111416)),
+            colors = CardDefaults.elevatedCardColors(containerColor = Color(0xFF323941)),
         ) {
             LazyColumn(
                 content = {
