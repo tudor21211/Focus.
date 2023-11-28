@@ -115,7 +115,7 @@ fun landingPage (navController: NavController) {
             )
 
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(.1f))
 
             Button(
                 onClick = { navController.navigate(Screen.PermissionsScreen.route) },
@@ -123,7 +123,8 @@ fun landingPage (navController: NavController) {
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(top = 20.dp)
-                    .size(width = 400.dp, height = 50.dp)
+                    .fillMaxWidth(.9f)
+                    .fillMaxHeight(.1f)
                     .clip(shape = RoundedCornerShape(10.dp))
                     ) {
                 Text(text = "Get Started", color = Color.White, fontSize = 20.sp, fontFamily = openSans)
@@ -148,6 +149,8 @@ fun addAnimation(duration: Int = 150): ContentTransform {
         animationSpec = tween(durationMillis = duration)
     )
 }
+
+
 
 
 

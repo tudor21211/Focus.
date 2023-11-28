@@ -6,5 +6,7 @@ sealed class Screen (val route : String) {
     object TimeSpentScreen : Screen(route = "timeSpentScreen")
     object LandingPage : Screen(route = "landingPage")
     object PermissionsScreen : Screen(route = "permissionsScreen")
-
+    object Accessibility : Screen(route = "accessibilityPermission")
+    object DisplayOverOtherApps : Screen(route = "displayOverOtherAppsPermission")
+    object UsageAccess : Screen(route = "usageAccessPermission")
 }

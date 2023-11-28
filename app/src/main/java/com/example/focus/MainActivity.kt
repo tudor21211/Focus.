@@ -68,9 +68,61 @@ class MainActivity : ComponentActivity() {
             FocusTheme {
                 val navController = rememberAnimatedNavController()
                 SetupNavGraph(navController = navController, this)
+
+
             }
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @OptIn(ExperimentalAnimationApi::class)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        setContent {
+            FocusTheme {
+                val navController = rememberAnimatedNavController()
+                SetupNavGraph(navController = navController, this)
+
+                if(requestCode==100) { // folosit pt a naviga inapoi la PermissionsScreen dupa ce am navigat in Settings si am bifat setarea
+                    if (PermissionFunctions(this, getString(R.string.app_package_name)).isPackageUsageStatsPermissionEnabled()){
+                    navController.navigate(Screen.PermissionsScreen.route) {
+                        popUpTo(Screen.PermissionsScreen.route) {// dam remove din backstack la screen dupa ce am navigat inapoi la permissions screen
+                            inclusive = true
+                        }
+                    }
+                 }
+                    else {
+                        navController.navigate(Screen.UsageAccess.route) {
+                            popUpTo(Screen.UsageAccess.route) {
+                                inclusive = true
+                            }
+                        }
+                    }
+              }
+                if (requestCode==200)
+                { // folosit pt a naviga inapoi la PermissionsScreen dupa ce am navigat in Settings si am bifat setarea
+                   if (PermissionFunctions(this, getString(R.string.app_package_name)).isAccessibilityServiceEnabled("MyAccessibilityService")) {
+                       navController.navigate(Screen.PermissionsScreen.route) {
+                           popUpTo(Screen.PermissionsScreen.route) {// dam remove din backstack la screen dupa ce am navigat inapoi la permissions screen
+                               inclusive = true
+                           }
+                       }
+                   }
+                    else {
+                       navController.navigate(Screen.Accessibility.route) {
+                           popUpTo(Screen.Accessibility.route) {
+                               inclusive = true
+                           }
+                       }
+                   }
+                }
+
+            }
+        }
+    }
+
+
 }
 
 @Composable

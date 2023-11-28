@@ -13,6 +13,9 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import com.example.focus.Presentation.IndividualPermissions.accessibilityPermission
+import com.example.focus.Presentation.IndividualPermissions.displayOverOtherAppsPermission
+import com.example.focus.Presentation.IndividualPermissions.usageAccessPermission
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 
@@ -27,15 +30,15 @@ fun SetupNavGraph(
     AnimatedNavHost(navController = navController, startDestination = Screen.LandingPage.route) {
 
         composable(route = Screen.LandingPage.route,
-            exitTransition = {->
+            exitTransition = {
                 slideOutHorizontally(
-                    targetOffsetX = {-300},
+                    targetOffsetX = {-200},
                     animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
                 ) + fadeOut(animationSpec = tween(150))
             },
-            popEnterTransition = {->
+            popEnterTransition = {
                 slideInHorizontally (
-                    initialOffsetX = {300},
+                    initialOffsetX = {200},
                     animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
                 ) + fadeIn(animationSpec = tween(150))
             }
@@ -44,15 +47,15 @@ fun SetupNavGraph(
             landingPage(navController)
         }
         composable(route = Screen.AllAppsScreen.route,
-            exitTransition = {->
+            exitTransition = {
                 slideOutHorizontally(
-                    targetOffsetX = {-300},
+                    targetOffsetX = {-200},
                     animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
                 ) + fadeOut(animationSpec = tween(150))
             },
-            popEnterTransition = {->
+            popEnterTransition = {
                 slideInHorizontally (
-                    initialOffsetX = {300},
+                    initialOffsetX = {200},
                     animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
                 ) + fadeIn(animationSpec = tween(150))
             }) {
@@ -60,15 +63,15 @@ fun SetupNavGraph(
         }
 
         composable(route = Screen.TimeSpentScreen.route,
-            exitTransition = {->
+            exitTransition = {
                 slideOutHorizontally(
-                    targetOffsetX = {-300},
+                    targetOffsetX = {-200},
                     animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
                 ) + fadeOut(animationSpec = tween(150))
             },
-            popEnterTransition = {->
+            popEnterTransition = {
                 slideInHorizontally (
-                    initialOffsetX = {300},
+                    initialOffsetX = {200},
                     animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
                 ) + fadeIn(animationSpec = tween(150))
             }
@@ -81,6 +84,17 @@ fun SetupNavGraph(
             permissionScreen(navController)
         }
 
+        composable(route = Screen.UsageAccess.route) {
+            usageAccessPermission()
+        }
+
+        composable(route = Screen.Accessibility.route) {
+            accessibilityPermission()
+        }
+
+        composable(route = Screen.DisplayOverOtherApps.route) {
+            displayOverOtherAppsPermission()
+        }
     }
 
 }

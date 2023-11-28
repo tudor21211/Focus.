@@ -77,6 +77,7 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
     implementation("androidx.compose.material3:material3")
     implementation("io.coil-kt:coil:2.4.0")
+    implementation ("io.coil-kt:coil-gif:2.2.2")
     implementation ("com.google.accompanist:accompanist-drawablepainter:0.28.0")
     implementation ("androidx.navigation:navigation-compose:2.5.0")
     implementation ("com.google.accompanist:accompanist-navigation-animation:0.24.13-rc")
@@ -89,5 +90,6 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("io.coil-kt:coil-compose:2.2.2")
 
 }

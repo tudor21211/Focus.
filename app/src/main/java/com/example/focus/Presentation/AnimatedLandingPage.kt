@@ -27,7 +27,7 @@ class AnimatedLandingPage : ViewModel() {
             "The only way to achieve the impossible is to believe it is possible.",
             "Do something today that your future self will thank you for.",
             "Work hard in silence, let your success be the noise."
-        ).asSequence().asFlow().onEach { delay(4000) }
+        ).asSequence().asFlow().onEach { delay(2500) }
     }
 
 }

@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -30,12 +31,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.focus.Model.Permissions.PermissionFunctions
 import com.example.focus.R
+import com.example.focus.Services.MyAccessibilityService
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import java.security.Permissions
 
 @Composable
 fun permissionScreen(navController: NavController) {
     val systemUiController = rememberSystemUiController()
+    val context = LocalContext.current
     val colorStops = arrayOf(
         0.2f to Color(0xFF0E0653),
         0.5f to Color(0xFF090341),
@@ -72,12 +77,48 @@ fun permissionScreen(navController: NavController) {
                 fontSize = 18.sp,
             )
         }
-        Spacer(modifier = Modifier.height(10.dp))
-        permissionCard("Usage access", "This permission is required to retrieve statistics about apps",navController)
+        if (!PermissionFunctions(context, context.packageName).isPackageUsageStatsPermissionEnabled()) {
+            Spacer(modifier = Modifier.height(10.dp))
+            permissionCard(
+                "Usage access",
+                "This permission is required to retrieve statistics about apps",
+                navController,
+                Screen.UsageAccess.route,
+                Color(0xFFEE7848)
+            )
+        }
+        else {
+            Spacer(modifier = Modifier.height(10.dp))
+            permissionCard(
+                "Usage access",
+                "This permission is required to retrieve statistics about apps",
+                navController,
+                Screen.UsageAccess.route,
+                Color(0xFF00FF00)
+            )
+        }
+        if (!PermissionFunctions(context, context.packageName).isAccessibilityServiceEnabled("MyAccessibilityService")) {
+            Spacer(modifier = Modifier.height(15.dp))
+            permissionCard(
+                "Accessibility",
+                "This permission is required to block apps and websites you select.",
+                navController,
+                Screen.Accessibility.route,
+                Color(0xFFEE7848)
+            )
+        }
+        else {
+            Spacer(modifier = Modifier.height(15.dp))
+            permissionCard(
+                "Accessibility",
+                "This permission is required to block apps and websites you select.",
+                navController,
+                Screen.Accessibility.route,
+                Color(0xFF00FF00)
+            )
+        }
         Spacer(modifier = Modifier.height(15.dp))
-        permissionCard("Accessibility", "This permission is required to block apps and websites you select.",navController)
-        Spacer(modifier = Modifier.height(15.dp))
-        permissionCard("Display over other apps", "Since Android 10, this permission is required to block apps and websites.",navController)
+        permissionCard("Display over other apps", "Since Android 10, this permission is required to block apps and websites.",navController, Screen.DisplayOverOtherApps.route, Color(0xFFEE7848))
         Spacer(modifier = Modifier.height(30.dp))
 
     }
@@ -85,7 +126,7 @@ fun permissionScreen(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun permissionCard(title: String, content: String, navController: NavController) {
+fun permissionCard(title: String, content: String, navController: NavController, navigationRoute : String, color : Color) {
     val openSans = FontFamily(
         Font(R.font.opensans_res),
     )
@@ -95,8 +136,8 @@ fun permissionCard(title: String, content: String, navController: NavController)
             .height(95.dp)
             .fillMaxWidth(.96f),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFEE7848)),
-        onClick = { navController.navigate(Screen.AllAppsScreen.route) }
+        colors = CardDefaults.cardColors(containerColor = color),
+        onClick = { navController.navigate(navigationRoute) }
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(0.97f),
@@ -105,7 +146,7 @@ fun permissionCard(title: String, content: String, navController: NavController)
             Text(
                 text = title, color = Color(0xFF000000),fontFamily = openSans, fontWeight = FontWeight.ExtraBold , modifier = Modifier
                     .padding(start = 10.dp)
-                    .padding(top = 1.dp)
+                    .padding(top = 6.dp)
             )
 
             Icon(
@@ -113,10 +154,11 @@ fun permissionCard(title: String, content: String, navController: NavController)
                 contentDescription = "go to settings",
                 tint = Color(0xFF000000),
                 modifier = Modifier
-                    .size(25.dp),
+                    .size(25.dp)
+                    .padding(top=1.dp),
             )
         }
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Text(text = content, color = Color(0xFF444343), fontFamily = openSans,modifier = Modifier.padding(start = 9.dp))
     }
 }
