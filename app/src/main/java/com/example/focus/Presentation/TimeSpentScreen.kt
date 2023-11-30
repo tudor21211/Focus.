@@ -2,10 +2,7 @@ package com.example.focus.Presentation
 
 import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import android.os.Build
-import android.provider.CalendarContract
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -23,8 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
@@ -55,9 +50,9 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun timeSpentScreen(
-    context : Context,
-    timeInterval : Int,
-    navController : NavController
+    context: Context,
+    timeInterval: Int,
+    navController: NavController
 ) {
 
 
@@ -79,19 +74,19 @@ fun timeSpentScreen(
     ) {
 
 
-
         Row(modifier = Modifier.fillMaxWidth()) {
             IconButton(
                 modifier = Modifier
                     .padding(20.dp)
-                    .size(30.dp)
-                    ,
+                    .size(30.dp),
 
-                onClick = { navController.navigate(Screen.AllAppsScreen.route) {
-                    popUpTo(Screen.AllAppsScreen.route) {// dam remove din backstack la screen dupa ce am navigat inapoi la all apps screen
-                        inclusive = true
+                onClick = {
+                    navController.navigate(Screen.AllAppsScreen.route) {
+                        popUpTo(Screen.AllAppsScreen.route) {// dam remove din backstack la screen dupa ce am navigat inapoi la all apps screen
+                            inclusive = true
+                        }
                     }
-                } }
+                }
             ) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = "Go back", tint = Color.White)
             }
@@ -102,7 +97,11 @@ fun timeSpentScreen(
 
         var appInfoList by remember { mutableStateOf(appInfoList) }
 
-        val myApps = GetAppsFunctions(context.packageManager, context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager, context)
+        val myApps = GetAppsFunctions(
+            context.packageManager,
+            context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager,
+            context
+        )
 
         dropdownMenu(
             appInfoList,
@@ -187,7 +186,7 @@ private fun dropdownMenu(
     appInfoList: List<AppInfoData>,
     myApps: GetAppsFunctions,
     onAppInfoListUpdated: (List<AppInfoData>) -> Unit
-){
+) {
 
     var expanded by remember { mutableStateOf(false) }
     val timeInterval = arrayOf("1 day", "3 days", "7 days", "15 days", "1 month")
@@ -198,7 +197,7 @@ private fun dropdownMenu(
             .fillMaxWidth()
             .padding(3.dp)
     ) {
-        Row{
+        Row {
             Spacer(modifier = Modifier.weight(1f))
             ExposedDropdownMenuBox(
                 modifier = Modifier.fillMaxWidth(.5f),
@@ -238,14 +237,18 @@ private fun dropdownMenu(
 
                                 val nameTimeMap = myApps.getTimeSpent(days)
                                 val updatedAppInfoList = appInfoList.map { appInfo ->
-                                    val timeSpent = myApps.formatMilliseconds(nameTimeMap[appInfo.packageName] ?: 0)
-                                    val timeSpentLong = myApps.formatMillisecondsLong(nameTimeMap[appInfo.packageName] ?: 0)
+                                    val timeSpent = myApps.formatMilliseconds(
+                                        nameTimeMap[appInfo.packageName] ?: 0
+                                    )
+                                    val timeSpentLong = myApps.formatMillisecondsLong(
+                                        nameTimeMap[appInfo.packageName] ?: 0
+                                    )
 
                                     appInfo.copy(
                                         timeSpent = timeSpent,
                                         timeSpentLong = timeSpentLong
                                     )
-                                }.sortedByDescending{ it.timeSpentLong}
+                                }.sortedByDescending { it.timeSpentLong }
 
                                 // Update the UI with the new list of apps
                                 onAppInfoListUpdated(updatedAppInfoList)

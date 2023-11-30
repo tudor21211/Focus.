@@ -2,8 +2,6 @@ package com.example.focus.Presentation
 
 import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,13 +40,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.focus.Data.AppInfoDataNoTime
 import com.example.focus.Data.RestrictedAppsManager
 import com.example.focus.Model.Permissions.GetAppsFunctions
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 
 @Composable
-fun allAppsScreen(context : Context, navController: NavController) {
+fun allAppsScreen(context: Context, navController: NavController) {
 
     val appInfoList = remember {
         GetAppsFunctions(

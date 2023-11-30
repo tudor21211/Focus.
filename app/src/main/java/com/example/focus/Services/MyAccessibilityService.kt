@@ -1,26 +1,22 @@
 package com.example.focus.Services
 
-import com.example.focus.Presentation.RestrictedAppView
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
+import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
-import android.os.Handler
-import android.view.accessibility.AccessibilityEvent.TYPE_VIEW_CLICKED
-import android.view.accessibility.AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED
 import android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
-import com.example.focus.Data.RestrictedAppsManager
 import com.example.focus.Data.RestrictedAppsManager.getRestrictedApps
+import com.example.focus.Presentation.RestrictedAppView
 
 class MyAccessibilityService : AccessibilityService() {
     private var windowManager: WindowManager? = null
@@ -37,6 +33,7 @@ class MyAccessibilityService : AccessibilityService() {
         startActivity(home)
 
     }
+
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
@@ -119,8 +116,9 @@ class MyAccessibilityService : AccessibilityService() {
             e.printStackTrace()
         }
     }
+
     override fun onInterrupt() {
-        Log.e(TAG,"Something went wrong on Interrupt")
+        Log.e(TAG, "Something went wrong on Interrupt")
     }
 
     private fun getAllVisibleText(rootNode: AccessibilityNodeInfo): List<String> {
@@ -151,13 +149,13 @@ class MyAccessibilityService : AccessibilityService() {
         info.apply {
             eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or TYPE_WINDOW_CONTENT_CHANGED
 
-            flags =  AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
+            flags = AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
 
             feedbackType = AccessibilityServiceInfo.FEEDBACK_SPOKEN
 
             notificationTimeout = 100
         }
-        Log.e(TAG,"on service connected: ")
+        Log.e(TAG, "on service connected: ")
         this.serviceInfo = info
 
     }

@@ -16,7 +16,7 @@ import coil.size.Size
 @Composable
 fun GifImage(
     modifier: Modifier = Modifier,
-    image : Int
+    image: Int
 ) {
     val context = LocalContext.current
     val imageLoader = ImageLoader.Builder(context)

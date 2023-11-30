@@ -9,7 +9,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -24,7 +23,7 @@ import com.google.accompanist.navigation.animation.composable
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
-    context : Context
+    context: Context
 ) {
 
     AnimatedNavHost(navController = navController, startDestination = Screen.LandingPage.route) {
@@ -32,55 +31,55 @@ fun SetupNavGraph(
         composable(route = Screen.LandingPage.route,
             exitTransition = {
                 slideOutHorizontally(
-                    targetOffsetX = {-200},
-                    animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
-                ) + fadeOut(animationSpec = tween(150))
+                    targetOffsetX = { -100 },
+                    animationSpec = tween(durationMillis = 100, easing = FastOutSlowInEasing)
+                ) + fadeOut(animationSpec = tween(100))
             },
             popEnterTransition = {
-                slideInHorizontally (
-                    initialOffsetX = {200},
-                    animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
-                ) + fadeIn(animationSpec = tween(150))
+                slideInHorizontally(
+                    initialOffsetX = { 100 },
+                    animationSpec = tween(durationMillis = 100, easing = FastOutSlowInEasing)
+                ) + fadeIn(animationSpec = tween(100))
             }
 
-        ){
+        ) {
             landingPage(navController)
         }
         composable(route = Screen.AllAppsScreen.route,
             exitTransition = {
                 slideOutHorizontally(
-                    targetOffsetX = {-200},
-                    animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
-                ) + fadeOut(animationSpec = tween(150))
+                    targetOffsetX = { -100 },
+                    animationSpec = tween(durationMillis = 100, easing = FastOutSlowInEasing)
+                ) + fadeOut(animationSpec = tween(100))
             },
             popEnterTransition = {
-                slideInHorizontally (
-                    initialOffsetX = {200},
-                    animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
-                ) + fadeIn(animationSpec = tween(150))
+                slideInHorizontally(
+                    initialOffsetX = { 100 },
+                    animationSpec = tween(durationMillis = 100, easing = FastOutSlowInEasing)
+                ) + fadeIn(animationSpec = tween(100))
             }) {
-            allAppsScreen(context , navController)
+            allAppsScreen(context, navController)
         }
 
         composable(route = Screen.TimeSpentScreen.route,
             exitTransition = {
                 slideOutHorizontally(
-                    targetOffsetX = {-200},
-                    animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
-                ) + fadeOut(animationSpec = tween(150))
+                    targetOffsetX = { -100 },
+                    animationSpec = tween(durationMillis = 100, easing = FastOutSlowInEasing)
+                ) + fadeOut(animationSpec = tween(100))
             },
             popEnterTransition = {
-                slideInHorizontally (
-                    initialOffsetX = {200},
-                    animationSpec = tween(durationMillis = 150, easing = FastOutSlowInEasing)
-                ) + fadeIn(animationSpec = tween(150))
+                slideInHorizontally(
+                    initialOffsetX = { 100 },
+                    animationSpec = tween(durationMillis = 100, easing = FastOutSlowInEasing)
+                ) + fadeIn(animationSpec = tween(100))
             }
         ) {
 
-            timeSpentScreen(context,0, navController)
+            timeSpentScreen(context, 0, navController)
         }
 
-        composable (route = Screen.PermissionsScreen.route) {
+        composable(route = Screen.PermissionsScreen.route) {
             permissionScreen(navController)
         }
 

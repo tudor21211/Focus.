@@ -10,7 +10,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.with
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,15 +17,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -37,9 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -52,7 +43,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun landingPage (navController: NavController) {
+fun landingPage(navController: NavController) {
 
     val motivation by AnimatedLandingPage.motivation.collectAsState(initial = "Enjoy free time without distractions")
 
@@ -71,9 +62,11 @@ fun landingPage (navController: NavController) {
         0.5f to Color(0xFF3C2EBD),
         1f to Color(0xFF190F6F)
     )
-    Box(modifier = Modifier
-        .fillMaxSize(1f)
-        .background(Brush.linearGradient(colorStops = colorStops))) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize(1f)
+            .background(Brush.linearGradient(colorStops = colorStops))
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize(1f)
@@ -82,13 +75,15 @@ fun landingPage (navController: NavController) {
 
             AnimatedContent(
                 targetState = motivation,
-                modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxHeight(.2f),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxHeight(.2f),
                 transitionSpec = {
                     addAnimation().using(
                         SizeTransform(clip = false)
                     )
                 }, label = ""
-            ){ targetCount ->
+            ) { targetCount ->
                 Text(
                     text = "$targetCount",
                     textAlign = TextAlign.Center,
@@ -126,13 +121,16 @@ fun landingPage (navController: NavController) {
                     .fillMaxWidth(.9f)
                     .fillMaxHeight(.1f)
                     .clip(shape = RoundedCornerShape(10.dp))
-                    ) {
-                Text(text = "Get Started", color = Color.White, fontSize = 20.sp, fontFamily = openSans)
+            ) {
+                Text(
+                    text = "Get Started",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontFamily = openSans
+                )
             }
             Spacer(modifier = Modifier.weight(.1f))
         }
-
-
 
 
     }

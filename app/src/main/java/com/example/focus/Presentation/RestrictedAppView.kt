@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
-import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.ViewGroup
@@ -36,6 +35,7 @@ class RestrictedAppView(context: Context) : FrameLayout(context) {
 
         addView(textView, params)
     }
+
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
         // Doesn't allow system events to be processed
         return true

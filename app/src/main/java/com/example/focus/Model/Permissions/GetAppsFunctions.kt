@@ -8,22 +8,20 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import com.example.focus.Data.AppInfoData
 import com.example.focus.Data.AppInfoDataNoTime
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.util.Calendar
 
-class GetAppsFunctions (
+class GetAppsFunctions(
     private val packageManager: PackageManager,
     private val usageStatsManager: UsageStatsManager,
     private val context: Context
-){
-    private var nonSystemApps : List<ApplicationInfo> = listOf()
+) {
+    private var nonSystemApps: List<ApplicationInfo> = listOf()
 
-    private fun getNonSystemApps() : List<ApplicationInfo> {
+    private fun getNonSystemApps(): List<ApplicationInfo> {
         return nonSystemApps
     }
 
@@ -38,14 +36,14 @@ class GetAppsFunctions (
     }
 
 
-     fun getTimeSpent(periodOfTimeInDays : Int): Map<String, Long> {
+    fun getTimeSpent(periodOfTimeInDays: Int): Map<String, Long> {
         val cal = Calendar.getInstance()
 
-        cal.add(Calendar.DAY_OF_YEAR,-periodOfTimeInDays)
+        cal.add(Calendar.DAY_OF_YEAR, -periodOfTimeInDays)
         cal.set(Calendar.HOUR_OF_DAY, 0)
         cal.set(Calendar.MINUTE, 0)
         cal.set(Calendar.SECOND, 0)
-        cal.set(Calendar.MILLISECOND , 0)
+        cal.set(Calendar.MILLISECOND, 0)
 
         val startTime = cal.timeInMillis
 
@@ -60,16 +58,16 @@ class GetAppsFunctions (
         val usm = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
 
-            val queryUsageStats = usm.queryAndAggregateUsageStats(
-                startTime,
-                endTime
-            )
+        val queryUsageStats = usm.queryAndAggregateUsageStats(
+            startTime,
+            endTime
+        )
 
-            for ((packageName, usageStats) in queryUsageStats) {
-                mutableDict[packageName] = usageStats.totalTimeInForeground
-            }
+        for ((packageName, usageStats) in queryUsageStats) {
+            mutableDict[packageName] = usageStats.totalTimeInForeground
+        }
 
-        return  mutableDict
+        return mutableDict
 
     }
 
@@ -90,9 +88,13 @@ class GetAppsFunctions (
     }
 
 
-    fun createAppList () : List<AppInfoDataNoTime> {
+    fun createAppList(): List<AppInfoDataNoTime> {
 
-        val myApps = GetAppsFunctions(context.packageManager, context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager, context)
+        val myApps = GetAppsFunctions(
+            context.packageManager,
+            context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager,
+            context
+        )
         myApps.getInstalledApps()
         val nonSystemApps = myApps.getNonSystemApps()
 
@@ -103,12 +105,12 @@ class GetAppsFunctions (
 
         val appInfoList = nonSystemApps.map { appInfo ->
 
-                val icon: Drawable = packageManager.getApplicationIcon(appInfo.packageName)
-                val appName: CharSequence = packageManager.getApplicationLabel(appInfo)
-                val appPackageName: String = appInfo.packageName
+            val icon: Drawable = packageManager.getApplicationIcon(appInfo.packageName)
+            val appName: CharSequence = packageManager.getApplicationLabel(appInfo)
+            val appPackageName: String = appInfo.packageName
 
-                AppInfoDataNoTime(icon, appName, appPackageName)
-            }
+            AppInfoDataNoTime(icon, appName, appPackageName)
+        }
 
 
         return appInfoList
@@ -116,8 +118,12 @@ class GetAppsFunctions (
 
     @RequiresApi(Build.VERSION_CODES.O)
 
-    fun createAppListWithTimeSpent (timeInterval : Int) : List <AppInfoData>  {
-        val myApps = GetAppsFunctions(context.packageManager, context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager, context)
+    fun createAppListWithTimeSpent(timeInterval: Int): List<AppInfoData> {
+        val myApps = GetAppsFunctions(
+            context.packageManager,
+            context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager,
+            context
+        )
 
         myApps.getInstalledApps()
         var nonSystemApps = myApps.getNonSystemApps()
@@ -131,7 +137,8 @@ class GetAppsFunctions (
             val timeSpent: String =
                 myApps.formatMilliseconds(nameTimeMap[appInfo.packageName] ?: 0)
 
-            val timeSpentLong : Long = myApps.formatMillisecondsLong(nameTimeMap[appInfo.packageName] ?: 0)
+            val timeSpentLong: Long =
+                myApps.formatMillisecondsLong(nameTimeMap[appInfo.packageName] ?: 0)
             val packageName = appInfo.packageName
             AppInfoData(icon, appName, timeSpent, timeSpentLong, packageName)
         }.sortedByDescending { it.timeSpentLong }
