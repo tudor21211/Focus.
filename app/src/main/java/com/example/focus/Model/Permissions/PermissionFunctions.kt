@@ -30,4 +30,11 @@ class PermissionFunctions(private var context: Context, private var packageName:
     }
 
 
+    fun areAllPermissionsEnabled(): Boolean {
+        return isAccessibilityServiceEnabled("MyAccessibilityService") &&
+                isPackageUsageStatsPermissionEnabled() &&
+                isOverlayPermissionEnabled()
+    }
+
+
 }

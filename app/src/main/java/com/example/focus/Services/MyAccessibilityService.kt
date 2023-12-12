@@ -16,7 +16,7 @@ import android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 import com.example.focus.Data.RestrictedAppsManager.getRestrictedApps
-import com.example.focus.Presentation.RestrictedAppView
+import com.example.focus.Presentation.Screens.Landing.RestrictedAppView
 
 class MyAccessibilityService : AccessibilityService() {
     private var windowManager: WindowManager? = null
