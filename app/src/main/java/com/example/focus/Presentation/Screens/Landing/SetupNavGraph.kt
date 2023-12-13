@@ -15,12 +15,16 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.focus.Model.Permissions.PermissionFunctions
 import com.example.focus.Presentation.IndividualPermissions.accessibilityPermission
 import com.example.focus.Presentation.IndividualPermissions.displayOverOtherAppsPermission
 import com.example.focus.Presentation.IndividualPermissions.usageAccessPermission
 import com.example.focus.Presentation.Screens.MainPage.mainPageScreen
+import com.example.focus.Presentation.Screens.Quiz.quizResponse
 import com.example.focus.Presentation.Screens.Quiz.quizScreen
+
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 
@@ -35,8 +39,8 @@ fun SetupNavGraph(
     val sharedPreferences = LocalContext.current.getSharedPreferences("TutorialPermissionsFinished", Context.MODE_PRIVATE)
     val tutorialPermissionsFinished = sharedPreferences.getBoolean("TutorialPermissionsFinished", false)
     println("TutorialPermissionsFinished: $tutorialPermissionsFinished")
-        AnimatedNavHost(navController = navController, startDestination =
-        if (tutorialPermissionsFinished) Screen.QuizScreen.route else Screen.LandingPage.route){
+
+    AnimatedNavHost(navController = navController, startDestination = Screen.QuizResponse.route) {
 
         composable(route = Screen.LandingPage.route,
             exitTransition = {
@@ -108,8 +112,16 @@ fun SetupNavGraph(
             mainPageScreen()
         }
         composable(route = Screen.QuizScreen.route) {
-            quizScreen()
+            quizScreen(navController)
+        }
+
+        composable(route = Screen.QuizResponse.route,
+            arguments = listOf(navArgument("hours") {
+                type = NavType.FloatType
+            })
+            ) {
+            println("Argument is :" + it.arguments?.getFloat("hours").toString())
+            quizResponse(navController, it.arguments?.getFloat("hours")!!)
         }
     }
-
 }

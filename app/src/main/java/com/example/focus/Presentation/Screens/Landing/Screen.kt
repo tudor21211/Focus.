@@ -15,7 +15,7 @@ sealed class Screen(val route: String) {
     object UsageAccess : Screen(route = "usageAccessPermission")
     object MainPageScreen : Screen(route = "mainPageScreen")
     object QuizScreen : Screen(route = "quizScreen")
-
+    object QuizResponse : Screen(route = "quizResponse/{hours}")
 
 
 

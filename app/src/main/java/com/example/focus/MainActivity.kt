@@ -44,7 +44,9 @@ class MainActivity : ComponentActivity() {
             FocusTheme {
                 val navController = rememberAnimatedNavController()
                 SetupNavGraph(navController = navController, this)
+
                 val sharedPreferences = this.getSharedPreferences("TutorialPermissionsFinished", MODE_PRIVATE)
+
                 if (requestCode == 100) { // folosit pt a naviga inapoi la PermissionsScreen dupa ce am navigat in Settings si am bifat setarea
                     if (PermissionFunctions(this, packageName).areAllPermissionsEnabled()) {
                         val editor = sharedPreferences.edit()

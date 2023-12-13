@@ -1,5 +1,6 @@
 package com.example.focus.Presentation.Screens.Landing
 
+import android.content.Context
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -46,10 +48,13 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 fun landingPage(navController: NavController) {
 
     val motivation by AnimatedLandingPage.motivation.collectAsState(initial = "Enjoy free time without distractions")
+    val sharedPreferences = LocalContext.current.getSharedPreferences("TutorialPermissionsFinished", Context.MODE_PRIVATE)
+    val tutorialPermissionsFinished = sharedPreferences.getBoolean("TutorialPermissionsFinished", false)
 
     val systemUiController = rememberSystemUiController()
+
     SideEffect {
-        systemUiController.setStatusBarColor(Color(0xFF6353F3))
+        systemUiController.setSystemBarsColor(Color(0xFF6353F3))
         systemUiController.setNavigationBarColor(Color.Black)
     }
 
@@ -113,7 +118,10 @@ fun landingPage(navController: NavController) {
             Spacer(modifier = Modifier.weight(.1f))
 
             Button(
-                onClick = { navController.navigate(Screen.PermissionsScreen.route) },
+                onClick = {
+                    if (!tutorialPermissionsFinished) navController.navigate(Screen.PermissionsScreen.route)
+                          else navController.navigate(Screen.QuizScreen.route)
+                          },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A0A05)),
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)

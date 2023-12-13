@@ -13,6 +13,7 @@ import com.example.focus.Data.AppInfoDataNoTime
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 class GetAppsFunctions(
     private val packageManager: PackageManager,
@@ -31,7 +32,7 @@ class GetAppsFunctions(
         )
 
         nonSystemApps = listInstalledApps.filter { appInfo ->
-            (appInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0)
+            (appInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) || (appInfo.packageName == "com.google.android.youtube")
         }
     }
 
@@ -73,12 +74,11 @@ class GetAppsFunctions(
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun formatMilliseconds(milliseconds: Long): String {
+    fun formatMillisecondsWithoutSeconds(milliseconds: Long): String {
         val duration = Duration.ofMillis(milliseconds)
         val hours = duration.toHours()
         val minutes = duration.minusHours(hours).toMinutes()
-        val seconds = duration.minusHours(hours).minusMinutes(minutes).seconds
-        return "$hours h : $minutes m : $seconds s"
+        return "$hours h : $minutes m"
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -135,7 +135,7 @@ class GetAppsFunctions(
             val icon: Drawable = packageManager.getApplicationIcon(appInfo.packageName)
             val appName: CharSequence = packageManager.getApplicationLabel(appInfo)
             val timeSpent: String =
-                myApps.formatMilliseconds(nameTimeMap[appInfo.packageName] ?: 0)
+                myApps.formatMillisecondsWithoutSeconds(nameTimeMap[appInfo.packageName] ?: 0)
 
             val timeSpentLong: Long =
                 myApps.formatMillisecondsLong(nameTimeMap[appInfo.packageName] ?: 0)
@@ -144,6 +144,58 @@ class GetAppsFunctions(
         }.sortedByDescending { it.timeSpentLong }
 
         return appInfoList
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getTotalTimeSpent(map: Map<String, Long>) : String {
+
+        var totalTimeSpent = 0L
+        for (key in map.keys) {
+            totalTimeSpent += map[key] ?: 0
+        }
+        return formatMillisecondsWithoutSeconds(totalTimeSpent)
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getTotalTimeSpentAverage(map: Map<String, Long>) : Long{
+
+        var totalTimeSpent = 0L
+        for (key in map.keys) {
+            totalTimeSpent += map[key] ?: 0
+        }
+        totalTimeSpent /= 7
+
+        return totalTimeSpent
+
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getTopFiveMostUsedApps(): List<AppInfoData> {
+        val myApps = GetAppsFunctions(
+            context.packageManager,
+            context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager,
+            context
+        )
+
+        myApps.getInstalledApps()
+        val nonSystemApps = myApps.getNonSystemApps()
+
+        val nameTimeMap = myApps.getTimeSpent(7)
+
+        val appInfoList = nonSystemApps.map { appInfo ->
+            val icon: Drawable = packageManager.getApplicationIcon(appInfo.packageName)
+            val appName: CharSequence = packageManager.getApplicationLabel(appInfo)
+            val timeSpent: String =
+                myApps.formatMillisecondsWithoutSeconds(nameTimeMap[appInfo.packageName] ?: 0)
+            val timeSpentLong: Long =
+                myApps.formatMillisecondsLong(nameTimeMap[appInfo.packageName] ?: 0)
+            val packageName = appInfo.packageName
+            AppInfoData(icon, appName, timeSpent, timeSpentLong, packageName)
+        }
+
+        return appInfoList.sortedByDescending { it.timeSpentLong }.take(5)
     }
 
 

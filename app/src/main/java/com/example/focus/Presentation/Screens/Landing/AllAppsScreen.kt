@@ -31,6 +31,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -43,10 +44,16 @@ import androidx.navigation.NavController
 import com.example.focus.Data.RestrictedAppsManager
 import com.example.focus.Model.Permissions.GetAppsFunctions
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun allAppsScreen(context: Context, navController: NavController) {
+    val systemUiController = rememberSystemUiController()
 
+    SideEffect {
+        systemUiController.setSystemBarsColor(Color(0xFF111416))
+        systemUiController.setNavigationBarColor(Color.Black)
+    }
     val appInfoList = remember {
         GetAppsFunctions(
             context.packageManager,

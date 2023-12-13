@@ -20,6 +20,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -35,16 +36,23 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.focus.Presentation.Screens.Landing.Screen
 import com.example.focus.R
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlin.math.PI
@@ -56,13 +64,13 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 @Composable
-fun quizScreen() {
-    val context = LocalContext.current
+fun quizScreen(navController : NavController){
+    val nav = 5
     val systemUiController = rememberSystemUiController()
     val colorStops = arrayOf(
-        0.2f to Color(0xFF130869),
-        0.5f to Color(0xFF0D0458),
-        1f to Color(0xFF0B0346)
+        0.2f to Color(0xFF6353F3),
+        0.5f to Color(0xFF3C2EBD),
+        1f to Color(0xFF190F6F)
     )
 
     val colorStopsProgress = arrayOf(
@@ -72,14 +80,18 @@ fun quizScreen() {
     )
 
     val colorStopsButton = arrayOf(
-        0.2f to Color(0xFFDDB53C),
-        0.5f to Color(0xFFD4E06D),
+        0.2f to Color(0xFFB8962F),
+        0.5f to Color(0xFF7D853D),
         1f to Color(0xFF100355)
     )
 
     SideEffect {
-        systemUiController.setSystemBarsColor(Color(0xFF130869))
+        systemUiController.setSystemBarsColor(Color(0xFF6353F3))
+        systemUiController.setNavigationBarColor(Color.Black)
     }
+
+
+
 
     var sliderPosition by remember { mutableStateOf(0f) }
 
@@ -94,9 +106,23 @@ fun quizScreen() {
             String.format("%.2f", (sliderPosition / stepSize).roundToInt() * stepSize).toFloat()
 
         Text(
-            text = "How much time do you think you spent on your phone in the last 7 days?\n\n Take a wild guess!",
+            text = buildAnnotatedString {
+                append("How much time do you think you spend on your phone ")
+                    withStyle(
+                        SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 25.sp,
+                            color = Color.Yellow,
+                            fontFamily = FontFamily(Font(R.font.opensans_res)),
+                        )
+                    ) {
+                        append("every day?")
+
+                    }
+                append("\n\n Take a wild guess!")
+                                        },
             color = Color.White,
-            fontSize = 18.sp,
+            fontSize = 21.sp,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 50.dp, start = 20.dp, end = 20.dp)
@@ -108,17 +134,18 @@ fun quizScreen() {
 
         CircularSlider(
             modifier = Modifier
-                .fillMaxWidth(0.8f)
+                .fillMaxWidth(0.65f)
                 .fillMaxHeight(0.6f)
-                .align(Alignment.CenterHorizontally)
-                .size(300.dp),
+                .align(Alignment.CenterHorizontally),
+
             onChange = {
-                sliderPosition = it * 20f
+                sliderPosition = it * 12f
             },
             progressColor = Color(0xFFEBFC06),
             thumbColor = Color(0xFFEBFC06),
             colorStops = colorStopsProgress
         )
+
         Text(
             text = "$hourInteger hours",
             color = Color.White,
@@ -130,19 +157,14 @@ fun quizScreen() {
         )
 
         Button(
-            onClick = { /*TODO*/ },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF000000)),
+            onClick = { navController.navigate("quizResponse/$hourInteger") },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A0A05)),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(top = 50.dp)
-                .fillMaxWidth(.6f)
+                .padding(top = 60.dp)
+                .fillMaxWidth(.9f)
+                .fillMaxHeight(.5f)
                 .clip(shape = RoundedCornerShape(10.dp))
-                .border(
-                    BorderStroke(
-                        1.dp,
-                        brush = Brush.linearGradient(colorStops = colorStopsButton)
-                    ), RoundedCornerShape(100.dp)
-                )
         ) {
             Text(
                 text = "Continue",
@@ -156,8 +178,6 @@ fun quizScreen() {
     }
 
 }
-
-
 
 
     @OptIn(ExperimentalComposeUiApi::class, ExperimentalComposeUiApi::class)

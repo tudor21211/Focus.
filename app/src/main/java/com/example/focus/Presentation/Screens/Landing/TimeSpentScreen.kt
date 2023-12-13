@@ -124,7 +124,7 @@ fun timeSpentScreen(
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
                 content = {
-                    itemsIndexed(appInfoList) { index, appInfo ->
+                    itemsIndexed(appInfoList) { _, appInfo ->
                         val icon = appInfo.icon
                         val appName = appInfo.appName
                         val timeSpent = appInfo.timeSpent
@@ -139,7 +139,7 @@ fun timeSpentScreen(
                                     containerColor = Color(0xFF222429)
                                 ),
                                 shape = CardDefaults.elevatedShape,
-                                border = BorderStroke(1.dp, Color(0xFF101312))
+                                border = BorderStroke(1.dp, Color(0xFF101312)),
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
@@ -153,7 +153,7 @@ fun timeSpentScreen(
                                     Image(
                                         painter = rememberDrawablePainter(icon),
                                         contentDescription = null,
-                                        modifier = Modifier.size(50.dp)
+                                        modifier = Modifier.size(45.dp)
                                     )
                                     Text(
                                         text = appName.toString(),
@@ -166,7 +166,7 @@ fun timeSpentScreen(
                                     )
 
                                     Spacer(modifier = Modifier.weight(1f))
-                                    Text(text = appInfo.timeSpent, color = Color.White)
+                                    Text(text = appInfo.timeSpent, color = Color.White, fontSize = 15.sp)
                                 }
                             }
                         }
@@ -237,7 +237,7 @@ private fun dropdownMenu(
 
                                 val nameTimeMap = myApps.getTimeSpent(days)
                                 val updatedAppInfoList = appInfoList.map { appInfo ->
-                                    val timeSpent = myApps.formatMilliseconds(
+                                    val timeSpent = myApps.formatMillisecondsWithoutSeconds(
                                         nameTimeMap[appInfo.packageName] ?: 0
                                     )
                                     val timeSpentLong = myApps.formatMillisecondsLong(
