@@ -78,6 +78,10 @@ class GetAppsFunctions(
         val duration = Duration.ofMillis(milliseconds)
         val hours = duration.toHours()
         val minutes = duration.minusHours(hours).toMinutes()
+        val seconds = duration.minusHours(hours).minusMinutes(minutes).seconds
+        if (hours==0L && minutes==0L) {
+            return "$seconds s"
+        }
         return "$hours h : $minutes m"
     }
 
@@ -170,7 +174,6 @@ class GetAppsFunctions(
 
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun getTopFiveMostUsedApps(): List<AppInfoData> {
         val myApps = GetAppsFunctions(
@@ -178,7 +181,6 @@ class GetAppsFunctions(
             context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager,
             context
         )
-
         myApps.getInstalledApps()
         val nonSystemApps = myApps.getNonSystemApps()
 
@@ -197,6 +199,7 @@ class GetAppsFunctions(
 
         return appInfoList.sortedByDescending { it.timeSpentLong }.take(5)
     }
+
 
 
 }

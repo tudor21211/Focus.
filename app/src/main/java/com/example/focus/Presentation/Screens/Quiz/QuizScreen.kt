@@ -117,7 +117,6 @@ fun quizScreen(navController : NavController){
                         )
                     ) {
                         append("every day?")
-
                     }
                 append("\n\n Take a wild guess!")
                                         },

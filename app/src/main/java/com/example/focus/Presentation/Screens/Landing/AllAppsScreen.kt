@@ -79,6 +79,7 @@ fun allAppsScreen(context: Context, navController: NavController) {
             colors = CardDefaults.elevatedCardColors(containerColor = Color(0xFF323941)),
         ) {
             LazyColumn(
+                modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
                 content = {
                     items(appInfoList) { appInfo ->
                         val icon = appInfo.icon
@@ -92,7 +93,6 @@ fun allAppsScreen(context: Context, navController: NavController) {
                         }
                         OutlinedCard(
                             modifier = Modifier
-                                .fillMaxHeight(0.1f)
                                 .padding(3.dp),
                             colors =
                             CardDefaults.outlinedCardColors(
@@ -106,22 +106,21 @@ fun allAppsScreen(context: Context, navController: NavController) {
                                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(8.dp)
+                                    .padding(start = 14.dp)
                             ) {
                                 Image(
                                     painter = rememberDrawablePainter(icon),
                                     contentDescription = null,
-                                    modifier = Modifier.size(55.dp)
+                                    modifier = Modifier.size(45.dp)
                                 )
                                 Text(
                                     text = appName.toString(),
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White,
                                     fontSize = 15.sp,
-                                    modifier =
-                                    Modifier
-                                        // .fillMaxWidth()
+                                    modifier = Modifier
                                         .padding(10.dp)
+
                                 )
 
                                 Spacer(modifier = Modifier.weight(1f))
@@ -154,9 +153,7 @@ fun allAppsScreen(context: Context, navController: NavController) {
                                         icon,
                                         contentDescription =
                                         if (isAppRestricted.value) "UNBLOCK" else "BLOCK",
-                                        Modifier
-                                            .width(60.dp)
-                                            .height(60.dp),
+                                        Modifier.fillMaxSize(.8f),
                                         tint = Color.White
                                     )
                                 }

@@ -3,7 +3,6 @@ package com.example.focus.Presentation.Screens.Landing
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
-import android.preference.PreferenceManager
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -17,11 +16,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import com.example.focus.Model.Permissions.PermissionFunctions
 import com.example.focus.Presentation.IndividualPermissions.accessibilityPermission
 import com.example.focus.Presentation.IndividualPermissions.displayOverOtherAppsPermission
 import com.example.focus.Presentation.IndividualPermissions.usageAccessPermission
 import com.example.focus.Presentation.Screens.MainPage.mainPageScreen
+import com.example.focus.Presentation.Screens.Quiz.quizAdvice
 import com.example.focus.Presentation.Screens.Quiz.quizResponse
 import com.example.focus.Presentation.Screens.Quiz.quizScreen
 
@@ -38,9 +37,11 @@ fun SetupNavGraph(
 ) {
     val sharedPreferences = LocalContext.current.getSharedPreferences("TutorialPermissionsFinished", Context.MODE_PRIVATE)
     val tutorialPermissionsFinished = sharedPreferences.getBoolean("TutorialPermissionsFinished", false)
+    val quizFinished = sharedPreferences.getBoolean("QuizFinished", false)
+    println("quizFinished: $quizFinished")
     println("TutorialPermissionsFinished: $tutorialPermissionsFinished")
 
-    AnimatedNavHost(navController = navController, startDestination = Screen.QuizResponse.route) {
+    AnimatedNavHost(navController = navController, if (!quizFinished) Screen.LandingPage.route else Screen.AllAppsScreen.route) {
 
         composable(route = Screen.LandingPage.route,
             exitTransition = {
@@ -122,6 +123,15 @@ fun SetupNavGraph(
             ) {
             println("Argument is :" + it.arguments?.getFloat("hours").toString())
             quizResponse(navController, it.arguments?.getFloat("hours")!!)
+
+
         }
+        composable(route = Screen.QuizAdvice.route,
+            arguments = listOf(navArgument("averageTimeSpent") {
+                type = NavType.FloatType
+            })) {
+            quizAdvice(navController, it.arguments?.getFloat("averageTimeSpent")!!, sharedPreferences)
+        }
+
     }
 }

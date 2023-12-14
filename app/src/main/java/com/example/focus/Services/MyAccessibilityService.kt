@@ -34,29 +34,33 @@ class MyAccessibilityService : AccessibilityService() {
 
     }
 
+
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
-        var packageName = event.packageName.toString()
+        var packageName = event.packageName?.toString()
         var accessNodeInfo = event.source?.let { AccessibilityNodeInfo(it) }
+
         accessNodeInfo?.refresh()
         var idResourceName = accessNodeInfo?.viewIdResourceName
 
-        println("resource name is $idResourceName")
+
+
         if (packageName == "com.instagram.android") {
+
             if (idResourceName == "com.instagram.android:id/scrubber" || idResourceName == "com.instagram.android:id/clips_viewer_view_pager") {
 
                 val home = Intent(Intent.ACTION_MAIN)
                 home.addCategory(Intent.CATEGORY_HOME)
                 home.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(home)
-
             }
+
         }
 
         if (packageName == "com.google.android.youtube") {
-            if (idResourceName == "com.google.android.youtube:id/reel_progress_bar" || idResourceName == "com.google.android.youtube:id/reel_recycler") {
 
+            if (idResourceName == "com.google.android.youtube:id/reel_progress_bar" || idResourceName == "com.google.android.youtube:id/reel_recycler") {
 
                 val home = Intent(Intent.ACTION_MAIN)
                 home.addCategory(Intent.CATEGORY_HOME)
@@ -65,6 +69,8 @@ class MyAccessibilityService : AccessibilityService() {
 
             }
         }
+
+
 
         if (packageName in getRestrictedApps() && !isOverlayShown) {
             showRestrictedView()
@@ -79,6 +85,7 @@ class MyAccessibilityService : AccessibilityService() {
         if (isOverlayShown && packageName == "com.android.launcher") {
             removeViewImmediately()
         }
+
     }
 
     private fun removeViewImmediately() {
@@ -106,6 +113,7 @@ class MyAccessibilityService : AccessibilityService() {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT
             )
+
             params.gravity = Gravity.CENTER
 
             restrictedView = RestrictedAppView(this)
@@ -159,5 +167,6 @@ class MyAccessibilityService : AccessibilityService() {
         this.serviceInfo = info
 
     }
+
 
 }
