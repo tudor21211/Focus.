@@ -17,6 +17,6 @@ sealed class Screen(val route: String) {
     object QuizScreen : Screen(route = "quizScreen")
     object QuizResponse : Screen(route = "quizResponse/{hours}")
     object QuizAdvice : Screen(route = "quizAdvice/{averageTimeSpent}")
-
+    object AppNavigation : Screen(route = "AppNavigation")
 
 }

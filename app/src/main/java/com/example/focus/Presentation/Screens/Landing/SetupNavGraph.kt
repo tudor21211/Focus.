@@ -19,6 +19,7 @@ import androidx.navigation.navArgument
 import com.example.focus.Presentation.IndividualPermissions.accessibilityPermission
 import com.example.focus.Presentation.IndividualPermissions.displayOverOtherAppsPermission
 import com.example.focus.Presentation.IndividualPermissions.usageAccessPermission
+import com.example.focus.Presentation.Screens.MainPage.AppNavigation
 import com.example.focus.Presentation.Screens.MainPage.mainPageScreen
 import com.example.focus.Presentation.Screens.Quiz.quizAdvice
 import com.example.focus.Presentation.Screens.Quiz.quizResponse
@@ -41,7 +42,7 @@ fun SetupNavGraph(
     println("quizFinished: $quizFinished")
     println("TutorialPermissionsFinished: $tutorialPermissionsFinished")
 
-    AnimatedNavHost(navController = navController, if (!quizFinished) Screen.LandingPage.route else Screen.AllAppsScreen.route) {
+    AnimatedNavHost(navController = navController, if (!quizFinished) Screen.LandingPage.route else  Screen.AppNavigation.route) {
 
         composable(route = Screen.LandingPage.route,
             exitTransition = {
@@ -132,6 +133,12 @@ fun SetupNavGraph(
             })) {
             quizAdvice(navController, it.arguments?.getFloat("averageTimeSpent")!!, sharedPreferences)
         }
+
+        composable(route = Screen.AppNavigation.route) {
+            AppNavigation()
+        }
+
+
 
     }
 }

@@ -83,7 +83,7 @@ fun quizAdvice(
             onClick = {
                 sharedPreferences.edit().putBoolean("QuizFinished", true).apply()
                 println("Quiz finished: ${sharedPreferences.getBoolean("QuizFinished", false)}")
-                navController.navigate(Screen.AllAppsScreen.route)
+                navController.navigate(Screen.AppNavigation.route)
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A0A05)),
             modifier = Modifier

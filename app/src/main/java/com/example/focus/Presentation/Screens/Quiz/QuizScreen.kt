@@ -1,6 +1,7 @@
 package com.example.focus.Presentation.Screens.Quiz
 
 import android.view.MotionEvent
+import android.widget.Spinner
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background

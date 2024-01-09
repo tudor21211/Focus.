@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import com.example.focus.Model.Permissions.PermissionFunctions
 import com.example.focus.Presentation.Screens.Landing.Screen
 import com.example.focus.Presentation.Screens.Landing.SetupNavGraph
+import com.example.focus.Presentation.Screens.MainPage.MainMenuActivity
 
 import com.example.focus.ui.theme.FocusTheme
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
