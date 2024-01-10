@@ -1,5 +1,9 @@
 package com.example.focus.Presentation.Screens.MainPage
 
+import android.app.usage.UsageStatsManager
+import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,19 +31,24 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.focus.Model.Permissions.GetAppsFunctions
 import com.example.focus.Presentation.Screens.Landing.Screen
 import com.example.focus.R
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun mainPageScreen(navController: NavController) {
 
     val systemUiController = rememberSystemUiController()
+    val context = LocalContext.current
+
     val colorStops = arrayOf(
         0.2f to Color(0xFF0E0653),
         0.5f to Color(0xFF090341),
@@ -54,6 +63,18 @@ fun mainPageScreen(navController: NavController) {
         width = 2f,
         pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
     )
+
+    val functions = GetAppsFunctions(
+        context.packageManager,
+        context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager,
+        context
+    )
+    val time = functions.getTimeSpent(0)
+    var totalTimeInMillis = functions.getTotalTimeSpent(time)
+
+    functions.getInstalledApps()
+
+    val launchCount = functions.allAppsLaunchTracker(functions.getNonSystemApps())
 
     Column(
         modifier = Modifier
@@ -80,16 +101,25 @@ fun mainPageScreen(navController: NavController) {
                             shape = RoundedCornerShape(15.dp)
                         )
                         .fillMaxWidth(.5f)
-                        .fillMaxHeight(.8f),
+                        .fillMaxHeight(.6f),
                     colors = CardDefaults.cardColors(
                         containerColor = Color(0xFF16288A)
                     )
                 ) {
                     Text(
-                        text = "Apps Launch Tracker",
+                        text = "Apps Launch Tracker ",
                         modifier = Modifier.padding(10.dp),
                         fontFamily = FontFamily(Font(R.font.opensans_res))
                     )
+
+                    Text(
+                        text = "$launchCount ",
+                        modifier = Modifier.padding(10.dp),
+                        fontFamily = FontFamily(Font(R.font.opensans_res)),
+                        fontSize = 30.sp
+                    )
+
+
                 }
 
                 Card(
@@ -100,15 +130,22 @@ fun mainPageScreen(navController: NavController) {
                             shape = RoundedCornerShape(15.dp)
                         )
                         .fillMaxWidth(1f)
-                        .fillMaxHeight(.8f),
+                        .fillMaxHeight(.6f),
                     colors = CardDefaults.cardColors(
                         containerColor = Color(0xFF0E1B5F)
                     )
                 ) {
                     Text(
-                        text = "Usage Stats",
+                        text = "Screen Time ",
                         modifier = Modifier.padding(10.dp),
                         fontFamily = FontFamily(Font(R.font.opensans_res))
+                    )
+
+                    Text(
+                        text = totalTimeInMillis,
+                        modifier = Modifier.padding(10.dp),
+                        fontFamily = FontFamily(Font(R.font.opensans_res)),
+                        fontSize = 30.sp
                     )
                 }
             }

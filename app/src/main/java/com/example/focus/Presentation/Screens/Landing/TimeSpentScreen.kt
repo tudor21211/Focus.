@@ -32,6 +32,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +48,7 @@ import com.example.focus.Data.AppInfoData
 import com.example.focus.Model.Permissions.GetAppsFunctions
 import com.example.focus.Presentation.Screens.MainPage.ScreensMainPage
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -56,6 +58,12 @@ fun timeSpentScreen(
     navController: NavController
 ) {
 
+    val systemUiController = rememberSystemUiController()
+
+    SideEffect {
+        systemUiController.setSystemBarsColor(Color(0xFF111416))
+        systemUiController.setNavigationBarColor(Color.Black)
+    }
 
     val appInfoList = remember {
         GetAppsFunctions(

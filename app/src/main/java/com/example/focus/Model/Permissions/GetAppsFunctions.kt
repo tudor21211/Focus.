@@ -1,5 +1,6 @@
 package com.example.focus.Model.Permissions
 
+import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.pm.ApplicationInfo
@@ -13,7 +14,6 @@ import com.example.focus.Data.AppInfoDataNoTime
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.util.Calendar
-import java.util.concurrent.TimeUnit
 
 class GetAppsFunctions(
     private val packageManager: PackageManager,
@@ -22,11 +22,11 @@ class GetAppsFunctions(
 ) {
     private var nonSystemApps: List<ApplicationInfo> = listOf()
 
-    private fun getNonSystemApps(): List<ApplicationInfo> {
+     fun getNonSystemApps(): List<ApplicationInfo> {
         return nonSystemApps
     }
 
-    private fun getInstalledApps() {
+     fun getInstalledApps() {
         var listInstalledApps: List<ApplicationInfo> = packageManager.getInstalledApplications(
             PackageManager.GET_ACTIVITIES
         )
@@ -35,6 +35,8 @@ class GetAppsFunctions(
             (appInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) || (appInfo.packageName == "com.google.android.youtube") || (appInfo.packageName == "com.android.chrome")
         }
     }
+
+
 
 
     fun getTimeSpent(periodOfTimeInDays: Int): Map<String, Long> {
@@ -200,6 +202,42 @@ class GetAppsFunctions(
         return appInfoList.sortedByDescending { it.timeSpentLong }.take(5)
     }
 
+    fun getAppLaunchCount (packageName : String) : Int {
+
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR,-1)
+
+        val endTime = System.currentTimeMillis()
+        val startTime = calendar.timeInMillis
+
+        val usageStats = usageStatsManager.queryUsageStats(
+            UsageStatsManager.INTERVAL_DAILY,
+            startTime,
+            endTime
+        )
+
+        var launchCount = 0
+        val mLaunchCount = UsageStats::class.java.getDeclaredField("mLaunchCount")
+
+
+        for (usageStat in usageStats) {
+            if (usageStat.packageName == packageName)
+            launchCount = mLaunchCount[usageStat] as Int
+        }
+        return launchCount
+
+    }
+
+
+    fun allAppsLaunchTracker ( nonSystemApps : List<ApplicationInfo>) : Int {
+
+        var totalLaunches = 0
+
+        for (info in nonSystemApps) {
+            totalLaunches += getAppLaunchCount(info.packageName)
+        }
+        return totalLaunches
+    }
 
 
 }

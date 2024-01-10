@@ -66,7 +66,6 @@ import kotlin.math.sqrt
 
 @Composable
 fun quizScreen(navController : NavController){
-    val nav = 5
     val systemUiController = rememberSystemUiController()
     val colorStops = arrayOf(
         0.2f to Color(0xFF6353F3),
