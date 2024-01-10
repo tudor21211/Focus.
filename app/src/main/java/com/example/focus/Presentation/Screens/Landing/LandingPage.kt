@@ -119,6 +119,7 @@ fun landingPage(navController: NavController) {
 
             Button(
                 onClick = {
+                    println("tutorial permission $tutorialPermissionsFinished")
                     if (!tutorialPermissionsFinished) navController.navigate(Screen.PermissionsScreen.route)
                           else navController.navigate(Screen.QuizScreen.route)
                           },

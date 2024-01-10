@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.focus.Data.AppInfoData
 import com.example.focus.Model.Permissions.GetAppsFunctions
+import com.example.focus.Presentation.Screens.MainPage.ScreensMainPage
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -81,8 +82,8 @@ fun timeSpentScreen(
                     .size(30.dp),
 
                 onClick = {
-                    navController.navigate(Screen.AllAppsScreen.route) {
-                        popUpTo(Screen.AllAppsScreen.route) {// dam remove din backstack la screen dupa ce am navigat inapoi la all apps screen
+                    navController.navigate(ScreensMainPage.MainPageScreen.name) {
+                        popUpTo(ScreensMainPage.MainPageScreen.name) {// dam remove din backstack la screen dupa ce am navigat inapoi la all apps screen
                             inclusive = true
                         }
                     }

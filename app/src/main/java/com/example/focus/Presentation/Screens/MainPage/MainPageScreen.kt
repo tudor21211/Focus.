@@ -1,37 +1,43 @@
 package com.example.focus.Presentation.Screens.MainPage
 
-import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.focus.Presentation.Screens.Landing.Screen
+import com.example.focus.R
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun mainPageScreen() {
+fun mainPageScreen(navController: NavController) {
 
     val systemUiController = rememberSystemUiController()
     val colorStops = arrayOf(
@@ -44,15 +50,154 @@ fun mainPageScreen() {
         systemUiController.setSystemBarsColor(Color(0xFF0E0653))
     }
 
+    val stroke = Stroke(
+        width = 2f,
+        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+    )
 
     Column(
         modifier = Modifier
-        .background(Brush.linearGradient(colorStops = colorStops))
-        .fillMaxSize(),
+            .background(Brush.linearGradient(colorStops = colorStops))
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement =  Arrangement.Center) {
+    ) {
 
-        Text (text = "Home screen", color = Color.White, fontSize = 30.sp )
+        Spacer(modifier = Modifier.fillMaxHeight(.15f))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(.95f)
+                .fillMaxHeight(.3f)
+        ) {
+            Row(
+
+            ) {
+                Card(
+                    modifier = Modifier
+                        .padding(end = 4.dp)
+                        .border(
+                            border = BorderStroke(1.dp, Color.White),
+                            shape = RoundedCornerShape(15.dp)
+                        )
+                        .fillMaxWidth(.5f)
+                        .fillMaxHeight(.8f),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFF16288A)
+                    )
+                ) {
+                    Text(
+                        text = "Apps Launch Tracker",
+                        modifier = Modifier.padding(10.dp),
+                        fontFamily = FontFamily(Font(R.font.opensans_res))
+                    )
+                }
+
+                Card(
+                    modifier = Modifier
+                        .padding(start = 4.dp)
+                        .border(
+                            border = BorderStroke(1.dp, Color.White),
+                            shape = RoundedCornerShape(15.dp)
+                        )
+                        .fillMaxWidth(1f)
+                        .fillMaxHeight(.8f),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFF0E1B5F)
+                    )
+                ) {
+                    Text(
+                        text = "Usage Stats",
+                        modifier = Modifier.padding(10.dp),
+                        fontFamily = FontFamily(Font(R.font.opensans_res))
+                    )
+                }
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .drawBehind {
+                    drawRoundRect(
+                        color = Color.White,
+                        style = stroke,
+                        cornerRadius = CornerRadius(15.dp.toPx())
+                    )
+                }
+
+                .fillMaxWidth(.95f)
+                .fillMaxHeight(.25f)
+        ) {
+            Column(
+                Modifier.align(Alignment.TopCenter),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Block blacklisted apps", modifier = Modifier
+                        .padding(10.dp),
+                    fontSize = 20.sp, fontFamily = FontFamily(Font(R.font.opensans_res))
+                )
+                Row(modifier = Modifier.padding(top = 5.dp)) {
+                    Button(
+                        onClick = { /*TODO*/ },
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(Color(0xFF0649AD)),
+                        modifier = Modifier.padding(end = 25.dp)
+                    ) {
+                        Text(text = "Start", color = Color.White)
+                    }
+                    Button(
+                        onClick = { try {
+                            navController.navigate(Screen.AllAppsScreen.route)
+                        }catch (e : Exception) {
+                            println("Cant go to because : " + e)
+                        }
+                                  },
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(Color(0xFF0649AD))
+                    ) {
+                        Text(text = "Manage blocklist", color = Color.White)
+                    }
+                }
+            }
+
+        }
+
+        Spacer(modifier = Modifier.fillMaxHeight(.07f))
+
+        Box(
+            modifier = Modifier
+                .drawBehind {
+                    drawRoundRect(
+                        color = Color.White,
+                        style = stroke,
+                        cornerRadius = CornerRadius(15.dp.toPx())
+                    )
+                }
+
+                .fillMaxWidth(.95f)
+                .fillMaxHeight(.30f)
+        ) {
+            Column(
+                Modifier.align(Alignment.TopCenter),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Restrict time consuming apps", modifier = Modifier
+                        .padding(5.dp),
+                    fontSize = 20.sp, fontFamily = FontFamily(Font(R.font.opensans_res))
+                )
+                Row(modifier = Modifier.padding(top = 5.dp)) {
+                    Button(
+                        onClick = { /*TODO*/ },
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(Color(0xFF0649AD))
+                    ) {
+                        Text(text = "Manage", color = Color.White)
+                    }
+                }
+            }
+        }
+
     }
 
 

@@ -1,9 +1,12 @@
 package com.example.focus.Presentation.Screens.MainPage
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -14,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -24,7 +28,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.focus.Presentation.Screens.Landing.Screen
+import com.example.focus.Presentation.Screens.Landing.allAppsScreen
+import com.example.focus.Presentation.Screens.Landing.timeSpentScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation() {
@@ -36,13 +43,13 @@ fun AppNavigation() {
         bottomBar =  {
             NavigationBar (
                 containerColor = Color.Black,
+
             ) {
                 val navBackstackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackstackEntry?.destination
 
                 listOfNavItems.forEach {navItem ->
                     NavigationBarItem(
-                        modifier = Modifier.fillMaxSize(),
                         selected = currentDestination?.hierarchy?.any { it.route == navItem.route } == true,
                         onClick = {
                                   navController.navigate(navItem.route) {
@@ -71,19 +78,24 @@ fun AppNavigation() {
             composable(
                 route = ScreensMainPage.MainPageScreen.name
             ) {
-                mainPageScreen()
-            }
-
-            composable(
-                route = ScreensMainPage.StatsScreen.name
-            ) {
-                statsScreen()
+                mainPageScreen(navController)
             }
 
             composable(
                 route = ScreensMainPage.Settings.name
             ) {
                 settingsScreen()
+            }
+            composable(
+                route = ScreensMainPage.AllAppsScreen.name
+            ){
+                allAppsScreen(context = LocalContext.current, navController = navController )
+            }
+
+            composable (
+                route = ScreensMainPage.TimeSpentScreen.name
+            ) {
+                timeSpentScreen(context = LocalContext.current, timeInterval = 1 , navController = navController )
             }
         }
     }

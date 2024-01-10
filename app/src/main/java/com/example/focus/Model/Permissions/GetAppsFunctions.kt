@@ -32,7 +32,7 @@ class GetAppsFunctions(
         )
 
         nonSystemApps = listInstalledApps.filter { appInfo ->
-            (appInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) || (appInfo.packageName == "com.google.android.youtube")
+            (appInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) || (appInfo.packageName == "com.google.android.youtube") || (appInfo.packageName == "com.android.chrome")
         }
     }
 

@@ -42,7 +42,7 @@ fun SetupNavGraph(
     println("quizFinished: $quizFinished")
     println("TutorialPermissionsFinished: $tutorialPermissionsFinished")
 
-    AnimatedNavHost(navController = navController, if (!quizFinished) Screen.LandingPage.route else  Screen.AppNavigation.route) {
+    AnimatedNavHost(navController = navController, if (!quizFinished) Screen.LandingPage.route else Screen.AppNavigation.route ) {
 
         composable(route = Screen.LandingPage.route,
             exitTransition = {
@@ -111,7 +111,7 @@ fun SetupNavGraph(
             displayOverOtherAppsPermission()
         }
         composable(route = Screen.MainPageScreen.route) {
-            mainPageScreen()
+            mainPageScreen(navController)
         }
         composable(route = Screen.QuizScreen.route) {
             quizScreen(navController)

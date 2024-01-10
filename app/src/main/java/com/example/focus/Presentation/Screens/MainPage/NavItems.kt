@@ -22,7 +22,7 @@ val listOfNavItems = listOf(
     NavItem(
         label = "Stats",
         icon = Icons.Default.DateRange,
-        route = ScreensMainPage.StatsScreen.name
+        route = ScreensMainPage.TimeSpentScreen.name
     ),
     NavItem (
         label = "Settings",
