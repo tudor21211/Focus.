@@ -97,6 +97,12 @@ fun AppNavigation() {
             ) {
                 timeSpentScreen(context = LocalContext.current, timeInterval = 1 , navController = navController )
             }
+
+            composable(
+                route = ScreensMainPage.TimeConsumingApps.name
+            ) {
+                timeConsumingApps()
+            }
         }
     }
 

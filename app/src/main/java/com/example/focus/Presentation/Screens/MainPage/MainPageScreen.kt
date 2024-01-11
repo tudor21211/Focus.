@@ -225,7 +225,7 @@ fun mainPageScreen(navController: NavController) {
                 )
                 Row(modifier = Modifier.padding(top = 5.dp)) {
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = { navController.navigate(ScreensMainPage.TimeConsumingApps.name) },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(Color(0xFF0649AD))
                     ) {

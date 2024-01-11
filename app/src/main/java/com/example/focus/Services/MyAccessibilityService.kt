@@ -38,7 +38,7 @@ class MyAccessibilityService : AccessibilityService() {
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
-        var packageName = event.packageName?.toString()
+        var packageName = event.packageName.toString()
         var accessNodeInfo = event.source?.let { AccessibilityNodeInfo(it) }
 
         accessNodeInfo?.refresh()

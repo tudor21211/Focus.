@@ -5,6 +5,7 @@ enum class ScreensMainPage {
     MainPageScreen,
     Settings,
     AllAppsScreen,
-    TimeSpentScreen
+    TimeSpentScreen,
+    TimeConsumingApps
 
 }
