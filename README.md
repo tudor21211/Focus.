@@ -34,13 +34,18 @@ Considering the growing use of phones by children as young as 6 years old, this 
 
 - **Site Restriction:**
   - The option to restrict access to specific sites added by the user or totally restricting access to well-known sites that have a bad reputation.
-![WhatsApp Image 2024-01-11 at 18 40 27](https://github.com/tudor21211/Focus./assets/73787063/462482b3-16b3-419f-9d2e-81f6767d3737)
-![WhatsApp Image 2024-01-11 at 00 22 52](https://github.com/tudor21211/Focus./assets/73787063/3c7f17fe-b385-4cdb-b0db-f899e7062176)
-![WhatsApp Image 2024-01-11 at 00 22 52 (1)](https://github.com/tudor21211/Focus./assets/73787063/e1419901-5a78-4cc3-bd9f-ac31ce96ed9d)
-![WhatsApp Image 2024-01-11 at 00 22 52 (2)](https://github.com/tudor21211/Focus./assets/73787063/a9d6fd34-0331-428a-b5d4-bc2385fb46bd)
-![WhatsApp Image 2024-01-11 at 00 22 52 (3)](https://github.com/tudor21211/Focus./assets/73787063/51b95db8-d865-4777-b224-ae07d330812b)
-![WhatsApp Image 2024-01-11 at 00 23 25](https://github.com/tudor21211/Focus./assets/73787063/6025684c-d1ca-4d8b-99cb-980d85dce494)
-![WhatsApp Image 2024-01-11 at 18 46 25](https://github.com/tudor21211/Focus./assets/73787063/4d3b5684-7502-4620-bd46-c68823901ef9)
+
+![WhatsApp Image 2024-01-15 at 23 22 56 (1)](https://github.com/tudor21211/Focus./assets/73787063/1bccaaf0-0031-4c29-95af-2ddcff023e5c)
+![WhatsApp Image 2024-01-11 at 18 40 27](https://github.com/tudor21211/Focus./assets/73787063/71f97c53-983a-43bf-b37c-32eda2a44750)
+![WhatsApp Image 2024-01-11 at 00 22 52](https://github.com/tudor21211/Focus./assets/73787063/55122889-35ca-45dc-9e34-ae6d7a5fc44e)
+![WhatsApp Image 2024-01-11 at 00 22 52 (1)](https://github.com/tudor21211/Focus./assets/73787063/f505a26e-b96e-46c0-b9c1-13c996fa36af)
+![WhatsApp Image 2024-01-11 at 00 22 52 (2)](https://github.com/tudor21211/Focus./assets/73787063/5794b580-0891-4b70-b537-5623a7c7f572)
+![WhatsApp Image 2024-01-11 at 00 22 52 (3)](https://github.com/tudor21211/Focus./assets/73787063/48763144-6e25-4099-97bb-db79603d623b)
+![WhatsApp Image 2024-01-11 at 00 23 25](https://github.com/tudor21211/Focus./assets/73787063/5cc09fea-d620-424e-b7c2-f3056827f11b)
+![WhatsApp Image 2024-01-11 at 18 46 25](https://github.com/tudor21211/Focus./assets/73787063/698fa9c8-982b-4b43-83eb-111c5a49cb5c)
+![WhatsApp Image 2024-01-11 at 18 44 43](https://github.com/tudor21211/Focus./assets/73787063/19e457dc-acbb-418a-a0ca-0a2d4e602f3b)
+
+
 
 
 
