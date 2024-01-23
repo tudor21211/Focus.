@@ -2,9 +2,6 @@ package com.example.focus.Services
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
-import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
-import android.content.ComponentName
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
@@ -20,9 +17,10 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
+import com.example.focus.Data.RestrictedAppsManager
 import com.example.focus.Data.RestrictedAppsManager.getRestrictedApps
+import com.example.focus.Data.UserPreferences
 import com.example.focus.Presentation.Screens.Landing.RestrictedAppView
-
 
 class MyAccessibilityService : AccessibilityService() {
     private var windowManager: WindowManager? = null
@@ -94,36 +92,35 @@ class MyAccessibilityService : AccessibilityService() {
 
         if (browserList.contains(packageName)) {
             try {
-                println ("Lista browsere : $browserList")
                 if (AccessibilityEvent.eventTypeToString(event.eventType).contains("WINDOW")) {
                     var nodeEventInfo = event.source
                     if (nodeEventInfo != null) {
-                        getUrls(nodeEventInfo)
+                        getAllWindowContent(nodeEventInfo)
                     }
                 }
-            }catch (ex : Exception) {
+            } catch (ex: Exception) {
                 ex.printStackTrace()
             }
         }
 
-        if(packageName == "com.android.chrome") {
+        if (packageName == "com.android.chrome") {
 
-                var findUrlBar =
-                    accessNodeInfo?.findAccessibilityNodeInfosByViewId("com.android.chrome:id/url_bar")
-                if (findUrlBar !=null && findUrlBar.isNotEmpty()) {
-                    val text = findUrlBar?.get(0)?.text.toString()
-                    println("BAR ID TEXT IS : $text")
-                    try {
-                        if (text.contains("digi24")) {
-                            val url = "https://www.google.com/"
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                            intent.flags = FLAG_ACTIVITY_NEW_TASK
-                            startActivity(intent)
-                        }
-                    }catch (e : Exception) {
-                        e.printStackTrace()
+            var findUrlBar =
+                accessNodeInfo?.findAccessibilityNodeInfosByViewId("com.android.chrome:id/url_bar")
+            if (!findUrlBar.isNullOrEmpty()) {
+                val text = findUrlBar?.get(0)?.text.toString()
+                try {
+                    val restrictedUrl = RestrictedAppsManager.getRestrictedUrl()
+                    for (t in restrictedUrl) if (text.contains(t)) {
+                        val url = UserPreferences.getNavigateUrl()
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        intent.flags = FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
+            }
 
         }
 
@@ -147,7 +144,6 @@ class MyAccessibilityService : AccessibilityService() {
     private fun showRestrictedView() {
         try {
             windowManager = getSystemService(WINDOW_SERVICE) as WindowManager?
-            println("INTRAT AICI")
             val params = WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
@@ -188,11 +184,10 @@ class MyAccessibilityService : AccessibilityService() {
     }
 
 
+    private val BROWSERS: String = "com.android.chrome"
+    private val browserList: List<String> = BROWSERS.split(",\\s*")
 
-    private val BROWSERS : String = "com.android.chrome"
-    private val browserList : List<String> = BROWSERS.split(",\\s*")
-
-    private fun getUrls(info: AccessibilityNodeInfo) {
+    private fun getAllWindowContent(info: AccessibilityNodeInfo) {
 
         try {
 
@@ -200,8 +195,9 @@ class MyAccessibilityService : AccessibilityService() {
 
             if (info.text != null && info.text.isNotEmpty()) {
                 var capturedText = info.text.toString()
-                println("TEXT CAPTURAT : $capturedText")
-                if (capturedText.contains("nu ai mai")) { // DE EDITAT CU KEYWORDS INTRODUSE DE USERI SI CREAT BLACKLIST -> NAVIGAT INTR_UN WINDOW SEPARAT?
+                var blacklistedKeywords = RestrictedAppsManager.getRestrictedKeywords()
+                for (word in blacklistedKeywords)
+                    if (capturedText.contains(word)) { // DE EDITAT CU KEYWORDS INTRODUSE DE USERI SI CREAT BLACKLIST -> NAVIGAT INTR_UN WINDOW SEPARAT?
                     val url = "https://www.google.com/"
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     intent.flags = FLAG_ACTIVITY_NEW_TASK
@@ -210,10 +206,9 @@ class MyAccessibilityService : AccessibilityService() {
 
 
             }
-            if (info.childCount > 0)
-            for (i in 0 until info.childCount) {
+            if (info.childCount > 0) for (i in 0 until info.childCount) {
                 var child = info.getChild(i)
-                getUrls(child)
+                getAllWindowContent(child)
             }
 
         } catch (ex: Exception) {
@@ -221,7 +216,6 @@ class MyAccessibilityService : AccessibilityService() {
             ex.printStackTrace()
         }
     }
-
 
 
 }

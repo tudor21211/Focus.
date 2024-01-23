@@ -72,7 +72,7 @@ fun AppNavigation() {
 
     ) { paddingValues ->
         NavHost(navController = navController,
-            startDestination = ScreensMainPage.MainPageScreen.name,
+            startDestination = ScreensMainPage.Settings.name,
             modifier = Modifier.padding(paddingValues))
         {
             composable(
