@@ -1,5 +1,6 @@
 package com.example.focus.Model.Permissions
 
+import android.annotation.SuppressLint
 import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
 import android.content.Context
@@ -202,6 +203,7 @@ class GetAppsFunctions(
         return appInfoList.sortedByDescending { it.timeSpentLong }.take(5)
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun getAppLaunchCount (packageName : String) : Int {
 
         val calendar = Calendar.getInstance()
