@@ -1,6 +1,7 @@
 package com.example.focus.Presentation.Screens.MainPage
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -25,8 +26,8 @@ val listOfNavItems = listOf(
         route = ScreensMainPage.TimeSpentScreen.name
     ),
     NavItem (
-        label = "Settings",
-        icon = Icons.Default.Settings,
-        route = ScreensMainPage.Settings.name
+        label = "Web block",
+        icon = Icons.Default.AddCircle,
+        route = ScreensMainPage.Webblock.name
     )
 )

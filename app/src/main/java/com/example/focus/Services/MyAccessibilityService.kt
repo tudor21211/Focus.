@@ -17,6 +17,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.text.toLowerCase
 import com.example.focus.Data.RestrictedAppsManager
 import com.example.focus.Data.RestrictedAppsManager.getRestrictedApps
 import com.example.focus.Data.UserPreferences
@@ -186,7 +187,7 @@ class MyAccessibilityService : AccessibilityService() {
 
     private val BROWSERS: String = "com.android.chrome"
     private val browserList: List<String> = BROWSERS.split(",\\s*")
-
+    private var blacklistedKeywords = RestrictedAppsManager.getRestrictedKeywords()
     private fun getAllWindowContent(info: AccessibilityNodeInfo) {
 
         try {
@@ -194,16 +195,16 @@ class MyAccessibilityService : AccessibilityService() {
             if (info == null) return;
 
             if (info.text != null && info.text.isNotEmpty()) {
-                var capturedText = info.text.toString()
-                var blacklistedKeywords = RestrictedAppsManager.getRestrictedKeywords()
-                for (word in blacklistedKeywords)
-                    if (capturedText.contains(word)) { // DE EDITAT CU KEYWORDS INTRODUSE DE USERI SI CREAT BLACKLIST -> NAVIGAT INTR_UN WINDOW SEPARAT?
-                    val url = "https://www.google.com/"
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    intent.flags = FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                }
 
+                var capturedText = info.text.toString().toLowerCase()
+                println("BLACKLIST IS : $blacklistedKeywords")
+                for (word in blacklistedKeywords)
+                    if (capturedText.contains(word)) {
+                        val url = UserPreferences.getNavigateUrl()
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        intent.flags = FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                }
 
             }
             if (info.childCount > 0) for (i in 0 until info.childCount) {

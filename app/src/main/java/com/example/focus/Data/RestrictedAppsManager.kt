@@ -37,13 +37,13 @@ object RestrictedAppsManager {
         return listOfRestrictedUrls
     }
 
-    fun addRestrictedKeyord(keyword : String) {
-        listOfRestrictedUrls.add(keyword)
+    fun addRestrictedKeyword(keyword : String) {
+        listOfRestrictedKeywords.add(keyword)
     }
 
     fun removeRestrictedKeyword(keyword:String)
     {
-        listOfRestrictedUrls.remove(keyword)
+        listOfRestrictedKeywords.remove(keyword)
     }
 
     fun getRestrictedKeywords() : List<String> {

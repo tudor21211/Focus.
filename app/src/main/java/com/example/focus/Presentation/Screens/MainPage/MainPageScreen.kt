@@ -106,18 +106,27 @@ fun mainPageScreen(navController: NavController) {
                         containerColor = Color(0xFF16288A)
                     )
                 ) {
-                    Text(
-                        text = "Apps Launch Tracker ",
-                        modifier = Modifier.padding(10.dp),
-                        fontFamily = FontFamily(Font(R.font.opensans_res))
-                    )
 
-                    Text(
-                        text = "$launchCount ",
-                        modifier = Modifier.padding(10.dp),
-                        fontFamily = FontFamily(Font(R.font.opensans_res)),
-                        fontSize = 30.sp
-                    )
+                        Text(
+                            text = "Apps Launch Tracker ",
+                            modifier = Modifier.padding(10.dp),
+                            fontFamily = FontFamily(Font(R.font.opensans_res))
+                        )
+                    Row() {
+                        Text(
+                            text = "$launchCount ",
+                            modifier = Modifier.padding(10.dp),
+                            fontFamily = FontFamily(Font(R.font.opensans_res)),
+                            fontSize = 30.sp
+                        )
+                        Text(
+                            text = "launches /24h" ,
+                            fontFamily = FontFamily(Font(R.font.opensans_res)),
+                            modifier = Modifier.padding(start = 20.dp,top = 55.dp),
+                            fontSize = 12.sp
+
+                        )
+                    }
 
 
                 }

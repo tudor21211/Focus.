@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,9 +29,11 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -39,7 +42,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -99,8 +104,6 @@ fun timeSpentScreen(
             ) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = "Go back", tint = Color.White)
             }
-            Spacer(modifier = Modifier.weight(1f))
-
 
         }
 
@@ -140,7 +143,7 @@ fun timeSpentScreen(
                         val timeSpentLong = appInfo.timeSpentLong
                         val packageName = appInfo.packageName
 
-                        if (timeSpent != "0 h : 0 m : 0 s") {
+                        if (timeSpent != "0 s") {
                             OutlinedCard(
                                 modifier = Modifier
                                     .padding(3.dp),
@@ -200,16 +203,24 @@ private fun dropdownMenu(
     var expanded by remember { mutableStateOf(false) }
     val timeInterval = arrayOf("1 day", "3 days", "7 days", "15 days", "1 month")
     var selectedText by remember { mutableStateOf(timeInterval[0]) }
-
+    val colorStops = arrayOf(
+        0.2f to Color(0xFF93A739),
+        0.5f to Color(0xFF969330),
+        1f to Color(0xFF2D2E25)
+    )
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(3.dp)
+            .padding(bottom = 5.dp, end = 5.dp)
+
     ) {
         Row {
             Spacer(modifier = Modifier.weight(1f))
             ExposedDropdownMenuBox(
-                modifier = Modifier.fillMaxWidth(.5f),
+                modifier = Modifier.fillMaxWidth(.5f).border(BorderStroke(
+                    1.dp,
+                    brush = Brush.linearGradient(colorStops = colorStops)
+                ), shape = RectangleShape),
                 expanded = expanded,
                 onExpandedChange = {
                     expanded = !expanded
@@ -218,14 +229,27 @@ private fun dropdownMenu(
                 TextField(
                     value = selectedText,
                     onValueChange = {},
+                    label = { Text("Interval") },
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                    modifier = Modifier.menuAnchor()
+                    modifier = Modifier.menuAnchor(),
+                    colors = TextFieldDefaults.textFieldColors(
+                        textColor = Color.White, // Text color
+                        containerColor = Color(0xFF000000),
+                        focusedIndicatorColor = Color(0xFFF6FF00),
+                        unfocusedIndicatorColor = Color.Yellow,
+                        disabledIndicatorColor = Color.Gray,
+                        focusedLabelColor = Color.White,
+                        unfocusedTrailingIconColor = Color(0xFF929635),
+                        focusedTrailingIconColor = Color(0xFF929635),
+
+                    ),
                 )
 
                 ExposedDropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.background(Color.Black)
                 ) {
                     timeInterval.forEach { item ->
                         DropdownMenuItem(
@@ -262,7 +286,7 @@ private fun dropdownMenu(
                                 // Update the UI with the new list of apps
                                 onAppInfoListUpdated(updatedAppInfoList)
 
-                            }
+                            },
                         )
                     }
                 }
