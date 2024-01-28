@@ -76,7 +76,7 @@ fun timeSpentScreen(
             context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager,
             context
         ).createAppListWithTimeSpent(
-            timeInterval = timeInterval
+            timeInterval = 0
         )
     }
 

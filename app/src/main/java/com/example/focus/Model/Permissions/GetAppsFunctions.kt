@@ -15,6 +15,7 @@ import com.example.focus.Data.AppInfoDataNoTime
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.util.Calendar
+import java.util.Date
 
 class GetAppsFunctions(
     private val packageManager: PackageManager,
@@ -51,13 +52,20 @@ class GetAppsFunctions(
 
         val startTime = cal.timeInMillis
 
+        /*println("CAL TIME IS $startTime")
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val formattedDate = sdf.format(Date(startTime))
+
+        println("Formatted Date: $formattedDate")*/
+
         cal.timeInMillis = System.currentTimeMillis()
         val endTime = cal.timeInMillis
         val mutableDict = mutableMapOf<String, Long>()
 
+        /*
         Log.d("Debug", "Start Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(startTime)}")
-        Log.d("Debug", "End Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endTime)}")
-        Log.d("Debug", cal.toString())
+        println("End Time is format: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endTime)}")
+        Log.d("Debug", cal.toString())*/
 
         val usm = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 

@@ -11,6 +11,34 @@ object RestrictedAppsManager {
     private val listOfRestrictedKeywords =
         mutableListOf<String>()
 
+    private var youtubeRestricted = false
+
+    private var instagramRestricted = false
+
+    fun isYoutubeRestricted () : Boolean{
+        return youtubeRestricted
+    }
+    fun isInstagramRestricted():Boolean{
+        return instagramRestricted
+    }
+
+    fun restrictShorts() {
+        youtubeRestricted = true
+    }
+
+    fun restrictReels () {
+        instagramRestricted = true
+    }
+
+    fun removeRestrictedShorts(){
+        youtubeRestricted = false
+    }
+
+    fun removeRestrictedReels() {
+        instagramRestricted = false
+    }
+
+
     fun addRestrictedApp(packageName: String) {
         listOfRestrictedApps.add(packageName)
         println("LISTA APLICATII RESTRICTED: $listOfRestrictedApps")

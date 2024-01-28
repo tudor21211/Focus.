@@ -135,7 +135,7 @@ fun landingPage(navController: NavController) {
                     text = "Get Started",
                     color = Color.White,
                     fontSize = 20.sp,
-                    fontFamily = openSans
+                    fontFamily = FontFamily(Font(R.font.opensans_res))
                 )
             }
             Spacer(modifier = Modifier.weight(.1f))

@@ -1,5 +1,6 @@
 package com.example.focus.Presentation.Screens.MainPage
 
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,9 +14,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -33,11 +38,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.focus.Data.RestrictedAppsManager
+import com.example.focus.Presentation.Screens.Landing.Screen
 import com.example.focus.R
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun timeConsumingApps() {
+fun timeConsumingApps(navController: NavController) {
     var myState1 by remember { mutableStateOf(false) }
     var myState2 by remember { mutableStateOf(false) }
     val systemUiController = rememberSystemUiController()
@@ -51,10 +59,21 @@ fun timeConsumingApps() {
         systemUiController.setSystemBarsColor(Color(0xFF0E0653))
     }
     Column(
-        modifier = Modifier.fillMaxSize().background(Brush.linearGradient(colorStops = colorStops))
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Brush.linearGradient(colorStops = colorStops))
     ) {
+        IconButton(onClick = {
+            navController.navigate(ScreensMainPage.MainPageScreen.name) {
+                popUpTo(ScreensMainPage.MainPageScreen.name) {// dam remove din backstack la screen dupa ce am navigat inapoi la all apps screen
+                    inclusive = true
+                }
+            }
+        }) {
+           Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null )
+        }
         Spacer(
-            modifier = Modifier.fillMaxSize(.05f)
+            modifier = Modifier.fillMaxSize(.03f)
         )
         Image(
             painter = painterResource(id = R.drawable.insta),
@@ -68,7 +87,12 @@ fun timeConsumingApps() {
             Text(text = "Block Instagram Reels", fontFamily = FontFamily(Font(R.font.opensans_res)), fontSize = 30.sp, modifier = Modifier.padding(start = 10.dp))
             Checkbox(
                 checked = myState1,
-                onCheckedChange = { myState1 = it },
+                onCheckedChange = { myState1 = it
+                    if (it) {
+                        RestrictedAppsManager.restrictReels()
+                    } else {
+                        RestrictedAppsManager.removeRestrictedReels()
+                    }},
                 colors = CheckboxDefaults.colors(
                     uncheckedColor = Color.Red,
                     checkedColor = Color.Green,
@@ -93,7 +117,12 @@ fun timeConsumingApps() {
             Text(text = "Block YouTube Shorts", fontFamily = FontFamily(Font(R.font.opensans_res)), fontSize = 30.sp, modifier = Modifier.padding(start = 10.dp))
             Checkbox(
                 checked = myState2,
-                onCheckedChange = { myState2 = it },
+                onCheckedChange = { myState2 = it
+                    if (it) {
+                        RestrictedAppsManager.restrictShorts()
+                    } else {
+                        RestrictedAppsManager.removeRestrictedShorts()
+                    }},
                 colors = CheckboxDefaults.colors(
                     uncheckedColor = Color.Red,
                     checkedColor = Color.Green,

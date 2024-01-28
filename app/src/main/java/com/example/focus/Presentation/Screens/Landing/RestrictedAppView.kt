@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 
 @SuppressLint("ResourceType")
@@ -27,12 +28,13 @@ class RestrictedAppView(context: Context) : FrameLayout(context) {
         textView.gravity = Gravity.CENTER
         textView.setTypeface(null, Typeface.BOLD)
 
+        val imageView = ImageView(context)
+
         val params = LayoutParams(
             LayoutParams.WRAP_CONTENT,
             LayoutParams.WRAP_CONTENT
         )
         params.gravity = Gravity.CENTER
-
         addView(textView, params)
     }
 

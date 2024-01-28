@@ -72,7 +72,7 @@ fun AppNavigation() {
 
     ) { paddingValues ->
         NavHost(navController = navController,
-            startDestination = ScreensMainPage.Webblock.name,
+            startDestination = ScreensMainPage.MainPageScreen.name,
             modifier = Modifier.padding(paddingValues))
         {
             composable(
@@ -101,7 +101,7 @@ fun AppNavigation() {
             composable(
                 route = ScreensMainPage.TimeConsumingApps.name
             ) {
-                timeConsumingApps()
+                timeConsumingApps(navController)
             }
         }
     }

@@ -51,7 +51,7 @@ class MyAccessibilityService : AccessibilityService() {
 
 
 
-        if (packageName == "com.instagram.android") {
+        if (packageName == "com.instagram.android" && RestrictedAppsManager.isInstagramRestricted()) {
 
             if (idResourceName == "com.instagram.android:id/scrubber" || idResourceName == "com.instagram.android:id/clips_viewer_view_pager") {
 
@@ -63,7 +63,7 @@ class MyAccessibilityService : AccessibilityService() {
 
         }
 
-        if (packageName == "com.google.android.youtube") {
+        if (packageName == "com.google.android.youtube" && RestrictedAppsManager.isYoutubeRestricted()) {
             if (idResourceName == "com.google.android.youtube:id/reel_progress_bar" || idResourceName == "com.google.android.youtube:id/reel_recycler") {
 
                 val home = Intent(Intent.ACTION_MAIN)
