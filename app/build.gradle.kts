@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    kotlin("kapt") version "1.9.0"
 }
 
 android {
@@ -51,14 +52,34 @@ android {
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation(platform("androidx.compose:compose-bom:2023.04.01"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
     implementation(libs.androidx.material3)
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
+    implementation("androidx.compose.material3:material3")
+    implementation("io.coil-kt:coil:2.4.0")
+    implementation ("io.coil-kt:coil-gif:2.2.2")
+    implementation ("com.google.accompanist:accompanist-drawablepainter:0.28.0")
+    implementation ("androidx.navigation:navigation-compose:2.5.0")
+    implementation ("com.google.accompanist:accompanist-navigation-animation:0.24.13-rc")
+    implementation ("io.github.raamcosta.compose-destinations:core:1.7.23-beta")
+    implementation("io.github.raamcosta.compose-destinations:ksp:1.5.12-beta")
+    implementation("io.coil-kt:coil:2.4.0")
+    implementation ("io.coil-kt:coil-gif:2.2.2")
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
+    //ROOM
+    val room_version = "2.6.1"
+    val compose_version = "1.8.0"
+    implementation ("androidx.room:room-runtime:$room_version")
+    implementation ("androidx.room:room-ktx:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
