@@ -72,6 +72,7 @@ dependencies {
     implementation("io.coil-kt:coil:2.4.0")
     implementation ("io.coil-kt:coil-gif:2.2.2")
     implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 
     //ROOM
     val room_version = "2.6.1"
