@@ -6,12 +6,12 @@ import androidx.room.Relation
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 
-data class UserWithPackages (
-    @Embedded val user: UserEntity,
+data class PackagesWithUsers (
+    @Embedded val packages : PackageEntity,
     @Relation(
-        parentColumn = "userId",
-        entityColumn = "packageName" ,
+        parentColumn = "packageName",
+        entityColumn = "userId" ,
         associateBy = Junction(UserPackageCrossRef::class)
     )
-    val packages: List<PackageEntity>
+    val users: List<UserEntity>
 )

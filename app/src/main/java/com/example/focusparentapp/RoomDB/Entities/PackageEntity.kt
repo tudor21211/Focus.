@@ -13,7 +13,6 @@ data class PackageEntity(
     val packageName: String,
     val appName: String,
     val icon : String,
-    val userId : String
 )
 
 

@@ -16,15 +16,13 @@ import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.ui.theme.FocusParentAppTheme
 import com.example.websocket.RoomDB.AppDatabase
-import com.example.focusparentapp.RoomDB.ViewModels.PackageViewModel
-import com.example.focusparentapp.RoomDB.ViewModels.UserViewModel
+import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var packagesViewModel: PackageViewModel
-    private lateinit var userViewModel: UserViewModel
+    private lateinit var userViewModel: UsersViewModel
     private lateinit var appDatabase: AppDatabase
 
     @OptIn(ExperimentalAnimationApi::class)
@@ -32,18 +30,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appDatabase = AppDatabase.getDatabase(applicationContext)
-        packagesViewModel = PackageViewModel(appDatabase.packagesDao())
-        userViewModel = UserViewModel(appDatabase.userDao())
-        userViewModel.insert(UserEntity("id1", "tudor.androne@yahoo.com"))
-        packagesViewModel.insert(PackageEntity("com.example.focus", "Focus", "bytes", "id1"))
-        packagesViewModel.insert(PackageEntity("com.example.focus1", "Focus1", "bytess", "id1"))
-        packagesViewModel.insert(PackageEntity("com.example.focus2", "Focus2", "bytesss", "id1"))
+        userViewModel = UsersViewModel(appDatabase.userDao())
 
-        val userId = "id1"
         lifecycleScope.launch {
-            userViewModel.getUserWithPackages(userId).observe(this@MainActivity) { userWithPackages ->
-                println("User with packages: $userWithPackages")
-            }
+
+            val newUser1 = UserEntity(userId = "user1", email = "user1@example.com")
+            val newUser2 = UserEntity(userId = "user2", email = "user2@example.com")
+            val newPackages = listOf(
+                PackageEntity(packageName = "package1", appName = "App1", icon = "..."),
+                PackageEntity(packageName = "package3", appName = "App3", icon = "..."),
+                PackageEntity(packageName = "package5", appName = "App5", icon = "...")
+            )
+            userViewModel.insertUserAndPackages(newUser1, newPackages)
+            userViewModel.insertUserAndPackages(newUser2, newPackages)
+
         }
 
         setContent {
@@ -52,7 +52,6 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberAnimatedNavController()
                 SetupNavGraph(navController, this)
 
-                //packagesViewModel.insert(PackageEntity("com.example.focus", "Focus", "bytes", userId))
             }
         }
     }
