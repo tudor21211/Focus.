@@ -18,6 +18,7 @@ import com.example.focusparentapp.ui.theme.FocusParentAppTheme
 import com.example.websocket.RoomDB.AppDatabase
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -43,6 +44,10 @@ class MainActivity : ComponentActivity() {
             )
             userViewModel.insertUserAndPackages(newUser1, newPackages)
             userViewModel.insertUserAndPackages(newUser2, newPackages)
+
+            userViewModel.getUserWithPackages("user1").observe(this@MainActivity) { userWithPackages ->
+                println("User with packages: $userWithPackages")
+            }
 
         }
 

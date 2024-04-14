@@ -30,7 +30,11 @@ interface UsersDAO {
     @Query("SELECT * FROM packages")
     fun getAllPackages(): Flow<List<PackageEntity>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertUserPackages(userPackages: List<UserPackageCrossRef>)
+
+    @Transaction
+    @Query("SELECT * FROM users WHERE userId = :userId")
+    fun getUserWithPackages(userId: String): Flow<List<UserWithPackages>>
 
 }

@@ -1,9 +1,12 @@
 package com.example.focusparentapp.RoomDB.ViewModels
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import com.example.focusparentapp.RoomDB.DAO.UsersDAO
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
+import com.example.focusparentapp.RoomDB.Relations.UserWithPackages
 
 class UsersViewModel (private val userDao: UsersDAO) {
 
@@ -42,4 +45,9 @@ class UsersViewModel (private val userDao: UsersDAO) {
     suspend fun updateUser(user: UserEntity) {
         userDao.updateUser(user)
     }
+
+   suspend fun  getUserWithPackages(userId : String) : LiveData<List<UserWithPackages>> {
+       return userDao.getUserWithPackages(userId).asLiveData()
+   }
+
 }
