@@ -1,5 +1,7 @@
 package com.example.focusparentapp
 
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import com.example.focusparentapp.Navigation.Screens
 import com.example.focusparentapp.Navigation.SetupNavGraph
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
@@ -32,6 +36,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         appDatabase = AppDatabase.getDatabase(applicationContext)
         userViewModel = UsersViewModel(appDatabase.userDao())
+
 
         /*lifecycleScope.launch {
 
@@ -63,6 +68,27 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    @OptIn(ExperimentalAnimationApi::class)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val sharedPreferences = this.getSharedPreferences("FirstQrScanned", MODE_PRIVATE)
+        setContent{
+            val navController = rememberAnimatedNavController()
+            SetupNavGraph(navController, this , userViewModel)
+            if(resultCode == 100) {
+                val editor = sharedPreferences.edit()
+                editor.putBoolean("FirstQrScanned", true)
+                editor.apply()
+                navController.navigate(Screens.MainPage.route) {
+                    popUpTo(Screens.MainPage.route) {
+                        inclusive = true
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 @Composable

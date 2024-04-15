@@ -1,5 +1,6 @@
 package com.example.focusparentapp.Presentation.Tutorial
 
+import android.content.SharedPreferences
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -49,7 +50,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TutorialPager(navController: NavController) {
+fun TutorialPager(navController: NavController, sharedPreferences: SharedPreferences) {
 
     val systemUiController = rememberSystemUiController()
 
@@ -177,13 +178,15 @@ fun TutorialPager(navController: NavController) {
             else
             {
                 Button(
-                    onClick = { navController.navigate(Screens.Setup.route) },
+                    onClick = {
+                        sharedPreferences.edit().putBoolean("TutorialFinished", true).apply()
+                        navController.navigate(Screens.Setup.route)
+                              },
                     colors = ButtonDefaults.buttonColors(Color.White),
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier.fillMaxWidth(.85f).padding(top=80.dp).height(50.dp)
                 ) {
                     Text(text = "Start", color = Color.Black, fontSize = 18.sp, fontFamily = FontFamily(Font(R.font.opensans_res)))
-
                 }
             }
         }

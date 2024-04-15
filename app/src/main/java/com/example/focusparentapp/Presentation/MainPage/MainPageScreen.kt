@@ -92,7 +92,7 @@ fun addButton(painterResource : Painter, onClick: () -> Unit, borderWidth : Bord
             contentDescription = null,
             modifier = Modifier
                 .align(Alignment.Center)
-            , // Align the image to the center of the button
+            ,
         )
      }
     }
