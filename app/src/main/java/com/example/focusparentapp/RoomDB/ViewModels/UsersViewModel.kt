@@ -7,6 +7,7 @@ import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
 import com.example.focusparentapp.RoomDB.Relations.UserWithPackages
+import kotlinx.coroutines.flow.Flow
 
 class UsersViewModel (private val userDao: UsersDAO) {
 
@@ -34,12 +35,12 @@ class UsersViewModel (private val userDao: UsersDAO) {
         userDao.insertPackage(packageEntity)
     }
 
-    fun getAllUsers() {
-        userDao.getAllUsers()
+    fun getAllUsers(): Flow<List<UserEntity>> {
+        return userDao.getAllUsers()
     }
 
-    fun getAllPackages() {
-        userDao.getAllPackages()
+    fun getAllPackages(): Flow<List<PackageEntity>> {
+        return userDao.getAllPackages()
     }
 
     suspend fun updateUser(user: UserEntity) {

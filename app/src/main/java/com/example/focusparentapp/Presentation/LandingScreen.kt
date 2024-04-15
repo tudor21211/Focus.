@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.focusparentapp.Navigation.Screens
 import com.example.focusparentapp.R
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -116,7 +117,7 @@ fun LandingScreen(navController: NavController) {
 
             Button(
                 onClick = {
-
+                    navController.navigate(Screens.TutorialPager.route)
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0A0A05)),
                 modifier = Modifier

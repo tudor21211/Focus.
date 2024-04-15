@@ -57,6 +57,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.8.0")
     implementation(platform("androidx.compose:compose-bom:2023.04.01"))
     implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-util")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation(libs.androidx.material3)
@@ -73,13 +74,15 @@ dependencies {
     implementation ("io.coil-kt:coil-gif:2.2.2")
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation(libs.androidx.lifecycle.livedata.ktx)
-
     //ROOM
     val room_version = "2.6.1"
     val compose_version = "1.8.0"
     implementation ("androidx.room:room-runtime:$room_version")
     implementation ("androidx.room:room-ktx:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
+
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

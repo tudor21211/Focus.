@@ -33,29 +33,32 @@ class MainActivity : ComponentActivity() {
         appDatabase = AppDatabase.getDatabase(applicationContext)
         userViewModel = UsersViewModel(appDatabase.userDao())
 
-        lifecycleScope.launch {
+        /*lifecycleScope.launch {
 
             val newUser1 = UserEntity(userId = "user1", email = "user1@example.com")
             val newUser2 = UserEntity(userId = "user2", email = "user2@example.com")
             val newPackages = listOf(
                 PackageEntity(packageName = "package1", appName = "App1", icon = "..."),
                 PackageEntity(packageName = "package3", appName = "App3", icon = "..."),
-                PackageEntity(packageName = "package5", appName = "App5", icon = "...")
+                PackageEntity(packageName = "package5", appName = "App5", icon = "..."),
+                PackageEntity(packageName = "package7", appName = "App7", icon = "...")
+
             )
             userViewModel.insertUserAndPackages(newUser1, newPackages)
             userViewModel.insertUserAndPackages(newUser2, newPackages)
 
             userViewModel.getUserWithPackages("user1").observe(this@MainActivity) { userWithPackages ->
                 println("User with packages: $userWithPackages")
+
             }
 
-        }
+        }*/
 
         setContent {
             FocusParentAppTheme {
                 // A surface container using the 'background' color from the theme
                 val navController = rememberAnimatedNavController()
-                SetupNavGraph(navController, this)
+                SetupNavGraph(navController, this , userViewModel)
 
             }
         }
