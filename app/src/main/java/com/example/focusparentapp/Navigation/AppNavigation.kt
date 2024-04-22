@@ -6,6 +6,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import com.example.focusparentapp.Presentation.DeviceBound
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.example.focusparentapp.Presentation.LandingScreen
@@ -36,6 +37,7 @@ fun SetupNavGraph(
             Screens.Setup.route
         else
             Screens.MainPage.route
+    //Screens.MainPage.route
     ) {
         composable(Screens.LandingScreen.route) {
             LandingScreen(navController)
@@ -53,6 +55,9 @@ fun SetupNavGraph(
             Setup(navController, context)
         }
 
+        composable(Screens.DeviceBound.route){
+            DeviceBound(navController)
+        }
 
 
     }

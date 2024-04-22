@@ -1,6 +1,8 @@
 package com.example.focusparentapp.Presentation.MainPage
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.media.Image
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -35,7 +37,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalConfiguration
+import com.example.focusparentapp.QRscan.QrScanner
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
+import com.example.focusparentapp.WebSockets.WebSocketConnector
+import com.example.focusparentapp.connectWebSocket
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 
@@ -43,7 +49,7 @@ import kotlinx.coroutines.runBlocking
 fun MainPageScreen(navController: NavController, context : Context, userViewModel: UsersViewModel){
 
     val systemUiController = rememberSystemUiController()
-
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
     SideEffect {
         systemUiController.setSystemBarsColor(Color(0xFF6353F3))
@@ -68,9 +74,17 @@ fun MainPageScreen(navController: NavController, context : Context, userViewMode
 
     ) {
         for (user in users) {
-            addButton(painterResource = painterResource(id = R.drawable.boy) , onClick = { /*TODO*/ }, borderWidth = BorderStroke(1.dp, Color.Black) )
+            addButton(
+                painterResource = painterResource(id = R.drawable.boy) ,
+                onClick = {
+                    WebSocketConnector.reconnectWebSocket(context, user.userId)
+                    val webSocket = WebSocketConnector.getWebSocket()
+                    webSocket?.send("HELLO THERE "+user.userId)
+                },
+                borderWidth = BorderStroke(1.dp, Color.Black) )
         }
     }
+    
 }
 
 

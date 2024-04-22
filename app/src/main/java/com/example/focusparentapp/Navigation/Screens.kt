@@ -6,4 +6,5 @@ sealed class Screens (val route : String) {
     object MainPage : Screens(route = "mainPage")
     object TutorialPager : Screens(route = "tutorialPager")
     object Setup : Screens(route = "setup")
+    object DeviceBound : Screens(route = "deviceBound")
 }

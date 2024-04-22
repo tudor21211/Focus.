@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import com.example.focuschildapp.com.example.focuschildapp.WebSockets.WebSocketManager
 import com.example.focusparentapp.Navigation.Screens
 import com.example.focusparentapp.Navigation.SetupNavGraph
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
@@ -21,9 +22,12 @@ import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.ui.theme.FocusParentAppTheme
 import com.example.websocket.RoomDB.AppDatabase
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
+import com.example.focusparentapp.WebSockets.WebSocketConnector
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 class MainActivity : ComponentActivity() {
 
@@ -37,27 +41,6 @@ class MainActivity : ComponentActivity() {
         appDatabase = AppDatabase.getDatabase(applicationContext)
         userViewModel = UsersViewModel(appDatabase.userDao())
 
-
-        /*lifecycleScope.launch {
-
-            val newUser1 = UserEntity(userId = "user1", email = "user1@example.com")
-            val newUser2 = UserEntity(userId = "user2", email = "user2@example.com")
-            val newPackages = listOf(
-                PackageEntity(packageName = "package1", appName = "App1", icon = "..."),
-                PackageEntity(packageName = "package3", appName = "App3", icon = "..."),
-                PackageEntity(packageName = "package5", appName = "App5", icon = "..."),
-                PackageEntity(packageName = "package7", appName = "App7", icon = "...")
-
-            )
-            userViewModel.insertUserAndPackages(newUser1, newPackages)
-            userViewModel.insertUserAndPackages(newUser2, newPackages)
-
-            userViewModel.getUserWithPackages("user1").observe(this@MainActivity) { userWithPackages ->
-                println("User with packages: $userWithPackages")
-
-            }
-
-        }*/
 
         setContent {
             FocusParentAppTheme {
@@ -80,6 +63,10 @@ class MainActivity : ComponentActivity() {
                 val editor = sharedPreferences.edit()
                 editor.putBoolean("FirstQrScanned", true)
                 editor.apply()
+                println("DATA RECEIVED IS ${data?.getStringExtra("result")} ")
+                val endPoint = data?.getStringExtra("result")
+
+                connectWebSocket(this, endPoint!!)
                 navController.navigate(Screens.MainPage.route) {
                     popUpTo(Screens.MainPage.route) {
                         inclusive = true
@@ -91,18 +78,15 @@ class MainActivity : ComponentActivity() {
 
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FocusParentAppTheme {
-        Greeting("Android")
-    }
+fun connectWebSocket(context: Context, endPoint : String) {
+//    val client = OkHttpClient()
+//    val request = Request.Builder().url("ws://192.168.0.112:8200/ws/$endPoint").build()
+//    val listener = WebSocketManager(context)
+//    val webSocket = client.newWebSocket(request, listener)
+//    //TODO send first time information only if the user is new
+//    webSocket.send("$endPoint SEND_FIRST_TIME_APPS_DETAILS")
+//    //webSocket.close(1001, "Closing the connection!")
+    WebSocketConnector.connectWebSocket(context, endPoint)
+    val webSocket = WebSocketConnector.getWebSocket()
+    webSocket?.send("$endPoint SEND_FIRST_TIME_APPS_DETAILS")
 }
