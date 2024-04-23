@@ -12,7 +12,7 @@ data class PackageEntity(
     @PrimaryKey(autoGenerate = false)
     val packageName: String,
     val appName: String,
-    val icon : String,
+    val icon : String
 )
 
 

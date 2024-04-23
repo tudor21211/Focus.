@@ -6,17 +6,26 @@ import android.content.Intent
 import android.media.Image
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -37,7 +46,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.example.focusparentapp.Navigation.Screens
 import com.example.focusparentapp.QRscan.QrScanner
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.WebSockets.WebSocketConnector
@@ -46,23 +65,25 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun MainPageScreen(navController: NavController, context : Context, userViewModel: UsersViewModel){
+fun MainPageScreen(navController: NavController, context : Context, userViewModel: UsersViewModel) {
 
     val systemUiController = rememberSystemUiController()
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
+
     SideEffect {
-        systemUiController.setSystemBarsColor(Color(0xFF6353F3))
-        systemUiController.setNavigationBarColor(Color.Black)
+        systemUiController.setSystemBarsColor(Color(0xFFE2E1EB))
     }
+
     val colorStops = arrayOf(
-        0.2f to Color(0xFF6353F3),
-        0.5f to Color(0xFF3C2EBD),
-        1f to Color(0xFF190F6F)
+        0.2f to Color(0xFFE2E1EB),
+        0.5f to Color(0xFFCFCDE4),
+        1f to Color(0xFFC5C2DD)
     )
 
 
     var users by remember { mutableStateOf<List<UserEntity>>(emptyList()) }
+
 
     LaunchedEffect(Unit) {
         userViewModel.getAllUsers().collect { userList ->
@@ -70,45 +91,154 @@ fun MainPageScreen(navController: NavController, context : Context, userViewMode
         }
     }
 
-    Row(
+
+    Column(
+        modifier = Modifier
+
+            .fillMaxSize()
+            .background(brush = Brush.linearGradient(colorStops = colorStops))
 
     ) {
-        for (user in users) {
-            addButton(
-                painterResource = painterResource(id = R.drawable.boy) ,
-                onClick = {
-                    WebSocketConnector.reconnectWebSocket(context, user.userId)
-                    val webSocket = WebSocketConnector.getWebSocket()
-                    webSocket?.send("HELLO THERE "+user.userId)
-                },
-                borderWidth = BorderStroke(1.dp, Color.Black) )
+
+        Text(
+            text = "My Family",
+            modifier = Modifier
+                .padding(top = 10.dp, bottom = 50.dp)
+                .align(Alignment.CenterHorizontally),
+            fontSize = 28.sp,
+            color = Color.Black,
+            fontWeight = FontWeight(300),
+
+
+        )
+
+        Text(
+            text = "Connected devices",
+            fontWeight = FontWeight(600),
+            modifier = Modifier.padding(start = 10.dp),
+            fontSize = 20.sp
+        )
+        LazyRow(
+            modifier = Modifier
+
+                .fillMaxWidth()
+        ) {
+//            for (user in users) {
+//                addButton(
+//                    painterResource = painterResource(id = R.drawable.boy) ,
+//                    onClick = {
+//                        WebSocketConnector.reconnectWebSocket(context, user.userId)
+//                        val webSocket = WebSocketConnector.getWebSocket()
+//                        webSocket?.send("HELLO THERE "+user.userId)
+//                    },
+//                    borderWidth = BorderStroke(1.dp, Color.Black) )
+//            }
+
+            items(users.size+1){index ->
+                if(index>0)
+                addButton(
+                    painterResource =
+                    if (index % 2 ==0) painterResource(id = R.drawable.boy)
+                    else painterResource(id = R.drawable.girl),
+                    onClick = {
+                       WebSocketConnector.reconnectWebSocket(context, users[index-1].userId)
+                       val webSocket = WebSocketConnector.getWebSocket()
+                       webSocket?.send("HELLO THERE "+users[index-1].userId)
+                       navController.navigate("userMenu/${users[index-1].userId}")
+                  },
+                    borderWidth =BorderStroke(1.dp, Color.Black) ,
+                    text = "Child $index" ,
+                    addText = true
+                )
+                else
+                    addButton(
+                        painterResource = painterResource(id = R.drawable.plussign),
+                        onClick = {
+                            val myIntent = Intent(
+                                context,
+                                QrScanner::class.java
+                            )
+                            (context as Activity).startActivityForResult(myIntent, 100)
+                        },
+                        borderWidth =BorderStroke(1.dp, Color.Black) ,
+                        text = "Add Profile" ,
+                        addText = true
+                    )
+            }
+
         }
+
+        Spacer(modifier = Modifier.fillMaxHeight(.2f))
+
+        Text(
+            text = "Activities",
+            fontWeight = FontWeight(600),
+            modifier = Modifier.padding(start = 20.dp),
+            fontSize = 20.sp
+        )
+        Spacer(modifier = Modifier.fillMaxHeight(.03f))
+        activitiesSection()
     }
-    
+
+
+
 }
 
 
 
 @Composable
-fun addButton(painterResource : Painter, onClick: () -> Unit, borderWidth : BorderStroke){
-    Box(modifier = Modifier.padding(top = 10.dp, start = 15.dp)){
-    Box(
-        modifier = Modifier
-            .size(100.dp) // Set a fixed size for the button
-            .clip(CircleShape)
-            .clickable(onClick = onClick)
-            .border(borderWidth, shape = CircleShape)
-        , // Fill the available space
-        contentAlignment = Alignment.Center,
-    ) {
-        Image(
-            painter = painterResource,
-            contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.Center)
-            ,
+fun addButton(painterResource : Painter, onClick: () -> Unit, borderWidth : BorderStroke, text : String, addText : Boolean){
+    Column {
+        Box(modifier = Modifier.padding(top = 10.dp, start = 5.dp, bottom = 5.dp, end = 10.dp)){
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(CircleShape)
+                    .clickable(onClick = onClick)
+                    .border(borderWidth, shape = CircleShape)
+                ,
+            ) {
+                    Image(
+                        painter = painterResource,
+                        contentDescription = null,
+                    )
+            }
+
+        }
+        Text(
+            text = text,
+            fontSize = 12.sp,
+            fontWeight = FontWeight(600),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         )
-     }
+
+    }
+
+}
+
+
+@Composable
+fun activitiesSection(){
+    val stroke = Stroke(
+        width = 3f,
+        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+    )
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ){
+        Box(
+            modifier = Modifier
+                .drawBehind {
+                    drawRoundRect(
+                        color = Color.Black,
+                        style = stroke,
+                        cornerRadius = CornerRadius(20.dp.toPx())
+                    )
+                }
+                .fillMaxWidth(.95f)
+                .fillMaxHeight(.9f)
+        )
     }
 }
 

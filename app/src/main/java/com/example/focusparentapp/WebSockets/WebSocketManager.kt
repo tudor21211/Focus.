@@ -45,28 +45,34 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
             println("RECEIVED THE MESSAGE")
             val jsonArray = jsonObject.getJSONArray("addUserToDatabase")
             val packageEntityList = mutableListOf<PackageEntity>()
+            val timeSpentList = mutableListOf<Long>()
             var userToInsert : String = ""
             var email : String = ""
+            var deviceType : String = ""
             for (i in 0 until jsonArray.length()) {
                 val appData = jsonArray.getJSONObject(i)
                 userToInsert = appData.getString("userId")
                 email = appData.getString("email")
+                deviceType = appData.getString("deviceType")
                 val appName = appData.getString("appName")
                 val packageName = appData.getString("packageName")
                 val icon = appData.getString("icon")
+                val timeSpent = appData.getLong("timeSpent")
+                timeSpentList.add(timeSpent)
                 packageEntityList.add(
                     PackageEntity(
                         packageName = packageName,
                         appName = appName,
-                        icon = icon
+                        icon = icon,
                     )
                 )
             }
 
             GlobalScope.launch(Dispatchers.Default) {
               usersViewModel.insertUserAndPackages(
-                  UserEntity(userToInsert, email),
-                    packageEntityList
+                  UserEntity(userToInsert, email, deviceType = deviceType),
+                  packageEntityList,
+                  timeSpentList
               )
             }
         }

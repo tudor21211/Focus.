@@ -9,4 +9,5 @@ data class UserEntity(
     @PrimaryKey(autoGenerate = false)
     val userId : String,
     val email: String,
+    val deviceType : String
 )

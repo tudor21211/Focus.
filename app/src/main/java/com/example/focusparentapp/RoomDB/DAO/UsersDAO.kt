@@ -27,6 +27,7 @@ interface UsersDAO {
     suspend fun insertPackage(note: PackageEntity)
     @Update
     suspend fun updatePackage(note: PackageEntity)
+
     @Query("SELECT * FROM packages")
     fun getAllPackages(): Flow<List<PackageEntity>>
 
@@ -36,5 +37,18 @@ interface UsersDAO {
     @Transaction
     @Query("SELECT * FROM users WHERE userId = :userId")
     fun getUserWithPackages(userId: String): Flow<List<UserWithPackages>>
+
+
+    @Query("SELECT \"timeSpent\" FROM user_packages WHERE userId = :userId")
+    fun getTimeSpentByUser(userId: String) : List<Long>
+
+    @Query("SELECT \"icon\" FROM packages INNER JOIN user_packages ON packages.packageName = user_packages.packageName WHERE user_packages.userId = :userId")
+    fun getIconsFromUser(userId: String) : List<String>
+
+    @Query("SELECT \"deviceType\" FROM users WHERE userId = :userId")
+    fun getDeviceType (userId: String) : String
+
+
+
 
 }

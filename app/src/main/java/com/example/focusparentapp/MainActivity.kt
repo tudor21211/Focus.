@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
 import androidx.navigation.findNavController
 import com.example.focuschildapp.com.example.focuschildapp.WebSockets.WebSocketManager
 import com.example.focusparentapp.Navigation.Screens
@@ -33,7 +35,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var userViewModel: UsersViewModel
     private lateinit var appDatabase: AppDatabase
-
+    private lateinit var navController : NavHostController
     @OptIn(ExperimentalAnimationApi::class)
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +47,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FocusParentAppTheme {
                 // A surface container using the 'background' color from the theme
-                val navController = rememberAnimatedNavController()
+                navController = rememberAnimatedNavController()
                 SetupNavGraph(navController, this , userViewModel)
 
             }
@@ -56,16 +58,13 @@ class MainActivity : ComponentActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val sharedPreferences = this.getSharedPreferences("FirstQrScanned", MODE_PRIVATE)
-        setContent{
-            val navController = rememberAnimatedNavController()
-            SetupNavGraph(navController, this , userViewModel)
             if(resultCode == 100) {
+//                navController = rememberAnimatedNavController()
+//                SetupNavGraph(navController, this , userViewModel)
                 val editor = sharedPreferences.edit()
                 editor.putBoolean("FirstQrScanned", true)
                 editor.apply()
-                println("DATA RECEIVED IS ${data?.getStringExtra("result")} ")
                 val endPoint = data?.getStringExtra("result")
-
                 connectWebSocket(this, endPoint!!)
                 navController.navigate(Screens.MainPage.route) {
                     popUpTo(Screens.MainPage.route) {
@@ -73,7 +72,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-        }
+
     }
 
 }

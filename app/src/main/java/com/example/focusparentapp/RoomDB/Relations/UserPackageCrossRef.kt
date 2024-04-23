@@ -21,10 +21,13 @@ import com.example.focusparentapp.RoomDB.Entities.UserEntity
             parentColumns = ["packageName"],
             childColumns = ["packageName"],
             onDelete = ForeignKey.CASCADE
-        )
+        ),
+
+
     ]
 )
 data class UserPackageCrossRef(
     val userId: String,
-    val packageName: String
+    val packageName: String,
+    val timeSpent : Long
 )

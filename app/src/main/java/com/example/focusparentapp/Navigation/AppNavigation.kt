@@ -6,11 +6,14 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.focusparentapp.Presentation.DeviceBound
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.example.focusparentapp.Presentation.LandingScreen
 import com.example.focusparentapp.Presentation.MainPage.MainPageScreen
+import com.example.focusparentapp.Presentation.MainPage.UserMenu
 import com.example.focusparentapp.Presentation.Tutorial.Setup
 import com.example.focusparentapp.Presentation.Tutorial.TutorialPager
 import com.example.focusparentapp.QRscan.QrScanner
@@ -57,6 +60,15 @@ fun SetupNavGraph(
 
         composable(Screens.DeviceBound.route){
             DeviceBound(navController)
+        }
+
+        composable(
+            Screens.UserMenu.route,
+            arguments = listOf(navArgument("userId"){
+                type = NavType.StringType
+            })
+        ){
+            UserMenu(navController, it.arguments?.getString("userId")!!, usersViewModel)
         }
 
 

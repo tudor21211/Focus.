@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 class UsersViewModel (private val userDao: UsersDAO) {
 
-    suspend fun insertUserAndPackages(user: UserEntity, packages: List<PackageEntity>) {
+    suspend fun insertUserAndPackages(user: UserEntity, packages: List<PackageEntity>, timeSpent: List<Long>) {
         // Insert user into users table
         userDao.insertUser(user)
 
@@ -19,10 +19,11 @@ class UsersViewModel (private val userDao: UsersDAO) {
         packages.forEach { packageEntity ->
             userDao.insertPackage(packageEntity)
         }
-
+        val userPackages = mutableListOf<UserPackageCrossRef>()
         // Create user-package relationships and insert into user_packages table
-        val userPackages = packages.map { packageEntity ->
-            UserPackageCrossRef(user.userId, packageEntity.packageName)
+        packages.forEachIndexed { index, packageEntity ->
+            val userPackageCrossRef = UserPackageCrossRef(user.userId, packageEntity.packageName, timeSpent[index])
+            userPackages.add(userPackageCrossRef)
         }
         userDao.insertUserPackages(userPackages)
     }
@@ -47,8 +48,15 @@ class UsersViewModel (private val userDao: UsersDAO) {
         userDao.updateUser(user)
     }
 
-   suspend fun  getUserWithPackages(userId : String) : LiveData<List<UserWithPackages>> {
+    suspend fun getIconsFromUser(user: UserEntity) : List<String>{
+        return userDao.getIconsFromUser(user.userId)
+    }
+
+   suspend fun getUserWithPackages(userId : String) : LiveData<List<UserWithPackages>> {
        return userDao.getUserWithPackages(userId).asLiveData()
    }
 
+    suspend fun getDeviceType(userId : String) : String {
+        return userDao.getDeviceType(userId)
+    }
 }
