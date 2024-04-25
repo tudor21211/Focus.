@@ -69,7 +69,6 @@ fun AppsScreen(navController: NavController, userId : String, usersViewModel: Us
         }
     }
 
-    println("I HAVE ${appsInfo.size} in my DB")
 
     Column(
         modifier = Modifier
@@ -78,7 +77,7 @@ fun AppsScreen(navController: NavController, userId : String, usersViewModel: Us
             .background(brush = Brush.linearGradient(colorStops = colorStops)),
         horizontalAlignment = Alignment.Start
     ) {
-        TopBar(navController = navController, userId)
+        TopBar(navController = navController, "userMenu/${userId}")
         Text(
             text = "Installed Apps",
             modifier = Modifier.padding(start = 15.dp, top = 15.dp),
@@ -101,7 +100,7 @@ fun AppsScreen(navController: NavController, userId : String, usersViewModel: Us
 
 
 @Composable
-fun TopBar(navController: NavController, userId : String) {
+fun TopBar(navController: NavController, route : String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -109,7 +108,7 @@ fun TopBar(navController: NavController, userId : String) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(onClick = {
-            navController.navigate("userMenu/${userId}")
+            navController.navigate(route)
         }) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,

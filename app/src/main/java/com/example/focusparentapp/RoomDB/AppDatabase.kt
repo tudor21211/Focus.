@@ -10,7 +10,7 @@ import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
 
 
-@Database(entities = [PackageEntity::class, UserEntity::class, UserPackageCrossRef::class], version = 2)
+@Database(entities = [PackageEntity::class, UserEntity::class, UserPackageCrossRef::class], version = 3)
 abstract class AppDatabase : RoomDatabase(){
         abstract fun userDao(): UsersDAO
         companion object {

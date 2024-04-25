@@ -26,6 +26,7 @@ interface UsersDAO {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPackage(note: PackageEntity)
+
     @Update
     suspend fun updatePackage(note: PackageEntity)
 
@@ -41,9 +42,6 @@ interface UsersDAO {
     fun getUserWithPackages(userId: String): Flow<List<UserWithPackages>>
 
 
-    @Query("SELECT \"timeSpent\" FROM user_packages WHERE userId = :userId")
-    fun getTimeSpentByUser(userId: String) : List<Long>
-
     @Query("SELECT \"appName\", packages.packageName AS \"packageName\", \"icon\" FROM packages INNER JOIN user_packages ON packages.packageName = user_packages.packageName WHERE user_packages.userId = :userId")
     fun getAppsInfoFromUser(userId: String) : List<AppInfo>
 
@@ -53,6 +51,17 @@ interface UsersDAO {
     @Query("SELECT \"email\" FROM users WHERE userId = :userId")
     fun getUserEmail (userId: String) : String
 
+    @Query("SELECT \"timeSpent\" FROM user_packages WHERE userId = :userId")
+    fun getTimeSpentByUser(userId: String) : List<Long>
 
+
+    @Query("UPDATE user_packages SET isBlocked=:isBlocked WHERE userId = :userId AND packageName = :packageName")
+    suspend fun updateIsBlocked(userId : String, packageName : String, isBlocked : Boolean)
+
+    @Query("SELECT isBlocked FROM user_packages WHERE userId = :userId AND packageName = :packageName")
+    suspend fun getBlockedAppProperty(userId: String, packageName: String) : Boolean
+
+    @Query("SELECT packageName from user_packages WHERE isBlocked = true AND userId=:userId ")
+    suspend fun getAllBlockedApps(userId: String) : List<String>
 
 }

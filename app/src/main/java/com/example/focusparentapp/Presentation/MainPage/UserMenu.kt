@@ -136,12 +136,16 @@ fun UserMenu(navController: NavController, userId : String, usersViewModel: User
                 painterResource(id = R.drawable.apps),
                 70.dp,
                 10.dp,
-                onClick = {navController.navigate("appsScreen/${userId}")})
+                onClick = {
+                    navController.navigate("appsScreen/${userId}")
+                })
             featureCategory("Restrictions",
                 painterResource(id = R.drawable.blockapps),
                 70.dp,
                 10.dp,
-                onClick = {})
+                onClick = {
+                    navController.navigate("restrictionsScreen/${userId}")
+                })
 
         }
     }

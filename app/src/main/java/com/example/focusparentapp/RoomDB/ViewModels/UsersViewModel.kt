@@ -2,6 +2,7 @@ package com.example.focusparentapp.RoomDB.ViewModels
 
 import android.graphics.drawable.Drawable
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.example.focusparentapp.RoomDB.DAO.UsersDAO
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
@@ -11,7 +12,7 @@ import com.example.focusparentapp.RoomDB.Relations.UserWithPackages
 import com.example.focusparentapp.Utils.Utils
 import kotlinx.coroutines.flow.Flow
 
-class UsersViewModel (private val userDao: UsersDAO) {
+class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
 
     suspend fun insertUserAndPackages(user: UserEntity, packages: List<PackageEntity>, timeSpent: List<Long>) {
         // Insert user into users table
@@ -66,6 +67,17 @@ class UsersViewModel (private val userDao: UsersDAO) {
 
     suspend fun getUserEmail(userId : String) : String {
         return userDao.getUserEmail(userId)
+    }
+    suspend fun updateIsBlocked(userId : String, packageName : String, isBlocked : Boolean){
+        return userDao.updateIsBlocked(userId, packageName, isBlocked)
+    }
+
+    suspend fun getBlockedAppProperty(userId: String, packageName: String) : Boolean{
+        return userDao.getBlockedAppProperty(userId,packageName)
+    }
+
+    suspend fun getAllBlockedApps (userId : String) : List<String> {
+        return userDao.getAllBlockedApps(userId)
     }
 }
 

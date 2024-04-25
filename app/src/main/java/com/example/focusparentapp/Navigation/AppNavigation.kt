@@ -16,6 +16,7 @@ import com.example.focusparentapp.Presentation.LandingScreen
 import com.example.focusparentapp.Presentation.MainPage.MainPageScreen
 import com.example.focusparentapp.Presentation.MainPage.TestScreen
 import com.example.focusparentapp.Presentation.MainPage.UserMenu
+import com.example.focusparentapp.Presentation.Restrictions.RestrictionsScreen
 import com.example.focusparentapp.Presentation.Tutorial.Setup
 import com.example.focusparentapp.Presentation.Tutorial.TutorialPager
 import com.example.focusparentapp.QRscan.QrScanner
@@ -42,7 +43,7 @@ fun SetupNavGraph(
             Screens.Setup.route
         else
             Screens.MainPage.route
-//    Screens.AppsScreen.route
+//    Screens.RestrictionsScreen.route
     ) {
         composable(Screens.LandingScreen.route) {
             LandingScreen(navController)
@@ -84,7 +85,14 @@ fun SetupNavGraph(
             AppsScreen(navController, it.arguments?.getString("userId")!!, usersViewModel)
         }
 
-
+        composable(
+            Screens.RestrictionsScreen.route,
+            arguments = listOf(navArgument("userId"){
+                type = NavType.StringType
+            })
+        ){
+            RestrictionsScreen(navController, it.arguments?.getString("userId")!!, usersViewModel)
+        }
 
         composable(Screens.TestScreen.route){
             TestScreen(navController)

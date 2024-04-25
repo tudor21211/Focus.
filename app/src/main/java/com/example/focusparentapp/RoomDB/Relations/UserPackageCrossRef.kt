@@ -26,8 +26,11 @@ import com.example.focusparentapp.RoomDB.Entities.UserEntity
 
     ]
 )
+
 data class UserPackageCrossRef(
     val userId: String,
     val packageName: String,
-    val timeSpent : Long
+    val timeSpent : Long,
+    val isBlocked: Boolean = false,
+    val restrictionTime : Int = 0
 )
