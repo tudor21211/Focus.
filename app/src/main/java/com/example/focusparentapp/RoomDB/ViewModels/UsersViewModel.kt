@@ -1,5 +1,6 @@
 package com.example.focusparentapp.RoomDB.ViewModels
 
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.example.focusparentapp.RoomDB.DAO.UsersDAO
@@ -7,6 +8,7 @@ import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
 import com.example.focusparentapp.RoomDB.Relations.UserWithPackages
+import com.example.focusparentapp.Utils.Utils
 import kotlinx.coroutines.flow.Flow
 
 class UsersViewModel (private val userDao: UsersDAO) {
@@ -48,8 +50,10 @@ class UsersViewModel (private val userDao: UsersDAO) {
         userDao.updateUser(user)
     }
 
-    suspend fun getIconsFromUser(user: UserEntity) : List<String>{
-        return userDao.getIconsFromUser(user.userId)
+    suspend fun getAppsInfoFromUser(userId: String) : List<AppInfo>{
+        return userDao.getAppsInfoFromUser(userId).map {
+            AppInfo(it.appName, it.packageName, it.icon)
+        }
     }
 
    suspend fun getUserWithPackages(userId : String) : LiveData<List<UserWithPackages>> {
@@ -59,4 +63,10 @@ class UsersViewModel (private val userDao: UsersDAO) {
     suspend fun getDeviceType(userId : String) : String {
         return userDao.getDeviceType(userId)
     }
+
+    suspend fun getUserEmail(userId : String) : String {
+        return userDao.getUserEmail(userId)
+    }
 }
+
+data class AppInfo(val appName: String, val packageName: String, val icon : String)

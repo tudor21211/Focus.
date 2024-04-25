@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -56,14 +57,13 @@ fun TutorialPager(navController: NavController, sharedPreferences: SharedPrefere
 
 
     SideEffect {
-        systemUiController.setSystemBarsColor(Color(0xFF0E0653))
-        systemUiController.setNavigationBarColor(Color.Black)
+        systemUiController.setSystemBarsColor(Color(0xFF172238))
     }
-
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val colorStops1 = arrayOf(
-        0.2f to Color(0xFF0E0653),
-        0.5f to Color(0xFF090341),
-        1f to Color(0xFF070231)
+        0.2f to Color(0xFF172238),
+        0.5f to Color(0xFF121B2E),
+        1f to Color(0xFF0A101E)
     )
 
     val colorStops2 = arrayOf(

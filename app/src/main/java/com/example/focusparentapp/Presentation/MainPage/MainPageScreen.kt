@@ -72,13 +72,13 @@ fun MainPageScreen(navController: NavController, context : Context, userViewMode
 
 
     SideEffect {
-        systemUiController.setSystemBarsColor(Color(0xFFE2E1EB))
+        systemUiController.setSystemBarsColor(Color(0xFF172238))
     }
 
     val colorStops = arrayOf(
-        0.2f to Color(0xFFE2E1EB),
-        0.5f to Color(0xFFCFCDE4),
-        1f to Color(0xFFC5C2DD)
+        0.2f to Color(0xFF172238),
+        0.5f to Color(0xFF121B2E),
+        1f to Color(0xFF0A101E)
     )
 
 
@@ -106,7 +106,7 @@ fun MainPageScreen(navController: NavController, context : Context, userViewMode
                 .padding(top = 10.dp, bottom = 50.dp)
                 .align(Alignment.CenterHorizontally),
             fontSize = 28.sp,
-            color = Color.Black,
+            color = Color.White,
             fontWeight = FontWeight(300),
 
 
@@ -116,7 +116,8 @@ fun MainPageScreen(navController: NavController, context : Context, userViewMode
             text = "Connected devices",
             fontWeight = FontWeight(600),
             modifier = Modifier.padding(start = 10.dp),
-            fontSize = 20.sp
+            fontSize = 20.sp,
+            color = Color.White
         )
         LazyRow(
             modifier = Modifier
@@ -146,7 +147,7 @@ fun MainPageScreen(navController: NavController, context : Context, userViewMode
                        webSocket?.send("HELLO THERE "+users[index-1].userId)
                        navController.navigate("userMenu/${users[index-1].userId}")
                   },
-                    borderWidth =BorderStroke(1.dp, Color.Black) ,
+                    borderWidth =BorderStroke(1.dp, Color.White) ,
                     text = "Child $index" ,
                     addText = true
                 )
@@ -160,7 +161,7 @@ fun MainPageScreen(navController: NavController, context : Context, userViewMode
                             )
                             (context as Activity).startActivityForResult(myIntent, 100)
                         },
-                        borderWidth =BorderStroke(1.dp, Color.Black) ,
+                        borderWidth =BorderStroke(1.dp, Color.White) ,
                         text = "Add Profile" ,
                         addText = true
                     )
@@ -174,7 +175,8 @@ fun MainPageScreen(navController: NavController, context : Context, userViewMode
             text = "Activities",
             fontWeight = FontWeight(600),
             modifier = Modifier.padding(start = 20.dp),
-            fontSize = 20.sp
+            fontSize = 20.sp,
+            color = Color.White
         )
         Spacer(modifier = Modifier.fillMaxHeight(.03f))
         activitiesSection()
@@ -209,7 +211,8 @@ fun addButton(painterResource : Painter, onClick: () -> Unit, borderWidth : Bord
             text = text,
             fontSize = 12.sp,
             fontWeight = FontWeight(600),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            color = Color.White
         )
 
     }
@@ -231,7 +234,7 @@ fun activitiesSection(){
             modifier = Modifier
                 .drawBehind {
                     drawRoundRect(
-                        color = Color.Black,
+                        color = Color.White,
                         style = stroke,
                         cornerRadius = CornerRadius(20.dp.toPx())
                     )

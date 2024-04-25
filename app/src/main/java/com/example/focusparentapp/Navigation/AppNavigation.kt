@@ -8,11 +8,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.example.focusparentapp.Presentation.Apps.AppsScreen
 import com.example.focusparentapp.Presentation.DeviceBound
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.example.focusparentapp.Presentation.LandingScreen
 import com.example.focusparentapp.Presentation.MainPage.MainPageScreen
+import com.example.focusparentapp.Presentation.MainPage.TestScreen
 import com.example.focusparentapp.Presentation.MainPage.UserMenu
 import com.example.focusparentapp.Presentation.Tutorial.Setup
 import com.example.focusparentapp.Presentation.Tutorial.TutorialPager
@@ -40,7 +42,7 @@ fun SetupNavGraph(
             Screens.Setup.route
         else
             Screens.MainPage.route
-    //Screens.MainPage.route
+//    Screens.AppsScreen.route
     ) {
         composable(Screens.LandingScreen.route) {
             LandingScreen(navController)
@@ -62,6 +64,8 @@ fun SetupNavGraph(
             DeviceBound(navController)
         }
 
+
+
         composable(
             Screens.UserMenu.route,
             arguments = listOf(navArgument("userId"){
@@ -71,6 +75,19 @@ fun SetupNavGraph(
             UserMenu(navController, it.arguments?.getString("userId")!!, usersViewModel)
         }
 
+        composable(
+            Screens.AppsScreen.route,
+            arguments = listOf(navArgument("userId"){
+                type = NavType.StringType
+            })
+        ){
+            AppsScreen(navController, it.arguments?.getString("userId")!!, usersViewModel)
+        }
 
+
+
+        composable(Screens.TestScreen.route){
+            TestScreen(navController)
+        }
     }
 }

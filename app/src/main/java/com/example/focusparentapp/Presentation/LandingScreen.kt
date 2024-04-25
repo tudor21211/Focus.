@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -52,19 +53,19 @@ fun LandingScreen(navController: NavController) {
     val systemUiController = rememberSystemUiController()
 
     SideEffect {
-        systemUiController.setSystemBarsColor(Color(0xFF6353F3))
-        systemUiController.setNavigationBarColor(Color.Black)
+        systemUiController.setSystemBarsColor(Color(0xFF314670))
     }
+    val colorStops = arrayOf(
+        0.2f to Color(0xFF314670),
+        0.5f to Color(0xFF2E477A),
+        1f to Color(0xFF203868)
+    )
 
 
     val openSans = FontFamily(
         Font(R.font.opensans_res),
     )
-    val colorStops = arrayOf(
-        0.2f to Color(0xFF6353F3),
-        0.5f to Color(0xFF3C2EBD),
-        1f to Color(0xFF190F6F)
-    )
+
     Box(
         modifier = Modifier
             .fillMaxSize(1f)

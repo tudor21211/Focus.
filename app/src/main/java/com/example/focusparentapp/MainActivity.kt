@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val sharedPreferences = this.getSharedPreferences("FirstQrScanned", MODE_PRIVATE)
-            if(resultCode == 100) {
+        if(resultCode == 100) {
 //                navController = rememberAnimatedNavController()
 //                SetupNavGraph(navController, this , userViewModel)
                 val editor = sharedPreferences.edit()

@@ -42,7 +42,6 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
         val jsonObject = JSONObject(text)
 
         if(jsonObject.has("addUserToDatabase")){
-            println("RECEIVED THE MESSAGE")
             val jsonArray = jsonObject.getJSONArray("addUserToDatabase")
             val packageEntityList = mutableListOf<PackageEntity>()
             val timeSpentList = mutableListOf<Long>()
