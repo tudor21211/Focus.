@@ -126,7 +126,9 @@ fun UserMenu(navController: NavController, userId : String, usersViewModel: User
                 painterResource(id = R.drawable.internet),
                 80.dp,
                 5.dp,
-                onClick = {})
+                onClick = {
+                    navController.navigate("websitesScreen/${userId}")
+                })
             featureCategory("Device use",
                 painterResource(id = R.drawable.stats),
                 70.dp,

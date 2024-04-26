@@ -6,7 +6,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.example.focusparentapp.RoomDB.Entities.BlockedWebsiteEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
+import com.example.focusparentapp.RoomDB.Entities.RestrictedKeywordsEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
 import com.example.focusparentapp.RoomDB.Relations.UserWithPackages
@@ -63,5 +65,29 @@ interface UsersDAO {
 
     @Query("SELECT packageName from user_packages WHERE isBlocked = true AND userId=:userId ")
     suspend fun getAllBlockedApps(userId: String) : List<String>
+
+    @Query("DELETE FROM blockedWebsites WHERE userId=:userId AND websiteURL=:websiteURL")
+    suspend fun removeBlockedWebsite(userId : String, websiteURL : String)
+
+    @Query("SELECT websiteURL from blockedWebsites WHERE userId = :userId")
+    suspend fun getBlockedWebsites(userId: String) : List<String>
+
+    @Query("DELETE FROM restrictedKeywords WHERE userId=:userId AND restrictedKeyword=:restrictedKeyword")
+    suspend fun removeRestrictedKeyword(userId : String, restrictedKeyword : String)
+
+    @Query("SELECT restrictedKeyword from restrictedKeywords WHERE userId = :userId")
+    suspend fun getRestrictedKeywords(userId: String) : List<String>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertBlockedWebsite (note : BlockedWebsiteEntity)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertRestrictedKeyword (note : RestrictedKeywordsEntity)
+
+    @Query("SELECT websiteURL FROM blockedWebsites WHERE userId = :userId")
+    fun getBlockedWebsitesAsFlow(userId: String): Flow<List<String>>
+
+    @Query("SELECT restrictedKeyword FROM restrictedKeywords WHERE userId = :userId")
+    fun getRestrictedKeywordsAsFlow(userId: String): Flow<List<String>>
 
 }

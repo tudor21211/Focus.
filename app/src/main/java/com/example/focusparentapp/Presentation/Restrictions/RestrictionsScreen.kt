@@ -223,11 +223,11 @@ fun blockAppDisplayCard(appName: String, appPackage: String, icon: Drawable, sho
             ) {
                 IconButton(onClick = {
                     showDialog.value = true
-                }, modifier = Modifier.border(1.dp, Color.White)) {
+                }, modifier = Modifier.size(50.dp)) {
                     Icon(
                         imageVector = Icons.Default.DateRange,
                         contentDescription = null,
-                        modifier = Modifier.size(30.dp),
+                        modifier = Modifier.size(45.dp),
                         tint = Color.White
                     )
                 }
@@ -249,12 +249,12 @@ fun blockAppDisplayCard(appName: String, appPackage: String, icon: Drawable, sho
                     isLocked.value = !isLocked.value
 
 
-                }, modifier = Modifier.border(1.dp, Color.White)) {
+                }, modifier = Modifier.size(50.dp)) {
                     if (isLocked.value) {
                         Icon(
                             imageVector = Icons.Default.Lock,
                             contentDescription = null,
-                            modifier = Modifier.size(30.dp),
+                            modifier = Modifier.size(45.dp),
                             tint = Color.Red
                         )
                     }
@@ -263,7 +263,7 @@ fun blockAppDisplayCard(appName: String, appPackage: String, icon: Drawable, sho
                         Icon(
                             imageVector = Icons.Default.Lock,
                             contentDescription = null,
-                            modifier = Modifier.size(30.dp),
+                            modifier = Modifier.size(45.dp),
                             tint = Color.Green
                         )
                     }

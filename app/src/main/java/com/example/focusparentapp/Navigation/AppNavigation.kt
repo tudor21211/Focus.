@@ -16,6 +16,7 @@ import com.example.focusparentapp.Presentation.LandingScreen
 import com.example.focusparentapp.Presentation.MainPage.MainPageScreen
 import com.example.focusparentapp.Presentation.MainPage.TestScreen
 import com.example.focusparentapp.Presentation.MainPage.UserMenu
+import com.example.focusparentapp.Presentation.NetworkSettings.WebsitesScreen
 import com.example.focusparentapp.Presentation.Restrictions.RestrictionsScreen
 import com.example.focusparentapp.Presentation.Tutorial.Setup
 import com.example.focusparentapp.Presentation.Tutorial.TutorialPager
@@ -43,7 +44,7 @@ fun SetupNavGraph(
             Screens.Setup.route
         else
             Screens.MainPage.route
-//    Screens.RestrictionsScreen.route
+    //Screens.WebsitesScreen.route
     ) {
         composable(Screens.LandingScreen.route) {
             LandingScreen(navController)
@@ -93,6 +94,18 @@ fun SetupNavGraph(
         ){
             RestrictionsScreen(navController, it.arguments?.getString("userId")!!, usersViewModel)
         }
+
+
+        composable(
+            Screens.WebsitesScreen.route,
+            arguments = listOf(navArgument("userId"){
+                type = NavType.StringType
+            })
+        ){
+            WebsitesScreen(navController, it.arguments?.getString("userId")!!, usersViewModel)
+        }
+
+
 
         composable(Screens.TestScreen.route){
             TestScreen(navController)

@@ -4,13 +4,17 @@ import android.graphics.drawable.Drawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.focusparentapp.RoomDB.DAO.UsersDAO
+import com.example.focusparentapp.RoomDB.Entities.BlockedWebsiteEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
+import com.example.focusparentapp.RoomDB.Entities.RestrictedKeywordsEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
 import com.example.focusparentapp.RoomDB.Relations.UserWithPackages
 import com.example.focusparentapp.Utils.Utils
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
 
@@ -79,6 +83,39 @@ class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
     suspend fun getAllBlockedApps (userId : String) : List<String> {
         return userDao.getAllBlockedApps(userId)
     }
+
+    suspend fun removeBlockedWebsite(userId: String, websiteURL : String){
+        userDao.removeBlockedWebsite(userId, websiteURL)
+    }
+
+    suspend fun insertBlockedWebsite(blockedWebsiteEntity: BlockedWebsiteEntity) = viewModelScope.launch {
+        userDao.insertBlockedWebsite(blockedWebsiteEntity)
+    }
+    suspend fun getBlockedWebsites(userId: String) : List<String>{
+        return userDao.getBlockedWebsites(userId)
+    }
+
+    suspend fun removeRestrictedKeyword(userId: String, restrictedKeyword : String){
+        userDao.removeRestrictedKeyword(userId, restrictedKeyword)
+    }
+
+    suspend fun getRestrictedKeywords(userId: String) : List<String>{
+        return userDao.getRestrictedKeywords(userId)
+    }
+
+    suspend fun insertRestrictedKeyword(restrictedKeywordsEntity: RestrictedKeywordsEntity) = viewModelScope.launch {
+        userDao.insertRestrictedKeyword(restrictedKeywordsEntity)
+    }
+
+
+    fun getBlockedWebsitesAsFlow(userId: String): Flow<List<String>> {
+        return userDao.getBlockedWebsitesAsFlow(userId)
+    }
+
+    fun getRestrictedKeywordsAsFlow(userId: String): Flow<List<String>> {
+        return userDao.getRestrictedKeywordsAsFlow(userId)
+    }
+
 }
 
 data class AppInfo(val appName: String, val packageName: String, val icon : String)
