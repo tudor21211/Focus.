@@ -255,12 +255,14 @@ fun blockedWebsite(text : String, type : String, usersViewModel:UsersViewModel, 
                     if (type == "url"){
                         usersViewModel.viewModelScope.launch {
                             usersViewModel.removeBlockedWebsite(userId, text)
+                            deleteBlockedWebsite(text, userId)
                             onDeletePressed()
                         }
                     }
                     else if (type == "keyword"){
                         usersViewModel.viewModelScope.launch {
                             usersViewModel.removeRestrictedKeyword(userId, text)
+                            deleteRestrictedKeyword(text, userId)
                             onDeletePressed()
                         }
                     }
@@ -312,4 +314,32 @@ fun sendRestrictKeyword(keyword : String , userId: String){
     webSocket?.send(finalJsonObject.toString())
 }
 
+
+
+fun deleteBlockedWebsite(website : String , userId: String){
+    val webSocket = WebSocketConnector.getWebSocket()
+    val jsonArray = JSONArray()
+    val jsonObject = JSONObject().apply{
+        put("website", website)
+        put("userId", userId)
+    }
+    jsonArray.put(jsonObject)
+    val finalJsonObject = JSONObject().apply {
+        put("${userId}_REMOVE_WEBSITE", jsonArray) // Add the array to a final JSON object
+    }
+    webSocket?.send(finalJsonObject.toString())
+}
+fun deleteRestrictedKeyword(keyword : String , userId: String){
+    val webSocket = WebSocketConnector.getWebSocket()
+    val jsonArray = JSONArray()
+    val jsonObject = JSONObject().apply{
+        put("keyword", keyword)
+        put("userId", userId)
+    }
+    jsonArray.put(jsonObject)
+    val finalJsonObject = JSONObject().apply {
+        put("${userId}_REMOVE_KEYWORD", jsonArray) // Add the array to a final JSON object
+    }
+    webSocket?.send(finalJsonObject.toString())
+}
 //TODO SEND DELETE RESTRICTED WEBSITE AND KEYWORD THROUGH WEBSOCKET

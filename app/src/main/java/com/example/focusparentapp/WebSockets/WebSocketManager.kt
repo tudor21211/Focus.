@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import okhttp3.*
 import okhttp3.WebSocketListener
 import okio.ByteString
+import org.json.JSONException
 
 class WebSocketManager(private val context: Context) : WebSocketListener() {
 
@@ -38,8 +39,12 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
 
     override fun onMessage(webSocket: WebSocket, text: String) {
         super.onMessage(webSocket, text)
-
-        val jsonObject = JSONObject(text)
+        var jsonObject = JSONObject()
+        try{
+            jsonObject = JSONObject(text)
+        }catch (e : JSONException){
+            println(e.message)
+        }
 
         if(jsonObject.has("addUserToDatabase")){
             val jsonArray = jsonObject.getJSONArray("addUserToDatabase")
