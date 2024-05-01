@@ -100,7 +100,7 @@ fun AppsScreen(navController: NavController, userId : String, usersViewModel: Us
 
 
 @Composable
-fun TopBar(navController: NavController, route : String) {
+fun TopBar(navController: NavController, route : String, onClick : () -> Unit = {}){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -117,8 +117,7 @@ fun TopBar(navController: NavController, route : String) {
                 tint = Color.White
             )
         }
-        IconButton(onClick = {
-        }) {
+        IconButton(onClick = onClick) {
             Icon(
                 imageVector = Icons.Default.Refresh,
                 contentDescription = null,

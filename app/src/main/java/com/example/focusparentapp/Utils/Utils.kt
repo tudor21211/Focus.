@@ -11,4 +11,13 @@ class Utils {
         val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
         return BitmapDrawable(null, bitmap)
     }
+
+    object TimeUtils {
+        fun convertMillisecondsToTime(milliseconds: Long): String {
+            val seconds = (milliseconds / 1000) % 60
+            val minutes = (milliseconds / (1000 * 60)) % 60
+            val hours = (milliseconds / (1000 * 60 * 60)) % 24
+            return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+        }
+    }
 }

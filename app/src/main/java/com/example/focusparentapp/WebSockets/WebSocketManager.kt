@@ -81,6 +81,27 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
             }
         }
 
+        if(jsonObject.has("UPDATE_APPS_DATA")){
+            val jsonArray = jsonObject.getJSONArray("UPDATE_APPS_DATA")
+            val packagesList = mutableListOf<String>()
+            val timeSpentList = mutableListOf<Long>()
+            val userToInsert = jsonArray.getJSONObject(0).getString("userId")
+            for (i in 0 until jsonArray.length()) {
+                val appData = jsonArray.getJSONObject(i)
+                val packageName = appData.getString("packageName")
+                val timeSpent = appData.getLong("timeSpent")
+                packagesList.add(packageName)
+                timeSpentList.add(timeSpent)
+
+            }
+
+            GlobalScope.launch(Dispatchers.Default) {
+                for(i in 0 until packagesList.size){
+                    usersViewModel.updateTimeSpent(userToInsert, packagesList[i], timeSpentList[i])
+                }
+            }
+        }
+
 
     }
 

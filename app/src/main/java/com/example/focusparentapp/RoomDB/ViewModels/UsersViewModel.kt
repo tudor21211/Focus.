@@ -39,17 +39,13 @@ class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
         userDao.insertUser(user)
     }
 
-    suspend fun insertPackage(packageEntity: PackageEntity) {
-        userDao.insertPackage(packageEntity)
-    }
+
 
     fun getAllUsers(): Flow<List<UserEntity>> {
         return userDao.getAllUsers()
     }
 
-    fun getAllPackages(): Flow<List<PackageEntity>> {
-        return userDao.getAllPackages()
-    }
+
 
     suspend fun updateUser(user: UserEntity) {
         userDao.updateUser(user)
@@ -116,6 +112,19 @@ class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
         return userDao.getRestrictedKeywordsAsFlow(userId)
     }
 
+    fun getTimeSpentByUser(userId : String) : Flow<List<TimeSpentByUser>> {
+        return userDao.getTimeSpentByUser(userId)
+    }
+
+    fun updateTimeSpent(userId: String, packageName: String, newTimeSpent: Long) {
+        userDao.updateTimeSpent(userId, packageName, newTimeSpent)
+    }
+
 }
 
 data class AppInfo(val appName: String, val packageName: String, val icon : String)
+
+data class TimeSpentByUser(
+    val packageName: String,
+    val timeSpent: Long
+)

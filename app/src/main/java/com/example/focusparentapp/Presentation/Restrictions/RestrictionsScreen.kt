@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,6 +65,7 @@ import com.example.focusparentapp.Presentation.Apps.TopBar
 import com.example.focusparentapp.Presentation.Apps.appDisplayCard
 import com.example.focusparentapp.R
 import com.example.focusparentapp.RoomDB.ViewModels.AppInfo
+import com.example.focusparentapp.RoomDB.ViewModels.TimeSpentByUser
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
 import com.example.focusparentapp.Utils.Utils
 import com.example.focusparentapp.WebSockets.WebSocketConnector
@@ -73,6 +75,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import com.example.focusparentapp.Utils.Utils.TimeUtils.convertMillisecondsToTime
 
 @Composable
 fun RestrictionsScreen(navController: NavController, userId : String, usersViewModel: UsersViewModel){
@@ -96,6 +99,9 @@ fun RestrictionsScreen(navController: NavController, userId : String, usersViewM
         mutableStateOf<List<String>>(emptyList())
     }
 
+    val timeSpent by usersViewModel.getTimeSpentByUser(userId).collectAsState(initial = emptyList())
+
+
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
             appsInfo = usersViewModel.getAppsInfoFromUser(userId)
@@ -112,7 +118,7 @@ fun RestrictionsScreen(navController: NavController, userId : String, usersViewM
             .then(if (showDialog.value) Modifier.blur(30.dp) else Modifier),
         horizontalAlignment = Alignment.Start
     ){
-        TopBar(navController = navController, route = "userMenu/${userId}")
+        TopBar(navController = navController, route = "userMenu/${userId}", onClick = { sendUpdateTimeSpentMessage(userId) } )
         LazyColumn(
             modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
             content = {
@@ -122,7 +128,7 @@ fun RestrictionsScreen(navController: NavController, userId : String, usersViewM
                             blockedApps.contains(appsInfo[index].packageName)
                         )
                     }
-                    blockAppDisplayCard(appsInfo[index].appName, appsInfo[index].packageName, Utils().byteStringToDrawable(appsInfo[index].icon), showDialog, isLocked, userId, usersViewModel )
+                    blockAppDisplayCard(appsInfo[index].appName, appsInfo[index].packageName, Utils().byteStringToDrawable(appsInfo[index].icon), showDialog, isLocked, userId, usersViewModel, timeSpent )
                 }
             }
         )
@@ -133,7 +139,7 @@ fun RestrictionsScreen(navController: NavController, userId : String, usersViewM
 
 
 @Composable
-fun blockAppDisplayCard(appName: String, appPackage: String, icon: Drawable, showDialog : MutableState<Boolean>, isLocked : MutableState<Boolean>, userId: String, usersViewModel: UsersViewModel){
+fun blockAppDisplayCard(appName: String, appPackage: String, icon: Drawable, showDialog : MutableState<Boolean>, isLocked : MutableState<Boolean>, userId: String, usersViewModel: UsersViewModel, timeSpent : List<TimeSpentByUser>){
     val isCardExpanded = remember { mutableStateOf(false) }
 
 
@@ -179,13 +185,15 @@ fun blockAppDisplayCard(appName: String, appPackage: String, icon: Drawable, sho
 
                         )
 
-                        Text(text = "1 hr 30 min",
+                        Text(text = timeSpent.find { it.packageName == appPackage }?.timeSpent?.let {
+                            convertMillisecondsToTime(
+                                it
+                            )
+                        } ?: "error",
                             color = Color.White,
                             fontSize = 18.sp,
                             fontFamily = FontFamily(Font(R.font.opensans_res)),
                             modifier = Modifier.padding(end = 10.dp))
-
-
 
                 }
 
@@ -336,4 +344,9 @@ fun sendRestrictMessage(appPackage : String , userId: String, code : Int){
         put("${userId}_BLOCK_PACKAGE", jsonArray) // Add the array to a final JSON object
     }
     webSocket?.send(finalJsonObject.toString())
+}
+
+fun sendUpdateTimeSpentMessage(userId: String){
+    val webSocket = WebSocketConnector.getWebSocket()
+    webSocket?.send("$userId UPDATE_APPS_DATA")
 }

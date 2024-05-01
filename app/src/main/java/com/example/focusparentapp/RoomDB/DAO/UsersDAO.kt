@@ -1,5 +1,6 @@
 package com.example.focusparentapp.RoomDB.DAO
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -13,6 +14,7 @@ import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
 import com.example.focusparentapp.RoomDB.Relations.UserWithPackages
 import com.example.focusparentapp.RoomDB.ViewModels.AppInfo
+import com.example.focusparentapp.RoomDB.ViewModels.TimeSpentByUser
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -53,8 +55,8 @@ interface UsersDAO {
     @Query("SELECT \"email\" FROM users WHERE userId = :userId")
     fun getUserEmail (userId: String) : String
 
-    @Query("SELECT \"timeSpent\" FROM user_packages WHERE userId = :userId")
-    fun getTimeSpentByUser(userId: String) : List<Long>
+    @Query("SELECT \"packageName\" , \"timeSpent\"  FROM user_packages WHERE userId = :userId")
+    fun getTimeSpentByUser(userId: String) : Flow<List<TimeSpentByUser>>
 
 
     @Query("UPDATE user_packages SET isBlocked=:isBlocked WHERE userId = :userId AND packageName = :packageName")
@@ -89,5 +91,14 @@ interface UsersDAO {
 
     @Query("SELECT restrictedKeyword FROM restrictedKeywords WHERE userId = :userId")
     fun getRestrictedKeywordsAsFlow(userId: String): Flow<List<String>>
+
+
+
+
+
+
+    //UPDATES QUERIES
+    @Query("UPDATE user_packages SET timeSpent = :newTimeSpent WHERE userId = :userId AND packageName = :packageName")
+    fun updateTimeSpent(userId: String, packageName: String, newTimeSpent: Long)
 
 }
