@@ -58,6 +58,8 @@ interface UsersDAO {
     @Query("SELECT \"packageName\" , \"timeSpent\"  FROM user_packages WHERE userId = :userId")
     fun getTimeSpentByUser(userId: String) : Flow<List<TimeSpentByUser>>
 
+    @Query("SELECT \"lastTimeUpdated\" FROM user_packages WHERE userId = :userId LIMIT 1")
+    fun getLastTimeUpdated(userId : String) : Flow<String>
 
     @Query("UPDATE user_packages SET isBlocked=:isBlocked WHERE userId = :userId AND packageName = :packageName")
     suspend fun updateIsBlocked(userId : String, packageName : String, isBlocked : Boolean)
@@ -98,7 +100,7 @@ interface UsersDAO {
 
 
     //UPDATES QUERIES
-    @Query("UPDATE user_packages SET timeSpent = :newTimeSpent WHERE userId = :userId AND packageName = :packageName")
-    fun updateTimeSpent(userId: String, packageName: String, newTimeSpent: Long)
+    @Query("UPDATE user_packages SET timeSpent = :newTimeSpent, lastTimeUpdated = :lastTimeUpdated WHERE userId = :userId AND packageName = :packageName")
+    fun updateTimeSpent(userId: String, packageName: String, newTimeSpent: Long, lastTimeUpdated : String)
 
 }

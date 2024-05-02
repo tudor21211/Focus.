@@ -88,4 +88,5 @@ fun connectWebSocket(context: Context, endPoint : String) {
     WebSocketConnector.connectWebSocket(context, endPoint)
     val webSocket = WebSocketConnector.getWebSocket()
     webSocket?.send("$endPoint SEND_FIRST_TIME_APPS_DETAILS")
+    webSocket?.send("$endPoint SEND_STATISTICS_TIME")
 }

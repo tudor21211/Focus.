@@ -77,7 +77,7 @@ fun AppsScreen(navController: NavController, userId : String, usersViewModel: Us
             .background(brush = Brush.linearGradient(colorStops = colorStops)),
         horizontalAlignment = Alignment.Start
     ) {
-        TopBar(navController = navController, "userMenu/${userId}")
+        TopBar(navController = navController, "userMenu/${userId}", "")
         Text(
             text = "Installed Apps",
             modifier = Modifier.padding(start = 15.dp, top = 15.dp),
@@ -100,12 +100,13 @@ fun AppsScreen(navController: NavController, userId : String, usersViewModel: Us
 
 
 @Composable
-fun TopBar(navController: NavController, route : String, onClick : () -> Unit = {}){
+fun TopBar(navController: NavController, route : String, lastUpdateDate: String, onClick : () -> Unit = {}){
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = {
             navController.navigate(route)
@@ -117,6 +118,9 @@ fun TopBar(navController: NavController, route : String, onClick : () -> Unit = 
                 tint = Color.White
             )
         }
+        if(lastUpdateDate!="")
+            Text(text = "last updated: $lastUpdateDate", fontSize = 16.sp, color = Color.Gray)
+
         IconButton(onClick = onClick) {
             Icon(
                 imageVector = Icons.Default.Refresh,

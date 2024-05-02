@@ -100,7 +100,7 @@ fun RestrictionsScreen(navController: NavController, userId : String, usersViewM
     }
 
     val timeSpent by usersViewModel.getTimeSpentByUser(userId).collectAsState(initial = emptyList())
-
+    val lastUpdateDate by usersViewModel.getLastTimeUpdated(userId).collectAsState(initial = "")
 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
@@ -118,7 +118,7 @@ fun RestrictionsScreen(navController: NavController, userId : String, usersViewM
             .then(if (showDialog.value) Modifier.blur(30.dp) else Modifier),
         horizontalAlignment = Alignment.Start
     ){
-        TopBar(navController = navController, route = "userMenu/${userId}", onClick = { sendUpdateTimeSpentMessage(userId) } )
+        TopBar(navController = navController, route = "userMenu/${userId}", lastUpdateDate, onClick = { sendUpdateTimeSpentMessage(userId) } )
         LazyColumn(
             modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
             content = {

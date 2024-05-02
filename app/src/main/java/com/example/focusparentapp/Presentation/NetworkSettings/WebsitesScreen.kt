@@ -87,7 +87,7 @@ fun WebsitesScreen(navController: NavController, userId: String, usersViewModel:
             .background(brush = Brush.linearGradient(colorStops = colorStops)),
         horizontalAlignment = Alignment.Start
     ){
-        TopBar(navController, route = "userMenu/${userId}")
+        TopBar(navController, route = "userMenu/${userId}", "")
         expandableCard(title = "Block websites", textFieldLabel = "Enter a website URL" , type = "url", usersViewModel, userId )
         expandableCard(title = "Block keywords", textFieldLabel = "Enter a keyword to filter" , type = "keyword", usersViewModel, userId)
     }

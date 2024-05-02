@@ -16,7 +16,7 @@ object WebSocketConnector {
         val request = Request.Builder().url("ws://192.168.0.180:8200/ws/$endPoint").build()
         val listener = WebSocketManager(context)
         webSocket = client.newWebSocket(request, listener)
-        webSocket?.send("CONNECTED PARENT")
+        webSocket?.send("CONNECTED_PARENT")
     }
 
     fun disconnectWebSocket() {

@@ -116,8 +116,12 @@ class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
         return userDao.getTimeSpentByUser(userId)
     }
 
-    fun updateTimeSpent(userId: String, packageName: String, newTimeSpent: Long) {
-        userDao.updateTimeSpent(userId, packageName, newTimeSpent)
+    fun updateTimeSpent(userId: String, packageName: String, newTimeSpent: Long, lastTimeUpdated : String) {
+        userDao.updateTimeSpent(userId, packageName, newTimeSpent, lastTimeUpdated)
+    }
+
+    fun getLastTimeUpdated(userId: String) : Flow<String> {
+        return userDao.getLastTimeUpdated(userId)
     }
 
 }

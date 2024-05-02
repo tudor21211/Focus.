@@ -32,5 +32,6 @@ data class UserPackageCrossRef(
     val packageName: String,
     val timeSpent : Long,
     val isBlocked: Boolean = false,
-    val restrictionTime : Int = 0
+    val restrictionTime : Int = 0,
+    val lastTimeUpdated : String = ""
 )

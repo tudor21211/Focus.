@@ -179,6 +179,7 @@ fun MainPageScreen(navController: NavController, context : Context, userViewMode
             color = Color.White
         )
         Spacer(modifier = Modifier.fillMaxHeight(.03f))
+
         activitiesSection()
     }
 
@@ -226,9 +227,10 @@ fun activitiesSection(){
         width = 3f,
         pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
     )
-    Row(
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ){
         Box(
             modifier = Modifier
@@ -241,7 +243,15 @@ fun activitiesSection(){
                 }
                 .fillMaxWidth(.95f)
                 .fillMaxHeight(.9f)
-        )
+        ){
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text("No recent activity", color = Color.White, fontSize = 40.sp, fontFamily = FontFamily(Font(R.font.opensans_res)))
+            }
+        }
     }
 }
 

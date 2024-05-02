@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
+import com.example.focusparentapp.RoomDB.ViewModels.PackagesViewModel
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
 import com.example.websocket.RoomDB.AppDatabase
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +26,6 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
     private val messages: MutableState<List<String>> = _messages
     private var appDatabase: AppDatabase = AppDatabase.getDatabase(context.applicationContext)
     private var usersViewModel: UsersViewModel = UsersViewModel(appDatabase.userDao())
-
 
     private fun getMessages(): MutableState<List<String>> {
         return messages
@@ -83,21 +83,26 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
 
         if(jsonObject.has("UPDATE_APPS_DATA")){
             val jsonArray = jsonObject.getJSONArray("UPDATE_APPS_DATA")
+            var updateTime = ""
             val packagesList = mutableListOf<String>()
             val timeSpentList = mutableListOf<Long>()
             val userToInsert = jsonArray.getJSONObject(0).getString("userId")
             for (i in 0 until jsonArray.length()) {
                 val appData = jsonArray.getJSONObject(i)
-                val packageName = appData.getString("packageName")
-                val timeSpent = appData.getLong("timeSpent")
-                packagesList.add(packageName)
-                timeSpentList.add(timeSpent)
+                if(appData.has("updateTime"))
+                    updateTime = appData.getString("updateTime")
+                else {
+                    val packageName = appData.getString("packageName")
+                    val timeSpent = appData.getLong("timeSpent")
+                    packagesList.add(packageName)
+                    timeSpentList.add(timeSpent)
+                }
 
             }
 
             GlobalScope.launch(Dispatchers.Default) {
                 for(i in 0 until packagesList.size){
-                    usersViewModel.updateTimeSpent(userToInsert, packagesList[i], timeSpentList[i])
+                    usersViewModel.updateTimeSpent(userToInsert, packagesList[i], timeSpentList[i], updateTime)
                 }
             }
         }
