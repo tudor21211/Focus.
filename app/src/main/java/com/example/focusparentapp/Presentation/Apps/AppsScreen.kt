@@ -65,7 +65,7 @@ fun AppsScreen(navController: NavController, userId : String, usersViewModel: Us
 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
-            appsInfo = usersViewModel.getAppsInfoFromUser(userId)
+            appsInfo = usersViewModel.getAppsInfoAlphabeticallyOrdered(userId)
         }
     }
 

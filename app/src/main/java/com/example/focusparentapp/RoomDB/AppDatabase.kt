@@ -7,12 +7,13 @@ import androidx.room.RoomDatabase
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.DAO.UsersDAO
 import com.example.focusparentapp.RoomDB.Entities.BlockedWebsiteEntity
+import com.example.focusparentapp.RoomDB.Entities.PackageStatsEntity
 import com.example.focusparentapp.RoomDB.Entities.RestrictedKeywordsEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
 
 
-@Database(entities = [PackageEntity::class, UserEntity::class, UserPackageCrossRef::class, BlockedWebsiteEntity::class, RestrictedKeywordsEntity::class], version = 3)
+@Database(entities = [PackageEntity::class, UserEntity::class, UserPackageCrossRef::class, BlockedWebsiteEntity::class, RestrictedKeywordsEntity::class, PackageStatsEntity::class], version = 3)
 abstract class AppDatabase : RoomDatabase(){
         abstract fun userDao(): UsersDAO
         companion object {

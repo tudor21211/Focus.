@@ -8,6 +8,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
+import com.example.focusparentapp.RoomDB.Entities.PackageStatsEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.ViewModels.PackagesViewModel
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
@@ -46,13 +47,15 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
             println(e.message)
         }
 
-        if(jsonObject.has("addUserToDatabase")){
+    when {
+
+        jsonObject.has("addUserToDatabase") -> {
             val jsonArray = jsonObject.getJSONArray("addUserToDatabase")
             val packageEntityList = mutableListOf<PackageEntity>()
             val timeSpentList = mutableListOf<Long>()
-            var userToInsert : String = ""
-            var email : String = ""
-            var deviceType : String = ""
+            var userToInsert: String = ""
+            var email: String = ""
+            var deviceType: String = ""
             for (i in 0 until jsonArray.length()) {
                 val appData = jsonArray.getJSONObject(i)
                 userToInsert = appData.getString("userId")
@@ -73,15 +76,44 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
             }
 
             GlobalScope.launch(Dispatchers.Default) {
-              usersViewModel.insertUserAndPackages(
-                  UserEntity(userToInsert, email, deviceType = deviceType),
-                  packageEntityList,
-                  timeSpentList
-              )
+                usersViewModel.insertUserAndPackages(
+                    UserEntity(userToInsert, email, deviceType = deviceType),
+                    packageEntityList,
+                    timeSpentList
+                )
             }
         }
 
-        if(jsonObject.has("UPDATE_APPS_DATA")){
+        jsonObject.has("ADD_STATISTICS_DETAILS") -> {
+            val jsonArray = jsonObject.getJSONArray("ADD_STATISTICS_DETAILS")
+            GlobalScope.launch(Dispatchers.Default) {
+                for (i in 0 until jsonArray.length()) {
+                    val appData = jsonArray.getJSONObject(i)
+                    if (appData.has("packageName")) {
+                        val userId = appData.getString("userId")
+                        val packageName = appData.getString("packageName")
+                        val oneDay = appData.getLong("oneDay")
+                        val threeDays = appData.getLong("threeDays")
+                        val oneWeek = appData.getLong("oneWeek")
+                        val oneMonth = appData.getLong("oneMonth")
+
+                        val packageStatsEntity = PackageStatsEntity(
+                            userId = userId ,
+                            packageName = packageName,
+                            oneDay = oneDay,
+                            threeDays = threeDays,
+                            oneWeek = oneWeek,
+                            oneMonth = oneMonth
+                        )
+                        usersViewModel.insertPackageStats(packageStatsEntity)
+                    }
+                }
+            }
+        }
+        //TODO REMOVE THE COMMENT
+
+
+            jsonObject.has("UPDATE_APPS_DATA") -> {
             val jsonArray = jsonObject.getJSONArray("UPDATE_APPS_DATA")
             var updateTime = ""
             val packagesList = mutableListOf<String>()
@@ -89,7 +121,7 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
             val userToInsert = jsonArray.getJSONObject(0).getString("userId")
             for (i in 0 until jsonArray.length()) {
                 val appData = jsonArray.getJSONObject(i)
-                if(appData.has("updateTime"))
+                if (appData.has("updateTime"))
                     updateTime = appData.getString("updateTime")
                 else {
                     val packageName = appData.getString("packageName")
@@ -101,12 +133,18 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
             }
 
             GlobalScope.launch(Dispatchers.Default) {
-                for(i in 0 until packagesList.size){
-                    usersViewModel.updateTimeSpent(userToInsert, packagesList[i], timeSpentList[i], updateTime)
+                for (i in 0 until packagesList.size) {
+                    usersViewModel.updateTimeSpent(
+                        userToInsert,
+                        packagesList[i],
+                        timeSpentList[i],
+                        updateTime
+                    )
                 }
             }
         }
 
+    }
 
     }
 

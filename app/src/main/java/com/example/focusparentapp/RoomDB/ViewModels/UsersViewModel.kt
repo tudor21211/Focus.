@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.focusparentapp.RoomDB.DAO.UsersDAO
 import com.example.focusparentapp.RoomDB.Entities.BlockedWebsiteEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
+import com.example.focusparentapp.RoomDB.Entities.PackageStatsEntity
 import com.example.focusparentapp.RoomDB.Entities.RestrictedKeywordsEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
@@ -56,6 +57,12 @@ class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
             AppInfo(it.appName, it.packageName, it.icon)
         }
     }
+    suspend fun getAppsInfoAlphabeticallyOrdered(userId: String) : List<AppInfo>{
+        return userDao.getAppsInfoAlphabeticallyOrdered(userId).map {
+            AppInfo(it.appName, it.packageName, it.icon)
+        }
+    }
+
 
    suspend fun getUserWithPackages(userId : String) : LiveData<List<UserWithPackages>> {
        return userDao.getUserWithPackages(userId).asLiveData()
@@ -124,11 +131,28 @@ class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
         return userDao.getLastTimeUpdated(userId)
     }
 
+    suspend fun insertPackageStats(packageStatsEntity: PackageStatsEntity) {
+        userDao.insertPackageStats(packageStatsEntity)
+    }
+
 }
 
-data class AppInfo(val appName: String, val packageName: String, val icon : String)
+data class AppInfo(
+    val appName: String,
+    val packageName: String,
+    val icon : String
+)
 
 data class TimeSpentByUser(
     val packageName: String,
     val timeSpent: Long
+)
+
+data class AppStats(
+    val appName: String,
+    val icon : String,
+    val oneDayStats : Long,
+    val threeDaysStats : Long,
+    val oneWeekStats : Long,
+    val oneMonthStats : Long
 )

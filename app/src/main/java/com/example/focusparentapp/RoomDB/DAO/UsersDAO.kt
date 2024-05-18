@@ -9,11 +9,13 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.example.focusparentapp.RoomDB.Entities.BlockedWebsiteEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
+import com.example.focusparentapp.RoomDB.Entities.PackageStatsEntity
 import com.example.focusparentapp.RoomDB.Entities.RestrictedKeywordsEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
 import com.example.focusparentapp.RoomDB.Relations.UserWithPackages
 import com.example.focusparentapp.RoomDB.ViewModels.AppInfo
+import com.example.focusparentapp.RoomDB.ViewModels.AppStats
 import com.example.focusparentapp.RoomDB.ViewModels.TimeSpentByUser
 import kotlinx.coroutines.flow.Flow
 
@@ -46,8 +48,11 @@ interface UsersDAO {
     fun getUserWithPackages(userId: String): Flow<List<UserWithPackages>>
 
 
-    @Query("SELECT \"appName\", packages.packageName AS \"packageName\", \"icon\" FROM packages INNER JOIN user_packages ON packages.packageName = user_packages.packageName WHERE user_packages.userId = :userId")
+    @Query("SELECT \"appName\", packages.packageName AS \"packageName\", \"icon\" FROM packages INNER JOIN user_packages ON packages.packageName = user_packages.packageName WHERE user_packages.userId = :userId ORDER BY \"timeSpent\" DESC")
     fun getAppsInfoFromUser(userId: String) : List<AppInfo>
+
+    @Query("SELECT \"appName\", packages.packageName AS \"packageName\", \"icon\" FROM packages INNER JOIN user_packages ON packages.packageName = user_packages.packageName WHERE user_packages.userId = :userId ORDER BY \"appName\" ASC")
+    fun getAppsInfoAlphabeticallyOrdered(userId: String) : List<AppInfo>
 
     @Query("SELECT \"deviceType\" FROM users WHERE userId = :userId")
     fun getDeviceType (userId: String) : String
@@ -94,7 +99,8 @@ interface UsersDAO {
     @Query("SELECT restrictedKeyword FROM restrictedKeywords WHERE userId = :userId")
     fun getRestrictedKeywordsAsFlow(userId: String): Flow<List<String>>
 
-
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPackageStats(packageStatsEntity: PackageStatsEntity)
 
 
 
@@ -102,5 +108,19 @@ interface UsersDAO {
     //UPDATES QUERIES
     @Query("UPDATE user_packages SET timeSpent = :newTimeSpent, lastTimeUpdated = :lastTimeUpdated WHERE userId = :userId AND packageName = :packageName")
     fun updateTimeSpent(userId: String, packageName: String, newTimeSpent: Long, lastTimeUpdated : String)
+
+
+
+
+    //STATS QUERIES
+//    @Query("SELECT \"appName\", \"icon\" FROM packages INNER JOIN packages_stats ON packages.packageName = packages_stats.packageName WHERE packages_stats.userId = :userId ORDER BY \"timeSpent\" DESC")
+//    fun getStatsFromUser(userId: String) : List<AppStats>
+
+    @Query("SELECT packages.appName as \"appName\", packages.icon as \"icon\", packages_stats.oneDay as \"oneDayStats\", packages_stats.threeDays as \"threeDaysStats\", packages_stats.oneWeek as \"oneWeekStats\", packages_stats.oneMonth as \"oneMonthStats\"\n" +
+            "    FROM packages\n" +
+            "    INNER JOIN packages_stats ON packages.packageName = packages_stats.packageName\n" +
+            "    WHERE packages_stats.userId = :userId " +
+            "    ORDER BY packages_stats.oneDay DESC LIMIT 10")
+    fun getStatsFromUser(userId: String) : List<AppStats>
 
 }

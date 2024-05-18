@@ -56,6 +56,7 @@ import com.example.focusparentapp.Navigation.Screens
 import com.example.focusparentapp.R
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
+import com.example.focusparentapp.WebSockets.WebSocketConnector
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -133,7 +134,12 @@ fun UserMenu(navController: NavController, userId : String, usersViewModel: User
                 painterResource(id = R.drawable.stats),
                 70.dp,
                 10.dp,
-                onClick = {})
+                onClick = {
+
+                    val webSocket = WebSocketConnector.getWebSocket()
+                    webSocket?.send("$userId SEND_STATISTICS_TIME")
+
+                })
             featureCategory("Apps",
                 painterResource(id = R.drawable.apps),
                 70.dp,

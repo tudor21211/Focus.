@@ -8,5 +8,4 @@ data class RestrictedKeywordsEntity(
     @PrimaryKey(autoGenerate = false)
     val restrictedKeyword : String,
     val userId : String
-
 )

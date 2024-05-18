@@ -30,6 +30,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.internal.wait
+import java.util.Timer
 
 class MainActivity : ComponentActivity() {
 
@@ -88,5 +90,6 @@ fun connectWebSocket(context: Context, endPoint : String) {
     WebSocketConnector.connectWebSocket(context, endPoint)
     val webSocket = WebSocketConnector.getWebSocket()
     webSocket?.send("$endPoint SEND_FIRST_TIME_APPS_DETAILS")
-    webSocket?.send("$endPoint SEND_STATISTICS_TIME")
+
+
 }

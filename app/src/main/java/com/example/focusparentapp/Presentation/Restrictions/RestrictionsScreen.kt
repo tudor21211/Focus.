@@ -53,6 +53,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -182,7 +183,9 @@ fun blockAppDisplayCard(appName: String, appPackage: String, icon: Drawable, sho
                         color = Color.White,
                         fontSize = 20.sp,
                         fontFamily = FontFamily(Font(R.font.opensans_res)),
-
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2,
+                        modifier = Modifier.fillMaxWidth(.7f)
                         )
 
                         Text(text = timeSpent.find { it.packageName == appPackage }?.timeSpent?.let {

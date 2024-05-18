@@ -1,13 +1,11 @@
-package com.example.focusparentapp.RoomDB.Relations
+package com.example.focusparentapp.RoomDB.Entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import com.example.focusparentapp.RoomDB.Entities.PackageEntity
-import com.example.focusparentapp.RoomDB.Entities.UserEntity
-
+import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "user_packages",
+    tableName = "packages_stats",
     primaryKeys = ["userId", "packageName"],
     foreignKeys = [
         ForeignKey(
@@ -24,11 +22,11 @@ import com.example.focusparentapp.RoomDB.Entities.UserEntity
         )]
 )
 
-data class UserPackageCrossRef(
-    val userId: String,
-    val packageName: String,
-    val timeSpent : Long,
-    val isBlocked: Boolean = false,
-    val restrictionTime : Int = 0,
-    val lastTimeUpdated : String = ""
+data class PackageStatsEntity(
+    val userId : String,
+    val packageName : String,
+    val oneDay : Long,
+    val threeDays : Long,
+    val oneWeek : Long,
+    val oneMonth : Long
 )

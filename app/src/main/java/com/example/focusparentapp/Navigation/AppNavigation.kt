@@ -10,6 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.focusparentapp.Presentation.Apps.AppsScreen
 import com.example.focusparentapp.Presentation.DeviceBound
+import com.example.focusparentapp.Presentation.DeviceUse.DeviceUse
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.example.focusparentapp.Presentation.LandingScreen
@@ -44,7 +45,7 @@ fun SetupNavGraph(
             Screens.Setup.route
         else
             Screens.MainPage.route
-    //Screens.WebsitesScreen.route
+//    Screens.DeviceUse.route
     ) {
         composable(Screens.LandingScreen.route) {
             LandingScreen(navController)
@@ -106,6 +107,11 @@ fun SetupNavGraph(
         }
 
 
+        composable(
+            Screens.DeviceUse.route
+        ){
+            DeviceUse(navController)
+        }
 
         composable(Screens.TestScreen.route){
             TestScreen(navController)
