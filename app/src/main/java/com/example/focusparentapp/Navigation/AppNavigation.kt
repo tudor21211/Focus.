@@ -39,13 +39,13 @@ fun SetupNavGraph(
     AnimatedNavHost(
         navController = navController,
         startDestination =
-//        if (!tutorialFinished)
-//            Screens.LandingScreen.route
-//        else if(!firstQrScanned)
-//            Screens.Setup.route
-//        else
-//            Screens.MainPage.route
-    Screens.DeviceUse.route
+        if (!tutorialFinished)
+            Screens.LandingScreen.route
+        else if(!firstQrScanned)
+            Screens.Setup.route
+        else
+            Screens.MainPage.route
+//    Screens.DeviceUse.route
     ) {
         composable(Screens.LandingScreen.route) {
             LandingScreen(navController)
@@ -108,9 +108,12 @@ fun SetupNavGraph(
 
 
         composable(
-            Screens.DeviceUse.route
+            Screens.DeviceUse.route,
+            arguments = listOf(navArgument("userId"){
+                type = NavType.StringType
+            })
         ){
-            DeviceUse(navController)
+            DeviceUse(navController, it.arguments?.getString("userId")!!, usersViewModel)
         }
 
         composable(Screens.TestScreen.route){

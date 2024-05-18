@@ -10,6 +10,7 @@ import com.example.focusparentapp.RoomDB.Entities.BlockedWebsiteEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageStatsEntity
 import com.example.focusparentapp.RoomDB.Entities.RestrictedKeywordsEntity
+import com.example.focusparentapp.RoomDB.Entities.ScreenTimeTrackerEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
 import com.example.focusparentapp.RoomDB.Relations.UserWithPackages
@@ -135,6 +136,18 @@ class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
         userDao.insertPackageStats(packageStatsEntity)
     }
 
+    suspend fun updateTrackerAndTimeSpent(screenTimeTrackerEntity: ScreenTimeTrackerEntity) {
+        userDao.updateTrackerAndTimeSpent(screenTimeTrackerEntity)
+    }
+
+
+    suspend fun getStatsFromUser(userId: String) : List<AppStats>{
+        return userDao.getStatsFromUser(userId)
+    }
+    fun getScreenTimeTracker(userId: String) : ScreenTracker {
+        return userDao.getScreenTimeTracker(userId)
+    }
+
 }
 
 data class AppInfo(
@@ -155,4 +168,9 @@ data class AppStats(
     val threeDaysStats : Long,
     val oneWeekStats : Long,
     val oneMonthStats : Long
+)
+
+data class ScreenTracker(
+    val launchTracker: Int,
+    val screenTime: String
 )

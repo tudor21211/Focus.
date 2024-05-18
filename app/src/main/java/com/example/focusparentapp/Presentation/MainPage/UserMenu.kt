@@ -135,10 +135,7 @@ fun UserMenu(navController: NavController, userId : String, usersViewModel: User
                 70.dp,
                 10.dp,
                 onClick = {
-
-                    val webSocket = WebSocketConnector.getWebSocket()
-                    webSocket?.send("$userId SEND_STATISTICS_TIME")
-
+                    navController.navigate("deviceUse/${userId}")
                 })
             featureCategory("Apps",
                 painterResource(id = R.drawable.apps),

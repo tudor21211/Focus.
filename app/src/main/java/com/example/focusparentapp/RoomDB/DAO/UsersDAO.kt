@@ -11,11 +11,13 @@ import com.example.focusparentapp.RoomDB.Entities.BlockedWebsiteEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageStatsEntity
 import com.example.focusparentapp.RoomDB.Entities.RestrictedKeywordsEntity
+import com.example.focusparentapp.RoomDB.Entities.ScreenTimeTrackerEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
 import com.example.focusparentapp.RoomDB.Relations.UserWithPackages
 import com.example.focusparentapp.RoomDB.ViewModels.AppInfo
 import com.example.focusparentapp.RoomDB.ViewModels.AppStats
+import com.example.focusparentapp.RoomDB.ViewModels.ScreenTracker
 import com.example.focusparentapp.RoomDB.ViewModels.TimeSpentByUser
 import kotlinx.coroutines.flow.Flow
 
@@ -121,6 +123,12 @@ interface UsersDAO {
             "    INNER JOIN packages_stats ON packages.packageName = packages_stats.packageName\n" +
             "    WHERE packages_stats.userId = :userId " +
             "    ORDER BY packages_stats.oneDay DESC LIMIT 10")
-    fun getStatsFromUser(userId: String) : List<AppStats>
+    suspend fun getStatsFromUser(userId: String) : List<AppStats>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateTrackerAndTimeSpent(screenTimeTrackerEntity: ScreenTimeTrackerEntity)
+
+    @Query("SELECT launchTracker, screenTime FROM screen_time_tracker WHERE userId = :userId")
+    fun getScreenTimeTracker(userId: String) : ScreenTracker
 
 }

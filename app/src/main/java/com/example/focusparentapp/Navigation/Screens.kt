@@ -12,6 +12,6 @@ sealed class Screens (val route : String) {
     object RestrictionsScreen : Screens(route = "restrictionsScreen/{userId}")
     object WebsitesScreen : Screens(route = "websitesScreen/{userId}")
 
-    object DeviceUse : Screens(route = "deviceUse")
+    object DeviceUse : Screens(route = "deviceUse/{userId}")
     object TestScreen : Screens(route = "testScreen")
 }

@@ -145,6 +145,7 @@ fun MainPageScreen(navController: NavController, context : Context, userViewMode
                        WebSocketConnector.reconnectWebSocket(context, users[index-1].userId)
                        val webSocket = WebSocketConnector.getWebSocket()
                        webSocket?.send("HELLO THERE "+users[index-1].userId)
+                       webSocket?.send("${users[index-1].userId} SEND_STATISTICS_TIME")
                        navController.navigate("userMenu/${users[index-1].userId}")
                   },
                     borderWidth =BorderStroke(1.dp, Color.White) ,

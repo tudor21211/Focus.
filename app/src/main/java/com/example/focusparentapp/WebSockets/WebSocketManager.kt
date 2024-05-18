@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageStatsEntity
+import com.example.focusparentapp.RoomDB.Entities.ScreenTimeTrackerEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.ViewModels.PackagesViewModel
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
@@ -106,6 +107,17 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
                             oneMonth = oneMonth
                         )
                         usersViewModel.insertPackageStats(packageStatsEntity)
+                    }
+                    if(appData.has("launchTracker")) {
+                        val userId = appData.getString("userId")
+                        val launchTracker = appData.getInt("launchTracker")
+                        val screenTime = appData.getString("screenTime")
+                        val screenTimeTrackerEntity = ScreenTimeTrackerEntity(
+                            userId = userId,
+                            launchTracker = launchTracker,
+                            screenTime = screenTime
+                        )
+                        usersViewModel.updateTrackerAndTimeSpent(screenTimeTrackerEntity)
                     }
                 }
             }

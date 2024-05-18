@@ -23,7 +23,12 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,15 +42,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.example.focusparentapp.Navigation.Screens
 import com.example.focusparentapp.Presentation.MainPage.TopBar
 import com.example.focusparentapp.R
+import com.example.focusparentapp.RoomDB.ViewModels.AppInfo
+import com.example.focusparentapp.RoomDB.ViewModels.AppStats
+import com.example.focusparentapp.RoomDB.ViewModels.ScreenTracker
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
+import com.example.focusparentapp.Utils.Utils
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
-fun DeviceUse(navController: NavController){
+fun DeviceUse(navController: NavController, userId: String, usersViewModel: UsersViewModel){
 
     val systemUiController = rememberSystemUiController()
     SideEffect {
@@ -62,6 +74,18 @@ fun DeviceUse(navController: NavController){
     val hardcodedTimeArray = listOf(150, 1800, 300, 3000, 4000)
     val hardcodedTimeArraySorted = hardcodedTimeArray.sortedDescending()
     var maxTimeSpent = 0
+    var screenTracker by remember {
+        mutableStateOf<ScreenTracker>(ScreenTracker(0,""))
+    }
+    var appsStats by remember {
+        mutableStateOf<List<AppStats>>(emptyList())
+    }
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            screenTracker = usersViewModel.getScreenTimeTracker(userId)
+            appsStats = usersViewModel.getStatsFromUser(userId)
+        }
+    }
 
 
     Column(
@@ -71,7 +95,7 @@ fun DeviceUse(navController: NavController){
     ) {
         com.example.focusparentapp.Presentation.Apps.TopBar(
             navController = navController,
-            route = Screens.UserMenu.route,
+            route = "userMenu/${userId}",
             lastUpdateDate = ""
         )
 
@@ -108,7 +132,7 @@ fun DeviceUse(navController: NavController){
                     )
                     Row() {
                         Text(
-                            text = "100 ",
+                            text = screenTracker.launchTracker.toString(),
                             modifier = Modifier.padding(10.dp),
                             fontFamily = FontFamily(Font(R.font.opensans_res)),
                             fontSize = 30.sp,
@@ -117,7 +141,7 @@ fun DeviceUse(navController: NavController){
                         Text(
                             text = "launches /24h",
                             fontFamily = FontFamily(Font(R.font.opensans_res)),
-                            modifier = Modifier.padding(start = 20.dp, top = 55.dp),
+                            modifier = Modifier.padding(start = 15.dp, top = 40.dp),
                             fontSize = 12.sp,
                             color = Color.White
                         )
@@ -125,7 +149,7 @@ fun DeviceUse(navController: NavController){
 
 
                 }
-
+            println("SCREEN TRACKER , ${screenTracker.screenTime}")
                 Card(
                     modifier = Modifier
                         .padding(start = 4.dp)
@@ -140,14 +164,14 @@ fun DeviceUse(navController: NavController){
                     )
                 ) {
                     Text(
-                        text = "Screen Time ",
+                        text = "Screen Time",
                         modifier = Modifier.padding(10.dp),
                         fontFamily = FontFamily(Font(R.font.opensans_res)),
                         color = Color.White
                     )
 
                     Text(
-                        text = "100",
+                        text = screenTracker.screenTime,
                         modifier = Modifier.padding(10.dp),
                         fontFamily = FontFamily(Font(R.font.opensans_res)),
                         fontSize = 30.sp,
@@ -158,11 +182,11 @@ fun DeviceUse(navController: NavController){
 
             Spacer(modifier = Modifier.fillMaxHeight(.08f))
 
-            hardcodedTimeArraySorted.forEach {
-                if (it > maxTimeSpent)
-                    maxTimeSpent = it
+            appsStats.forEach {
+                if (it.oneDayStats > maxTimeSpent)
+                    maxTimeSpent = it.oneDayStats.toInt()
 
-                var progress = (it.toFloat()) / (maxTimeSpent.toFloat())
+                var progress = (it.oneDayStats.toFloat()) / (maxTimeSpent.toFloat())
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -172,12 +196,12 @@ fun DeviceUse(navController: NavController){
                         .padding(8.dp)
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.focus_childapp),
+                        painter = rememberImagePainter(data = Utils().byteStringToDrawable(it.icon)),
                         contentDescription = null,
                         modifier = Modifier.size(47.dp)
                     )
                     Text(
-                        "Hardcoded Name",
+                        it.appName,
                         color = Color.White,
                         fontFamily = FontFamily(
                             Font(R.font.opensans_res)
@@ -187,7 +211,7 @@ fun DeviceUse(navController: NavController){
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        text = it.toString(),
+                        text = it.oneDayStats.toString(),
                         color = Color.White,
                         fontFamily = FontFamily(
                             Font(R.font.opensans_res)
@@ -195,21 +219,13 @@ fun DeviceUse(navController: NavController){
                     )
 
                 }
-//            LinearProgressIndicator(
-//                progress = progress,
-//                modifier = Modifier
-//                    .fillMaxWidth(.95f)
-//                    .padding(vertical = 4.dp)
-//                    .background(Color(0xFFE41010)),
-//                trackColor = Color(0xFF2E3038),
-//                color = Color.Red
-//            )
+
                 CustomLinearProgressIndicator(
                     progress = progress,
                     modifier = Modifier.fillMaxWidth(.95f)
                 )
+                }
             }
-        }
         }
     }
 
