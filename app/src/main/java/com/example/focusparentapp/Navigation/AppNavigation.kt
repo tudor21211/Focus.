@@ -39,13 +39,13 @@ fun SetupNavGraph(
     AnimatedNavHost(
         navController = navController,
         startDestination =
-        if (!tutorialFinished)
-            Screens.LandingScreen.route
-        else if(!firstQrScanned)
-            Screens.Setup.route
-        else
-            Screens.MainPage.route
-//    Screens.DeviceUse.route
+//        if (!tutorialFinished)
+//            Screens.LandingScreen.route
+//        else if(!firstQrScanned)
+//            Screens.Setup.route
+//        else
+//            Screens.MainPage.route
+    Screens.DeviceUse.route
     ) {
         composable(Screens.LandingScreen.route) {
             LandingScreen(navController)
