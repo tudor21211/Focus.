@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -57,7 +58,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun DeviceUse(navController: NavController, userId: String, usersViewModel: UsersViewModel){
+fun DeviceUse(navController: NavController, userId: String, usersViewModel: UsersViewModel) {
 
     val systemUiController = rememberSystemUiController()
     SideEffect {
@@ -75,7 +76,7 @@ fun DeviceUse(navController: NavController, userId: String, usersViewModel: User
     val hardcodedTimeArraySorted = hardcodedTimeArray.sortedDescending()
     var maxTimeSpent = 0
     var screenTracker by remember {
-        mutableStateOf<ScreenTracker>(ScreenTracker(0,""))
+        mutableStateOf<ScreenTracker>(ScreenTracker(0, ""))
     }
     var appsStats by remember {
         mutableStateOf<List<AppStats>>(emptyList())
@@ -100,14 +101,14 @@ fun DeviceUse(navController: NavController, userId: String, usersViewModel: User
         )
 
         Spacer(modifier = Modifier.fillMaxHeight(.08f))
-        Column (
+        Column(
             modifier = Modifier.padding(
                 start = screenWidth * 0.05f,
                 end = screenWidth * 0.05f,
                 top = screenWidth * 0.05f,
                 bottom = screenWidth * 0.05f
             )
-        ){
+        ) {
 
             Row() {
                 Card(
@@ -149,7 +150,7 @@ fun DeviceUse(navController: NavController, userId: String, usersViewModel: User
 
 
                 }
-            println("SCREEN TRACKER , ${screenTracker.screenTime}")
+                println("SCREEN TRACKER , ${screenTracker.screenTime}")
                 Card(
                     modifier = Modifier
                         .padding(start = 4.dp)
@@ -182,52 +183,59 @@ fun DeviceUse(navController: NavController, userId: String, usersViewModel: User
 
             Spacer(modifier = Modifier.fillMaxHeight(.08f))
 
-            appsStats.forEach {
-                if (it.oneDayStats > maxTimeSpent)
-                    maxTimeSpent = it.oneDayStats.toInt()
+            LazyColumn(
+                modifier = Modifier.padding(start = 10.dp)
+            ) {
+                items(appsStats.size) {
+                    val it = appsStats[it]
+                    if (it.oneDayStats > maxTimeSpent)
+                        maxTimeSpent = it.oneDayStats.toInt()
 
-                var progress = (it.oneDayStats.toFloat()) / (maxTimeSpent.toFloat())
+                    var progress = (it.oneDayStats.toFloat()) / (maxTimeSpent.toFloat())
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(5.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                ) {
-                    Image(
-                        painter = rememberImagePainter(data = Utils().byteStringToDrawable(it.icon)),
-                        contentDescription = null,
-                        modifier = Modifier.size(47.dp)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                        Image(
+                            painter = rememberImagePainter(data = Utils().byteStringToDrawable(it.icon)),
+                            contentDescription = null,
+                            modifier = Modifier.size(47.dp)
+                        )
+                        Text(
+                            it.appName,
+                            color = Color.White,
+                            fontFamily = FontFamily(
+                                Font(R.font.opensans_res)
+                            ),
+                            modifier = Modifier.padding(10.dp),
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = Utils.TimeUtils.convertMillisecondsToTime(
+                                it.oneDayStats
+                            ),
+                            color = Color.White,
+                            fontFamily = FontFamily(
+                                Font(R.font.opensans_res)
+                            ),
+                        )
+
+                    }
+
+                    CustomLinearProgressIndicator(
+                        progress = progress,
+                        modifier = Modifier.fillMaxWidth(.95f)
                     )
-                    Text(
-                        it.appName,
-                        color = Color.White,
-                        fontFamily = FontFamily(
-                            Font(R.font.opensans_res)
-                        ),
-                        modifier = Modifier.padding(10.dp),
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text(
-                        text = it.oneDayStats.toString(),
-                        color = Color.White,
-                        fontFamily = FontFamily(
-                            Font(R.font.opensans_res)
-                        ),
-                    )
-
-                }
-
-                CustomLinearProgressIndicator(
-                    progress = progress,
-                    modifier = Modifier.fillMaxWidth(.95f)
-                )
                 }
             }
         }
     }
+}
 
 
 @Composable
