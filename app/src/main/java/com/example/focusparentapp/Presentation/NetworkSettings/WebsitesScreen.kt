@@ -195,7 +195,7 @@ fun textField(label: String, type: String, usersViewModel: UsersViewModel, userI
             maxLines = 1,
             modifier = Modifier.fillMaxWidth(.9f),
             colors = TextFieldDefaults.textFieldColors(
-                textColor = Color.White, // Text color
+                focusedTextColor =  Color.White, // Text color
                 containerColor = Color(0xFF000000),
                 cursorColor = Color.Green,
                 focusedIndicatorColor = Color(0xFF39E913),

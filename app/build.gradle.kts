@@ -52,6 +52,7 @@ android {
 
 dependencies {
 
+
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-compose:1.8.0")
@@ -66,14 +67,16 @@ dependencies {
     implementation("io.coil-kt:coil:2.4.0")
     implementation ("io.coil-kt:coil-gif:2.2.2")
     implementation ("com.google.accompanist:accompanist-drawablepainter:0.28.0")
-    implementation ("androidx.navigation:navigation-compose:2.5.0")
-    implementation ("com.google.accompanist:accompanist-navigation-animation:0.24.13-rc")
+    implementation ("androidx.navigation:navigation-compose:2.7.0-alpha01")
+    //implementation ("com.google.accompanist:accompanist-navigation-animation:0.30.0")
     implementation ("io.github.raamcosta.compose-destinations:core:1.7.23-beta")
     implementation("io.github.raamcosta.compose-destinations:ksp:1.5.12-beta")
     implementation("io.coil-kt:coil:2.4.0")
     implementation ("io.coil-kt:coil-gif:2.2.2")
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation(libs.androidx.lifecycle.livedata.ktx)
+    //Location
+    implementation("com.google.maps.android:maps-compose:5.0.1")
     //ROOM
     val room_version = "2.6.1"
     val compose_version = "1.8.0"
@@ -94,4 +97,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }

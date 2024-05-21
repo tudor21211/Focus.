@@ -12,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
@@ -25,14 +27,14 @@ import com.example.focusparentapp.ui.theme.FocusParentAppTheme
 import com.example.websocket.RoomDB.AppDatabase
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
 import com.example.focusparentapp.WebSockets.WebSocketConnector
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+//import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.internal.wait
 import java.util.Timer
-
+import androidx.navigation.compose.rememberNavController
 class MainActivity : ComponentActivity() {
 
     private lateinit var userViewModel: UsersViewModel
@@ -49,8 +51,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             FocusParentAppTheme {
                 // A surface container using the 'background' color from the theme
-                navController = rememberAnimatedNavController()
-                SetupNavGraph(navController, this , userViewModel)
+                navController = rememberNavController()
+                SetupNavGraph(navController, this , userViewModel, window)
 
             }
         }

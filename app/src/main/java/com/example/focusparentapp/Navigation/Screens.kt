@@ -13,5 +13,7 @@ sealed class Screens (val route : String) {
     object WebsitesScreen : Screens(route = "websitesScreen/{userId}")
 
     object DeviceUse : Screens(route = "deviceUse/{userId}")
+
+    object LocationScreen : Screens(route = "locationScreen")
     object TestScreen : Screens(route = "testScreen")
 }

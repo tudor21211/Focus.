@@ -87,7 +87,7 @@ fun TutorialPager(navController: NavController, sharedPreferences: SharedPrefere
     )
 
     val pagerState = rememberPagerState(initialPage =
-        0
+        0, pageCount = {4}
     )
     Row(
         Modifier.fillMaxWidth(),
@@ -108,7 +108,7 @@ fun TutorialPager(navController: NavController, sharedPreferences: SharedPrefere
             )
         }
     }
-    HorizontalPager(state = pagerState, pageCount = 4) { page ->
+    HorizontalPager(state = pagerState) { page ->
         Card(
             Modifier
                 .fillMaxSize(1f)

@@ -44,6 +44,8 @@
         <activity android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="android:screenOrientation" />
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAicOB3LSAQEimvgtIXgSmBE8GkV_gFK9g"/>
     </application>
 
 
