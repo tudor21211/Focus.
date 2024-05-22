@@ -7,6 +7,7 @@ import android.provider.Settings
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
+import com.example.focusparentapp.RoomDB.Entities.LocationCoordinatesEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageStatsEntity
 import com.example.focusparentapp.RoomDB.Entities.ScreenTimeTrackerEntity
@@ -82,6 +83,29 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
                     packageEntityList,
                     timeSpentList
                 )
+            }
+        }
+
+        jsonObject.has("UPDATE_LOCATION_COORDINATES")->{
+            val jsonArray = jsonObject.getJSONArray("UPDATE_LOCATION_COORDINATES")
+            val userId = jsonArray.getString(0)
+            val longitude = jsonArray.getDouble(1)
+            val latitude = jsonArray.getDouble(2)
+            val timestamp = jsonArray.getString(3)
+            GlobalScope.launch(Dispatchers.Default) {
+               try {
+                   usersViewModel.insertLocationCoordinates(
+                       LocationCoordinatesEntity(
+                           userId = userId,
+                           longitude = longitude,
+                           latitude = latitude,
+                           timestamp = timestamp
+                       )
+                   )
+               }
+               catch (e:Exception){
+                   println("NU POT ADAUGA ${e.message}")
+               }
             }
         }
 

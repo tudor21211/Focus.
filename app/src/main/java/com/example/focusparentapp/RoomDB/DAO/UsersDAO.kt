@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.example.focusparentapp.RoomDB.Entities.BlockedWebsiteEntity
+import com.example.focusparentapp.RoomDB.Entities.LocationCoordinatesEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageStatsEntity
 import com.example.focusparentapp.RoomDB.Entities.RestrictedKeywordsEntity
@@ -17,6 +18,7 @@ import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
 import com.example.focusparentapp.RoomDB.Relations.UserWithPackages
 import com.example.focusparentapp.RoomDB.ViewModels.AppInfo
 import com.example.focusparentapp.RoomDB.ViewModels.AppStats
+import com.example.focusparentapp.RoomDB.ViewModels.LocationCoordinates
 import com.example.focusparentapp.RoomDB.ViewModels.ScreenTracker
 import com.example.focusparentapp.RoomDB.ViewModels.TimeSpentByUser
 import kotlinx.coroutines.flow.Flow
@@ -130,5 +132,14 @@ interface UsersDAO {
 
     @Query("SELECT launchTracker, screenTime FROM screen_time_tracker WHERE userId = :userId")
     fun getScreenTimeTracker(userId: String) : ScreenTracker
+
+
+    //LOCATION
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLocationCoordinates(locationCoordinatesEntity: LocationCoordinatesEntity)
+
+    @Query("SELECT longitude, latitude, timestamp FROM locationCoordinates WHERE userId = :userId")
+    fun getCoordinates(userId: String) : LocationCoordinates
 
 }

@@ -138,11 +138,11 @@ fun UserMenu(navController: NavController, userId : String, usersViewModel: User
                     navController.navigate("deviceUse/${userId}")
                 })
             featureCategory("Location",
-                painterResource(id = R.drawable.apps),
+                painterResource(id = R.drawable.location),
                 70.dp,
                 10.dp,
                 onClick = {
-                    navController.navigate("locationScreen")
+                    navController.navigate("locationScreen/${userId}")
                 })
             featureCategory("Restrictions",
                 painterResource(id = R.drawable.blockapps),

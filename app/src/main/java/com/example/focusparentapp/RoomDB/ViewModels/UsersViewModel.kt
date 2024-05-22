@@ -7,6 +7,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.focusparentapp.RoomDB.DAO.UsersDAO
 import com.example.focusparentapp.RoomDB.Entities.BlockedWebsiteEntity
+import com.example.focusparentapp.RoomDB.Entities.LocationCoordinatesEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageStatsEntity
 import com.example.focusparentapp.RoomDB.Entities.RestrictedKeywordsEntity
@@ -148,6 +149,14 @@ class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
         return userDao.getScreenTimeTracker(userId)
     }
 
+    //LOCATION
+    suspend fun insertLocationCoordinates(locationCoordinatesEntity: LocationCoordinatesEntity) {
+        userDao.insertLocationCoordinates(locationCoordinatesEntity)
+    }
+
+    fun getCoordinates(userId: String) : LocationCoordinates {
+        return userDao.getCoordinates(userId)
+    }
 }
 
 data class AppInfo(
@@ -173,4 +182,10 @@ data class AppStats(
 data class ScreenTracker(
     val launchTracker: Int,
     val screenTime: String
+)
+
+data class LocationCoordinates(
+    val longitude: Double,
+    val latitude: Double,
+    val timestamp: String
 )

@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,7 +42,13 @@ import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
+import com.example.focusparentapp.Navigation.Screens
 import com.example.focusparentapp.R
+import com.example.focusparentapp.RoomDB.Entities.LocationCoordinatesEntity
+import com.example.focusparentapp.RoomDB.ViewModels.AppStats
+import com.example.focusparentapp.RoomDB.ViewModels.LocationCoordinates
+import com.example.focusparentapp.RoomDB.ViewModels.ScreenTracker
+import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -58,67 +65,77 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerInfoWindowContent
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.min
 
 @Composable
-fun LocationScreen(navController: NavController,context: Context) {
+fun LocationScreen(navController: NavController, context: Context, userId: String, usersViewModel: UsersViewModel) {
     val systemUiController = rememberSystemUiController()
-    val coroutineScope = rememberCoroutineScope()
-    // Set the status bar to transparent
+
     systemUiController.setSystemBarsColor(
-        color = Color.White,
+        color = Color.Transparent,
         darkIcons = true
     )
 
+    var coordinates by remember { mutableStateOf<LocationCoordinates?>(null) }
 
-    systemUiController.isStatusBarVisible = false // Status bar
-    systemUiController.isNavigationBarVisible = false // Navigation bar
-    systemUiController.isSystemBarsVisible = false // Status & Navigation bars
-    systemUiController.navigationBarDarkContentEnabled = false
-
-    val cameraPosition = LatLng(45.777795871949714, 21.228655029975442)
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(cameraPosition, 15f)
+    LaunchedEffect(userId) {
+        withContext(Dispatchers.IO) {
+            val fetchedCoordinates = usersViewModel.getCoordinates(userId)
+            withContext(Dispatchers.Main) {
+                coordinates = fetchedCoordinates
+            }
+        }
     }
-    LaunchedEffect(cameraPositionState) {
-        cameraPositionState.animate(
-            update = CameraUpdateFactory.newCameraPosition(
-                CameraPosition(cameraPosition, 20f, 0f, 0f)
-            ),
-            durationMs = 1000
+
+    coordinates?.let { coords ->
+        val cameraPositionState = rememberCameraPositionState {
+            position = CameraPosition.fromLatLngZoom(LatLng(coords.longitude, coords.latitude), 15f)
+        }
+
+        LaunchedEffect(coords) {
+            val newCameraPosition = CameraPosition.fromLatLngZoom(LatLng(coords.longitude, coords.latitude), 15f)
+            cameraPositionState.animate(CameraUpdateFactory.newCameraPosition(newCameraPosition), 1000)
+        }
+
+        val mapProperties = MapProperties(
+            mapStyleOptions = MapStyleOptions(styleJson)
         )
-    }
-    val mapProperties = MapProperties(
-        mapStyleOptions = MapStyleOptions(styleJson)
-    )
-    Box(modifier = Modifier.fillMaxSize()) {
-        GoogleMap(
-            modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState,
-            properties = mapProperties,
 
+        Box(modifier = Modifier.fillMaxSize()) {
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState,
+                properties = mapProperties
             ) {
-            val bitmapDescriptor by remember {
-                mutableStateOf(createBitmapDescriptor(context))
+                val bitmapDescriptor by remember {
+                    mutableStateOf(createBitmapDescriptor(context))
+                }
+                MarkerInfoWindowContent(
+                    state = MarkerState(position = LatLng(coords.longitude, coords.latitude)),
+                    icon = bitmapDescriptor
+                ) { marker ->
+                    Text(
+                        "Last seen here at ${coords.timestamp}",
+                        color = Color.Black,
+                        modifier = Modifier.padding(16.dp),
+                        fontSize = 20.sp
+                    )
+                }
             }
-            println("BITMAP DESCRIPTOR $bitmapDescriptor")
-            MarkerInfoWindowContent(
-                state = MarkerState(position = cameraPosition),
-                icon = bitmapDescriptor
-            ){
-                marker ->
-                Text("Last seen here at 5/22/2024 13:22", color = Color.Black, modifier = Modifier.padding(16.dp), fontSize = 20.sp)
+            IconButton(onClick = {
+                navController.navigate("userMenu/$userId")
+            }) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
             }
         }
-        IconButton(onClick = { /* Handle back button click here */ }) {
-            Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+    } ?: run {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
         }
     }
-
-
-
-
 }
 
 val styleJson = """
@@ -153,43 +170,35 @@ val styleJson = """
     ]
 """.trimIndent()
 
-
-
 fun createBitmapDescriptor(context: Context): BitmapDescriptor {
     return BitmapDescriptorFactory.fromBitmap(
         BitmapFactory.decodeResource(context.resources, R.drawable.girl)
             .let { bitmap ->
-                Bitmap.createScaledBitmap(bitmap, 200, 200, false) // Adjust the size as needed
+                Bitmap.createScaledBitmap(bitmap, 200, 200, false)
             }
             .let { scaledBitmap ->
-                Bitmap.createBitmap(scaledBitmap.width, scaledBitmap.height + 50, Bitmap.Config.ARGB_8888)
-                    .also { bitmap ->
-                        val canvas = Canvas(bitmap)
-                        val paint = Paint().apply {
-                            isAntiAlias = true
-                            color = Color.Cyan.toArgb() // Marker background color
-                            strokeWidth = 5f
-                        }
-                        val radius = min(scaledBitmap.width, scaledBitmap.height) / 2f
-                        canvas.drawCircle(
-                            scaledBitmap.width / 2f,
-                            scaledBitmap.height / 2f,
-                            radius,
-                            paint
-                        )
-                        val bitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-                        bitmapPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-                        canvas.drawBitmap(scaledBitmap, 0f, 0f, bitmapPaint)
-
-                        // Draw the pinpoint
-                        paint.color = Color.Red.toArgb() // Pinpoint color
-                        val path = Path().apply {
-                            moveTo(scaledBitmap.width / 2f, scaledBitmap.height.toFloat()+1000)
-                            lineTo(scaledBitmap.width / 2f, scaledBitmap.height.toFloat() + 1500)
-                        }
-                        canvas.drawPath(path, paint)
-                        paint.color = Color.Red.toArgb() // Circle color
-                        canvas.drawCircle(scaledBitmap.width / 2f, scaledBitmap.height.toFloat() + 30, 15f, paint)
+                Bitmap.createBitmap(scaledBitmap.width, scaledBitmap.height + 50, Bitmap.Config.ARGB_8888).also { bitmap ->
+                    val canvas = Canvas(bitmap)
+                    val paint = Paint().apply {
+                        isAntiAlias = true
+                        color = Color.Cyan.toArgb()
+                        strokeWidth = 5f
                     }
-            })
+                    val radius = min(scaledBitmap.width, scaledBitmap.height) / 2f
+                    canvas.drawCircle(scaledBitmap.width / 2f, scaledBitmap.height / 2f, radius, paint)
+                    val bitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                        xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+                    }
+                    canvas.drawBitmap(scaledBitmap, 0f, 0f, bitmapPaint)
+                    paint.color = Color.Red.toArgb()
+                    val path = Path().apply {
+                        moveTo(scaledBitmap.width / 2f, scaledBitmap.height.toFloat() + 1000)
+                        lineTo(scaledBitmap.width / 2f, scaledBitmap.height.toFloat() + 1500)
+                    }
+                    canvas.drawPath(path, paint)
+                    paint.color = Color.Red.toArgb()
+                    canvas.drawCircle(scaledBitmap.width / 2f, scaledBitmap.height.toFloat() + 30, 15f, paint)
+                }
+            }
+    )
 }

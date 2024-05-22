@@ -40,13 +40,13 @@ fun SetupNavGraph(
     NavHost(
         navController = navController,
         startDestination =
-//        if (!tutorialFinished)
-//            Screens.LandingScreen.route
-//        else if(!firstQrScanned)
-//            Screens.Setup.route
-//        else
-//            Screens.MainPage.route
-    Screens.LocationScreen.route
+        if (!tutorialFinished)
+            Screens.LandingScreen.route
+        else if(!firstQrScanned)
+            Screens.Setup.route
+        else
+            Screens.MainPage.route
+//    Screens.LocationScreen.route
     ) {
         composable(Screens.LandingScreen.route) {
             LandingScreen(navController)
@@ -117,8 +117,13 @@ fun SetupNavGraph(
             DeviceUse(navController, it.arguments?.getString("userId")!!, usersViewModel)
         }
 
-        composable(Screens.LocationScreen.route){
-            LocationScreen(navController, context)
+        composable(
+            Screens.LocationScreen.route,
+            arguments = listOf(navArgument("userId"){
+                type = NavType.StringType
+            })
+        ){
+            LocationScreen(navController, context, it.arguments?.getString("userId")!!, usersViewModel)
         }
 
         composable(Screens.TestScreen.route){
