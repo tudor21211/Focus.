@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
             FocusParentAppTheme {
                 // A surface container using the 'background' color from the theme
                 navController = rememberNavController()
-                SetupNavGraph(navController, this , userViewModel, window)
+                SetupNavGraph(navController, this , userViewModel)
 
             }
         }

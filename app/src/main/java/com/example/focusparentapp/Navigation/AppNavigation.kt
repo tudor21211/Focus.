@@ -31,7 +31,6 @@ fun SetupNavGraph(
     navController: NavHostController,
     context : Context,
     usersViewModel: UsersViewModel,
-    window: Window
 ) {
     val sharedPreferences = LocalContext.current.getSharedPreferences("TutorialFinished", Context.MODE_PRIVATE)
     val tutorialFinished = sharedPreferences.getBoolean("TutorialFinished", false)
@@ -119,7 +118,7 @@ fun SetupNavGraph(
         }
 
         composable(Screens.LocationScreen.route){
-            LocationScreen(window)
+            LocationScreen(navController, context)
         }
 
         composable(Screens.TestScreen.route){
