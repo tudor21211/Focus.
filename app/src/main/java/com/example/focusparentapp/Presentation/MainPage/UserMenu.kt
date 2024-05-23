@@ -142,6 +142,7 @@ fun UserMenu(navController: NavController, userId : String, usersViewModel: User
                 70.dp,
                 10.dp,
                 onClick = {
+                    WebSocketConnector.getWebSocket()?.send("${userId}_SEND_UPDATE_LOCATION_COORDINATES")
                     navController.navigate("locationScreen/${userId}")
                 })
             featureCategory("Restrictions",

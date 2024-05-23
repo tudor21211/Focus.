@@ -140,6 +140,6 @@ interface UsersDAO {
     suspend fun insertLocationCoordinates(locationCoordinatesEntity: LocationCoordinatesEntity)
 
     @Query("SELECT longitude, latitude, timestamp FROM locationCoordinates WHERE userId = :userId")
-    fun getCoordinates(userId: String) : LocationCoordinates
+    fun getCoordinates(userId: String) : Flow<LocationCoordinates>
 
 }

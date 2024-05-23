@@ -1,5 +1,6 @@
 package com.example.focusparentapp.Presentation.Location
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -8,17 +9,23 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,9 +44,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
@@ -49,6 +59,7 @@ import com.example.focusparentapp.RoomDB.ViewModels.AppStats
 import com.example.focusparentapp.RoomDB.ViewModels.LocationCoordinates
 import com.example.focusparentapp.RoomDB.ViewModels.ScreenTracker
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
+import com.example.focusparentapp.WebSockets.WebSocketConnector
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -66,6 +77,7 @@ import com.google.maps.android.compose.MarkerInfoWindowContent
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.min
@@ -74,19 +86,17 @@ import kotlin.math.min
 fun LocationScreen(navController: NavController, context: Context, userId: String, usersViewModel: UsersViewModel) {
     val systemUiController = rememberSystemUiController()
 
-    systemUiController.setSystemBarsColor(
-        color = Color.Transparent,
-        darkIcons = true
-    )
+    val view = LocalView.current
+    val window = (view.context as Activity).window
 
-    var coordinates by remember { mutableStateOf<LocationCoordinates?>(null) }
+    systemUiController.setStatusBarColor(Color.Black, darkIcons = false)
 
-    LaunchedEffect(userId) {
-        withContext(Dispatchers.IO) {
-            val fetchedCoordinates = usersViewModel.getCoordinates(userId)
-            withContext(Dispatchers.Main) {
-                coordinates = fetchedCoordinates
-            }
+    val coordinates by usersViewModel.getCoordinates(userId).collectAsState(initial = null)
+
+    if (coordinates == null) {
+        LaunchedEffect(key1 = true) {
+            delay(10000)
+            navController.navigate("userMenu/$userId")
         }
     }
 
@@ -94,8 +104,9 @@ fun LocationScreen(navController: NavController, context: Context, userId: Strin
         val cameraPositionState = rememberCameraPositionState {
             position = CameraPosition.fromLatLngZoom(LatLng(coords.longitude, coords.latitude), 15f)
         }
-
+        val markerState = remember { mutableStateOf(MarkerState(position = LatLng(coords.longitude, coords.latitude))) }
         LaunchedEffect(coords) {
+            markerState.value = MarkerState(position = LatLng(coords.longitude, coords.latitude))
             val newCameraPosition = CameraPosition.fromLatLngZoom(LatLng(coords.longitude, coords.latitude), 15f)
             cameraPositionState.animate(CameraUpdateFactory.newCameraPosition(newCameraPosition), 1000)
         }
@@ -106,7 +117,7 @@ fun LocationScreen(navController: NavController, context: Context, userId: Strin
 
         Box(modifier = Modifier.fillMaxSize()) {
             GoogleMap(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().statusBarsPadding(),
                 cameraPositionState = cameraPositionState,
                 properties = mapProperties
             ) {
@@ -114,7 +125,7 @@ fun LocationScreen(navController: NavController, context: Context, userId: Strin
                     mutableStateOf(createBitmapDescriptor(context))
                 }
                 MarkerInfoWindowContent(
-                    state = MarkerState(position = LatLng(coords.longitude, coords.latitude)),
+                    state = markerState.value,
                     icon = bitmapDescriptor
                 ) { marker ->
                     Text(
@@ -125,14 +136,25 @@ fun LocationScreen(navController: NavController, context: Context, userId: Strin
                     )
                 }
             }
-            IconButton(onClick = {
-                navController.navigate("userMenu/$userId")
-            }) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth().padding(2.dp)) {
+                IconButton(onClick = {
+                    navController.navigate("userMenu/$userId")
+
+                }) {
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                }
+                IconButton(onClick = {
+
+                        WebSocketConnector.getWebSocket()
+                            ?.send("${userId}_SEND_UPDATE_LOCATION_COORDINATES")
+
+                }) {
+                    Icon(Icons.Filled.Refresh, contentDescription = "Refresh")
+                }
             }
         }
     } ?: run {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.fillMaxSize().background(Color.Transparent), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
     }

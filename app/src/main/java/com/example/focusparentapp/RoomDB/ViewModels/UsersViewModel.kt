@@ -154,7 +154,7 @@ class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
         userDao.insertLocationCoordinates(locationCoordinatesEntity)
     }
 
-    fun getCoordinates(userId: String) : LocationCoordinates {
+    fun getCoordinates(userId: String) : Flow<LocationCoordinates> {
         return userDao.getCoordinates(userId)
     }
 }
