@@ -2,24 +2,23 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="AllTestsSuite">
+        <State />
+      </entry>
       <entry key="QrScanner">
         <State />
       </entry>
       <entry key="app">
-        <State>
-          <runningDeviceTargetSelectedWithDropDown>
-            <Target>
-              <type value="RUNNING_DEVICE_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="SERIAL_NUMBER" />
-                  <value value="b67a3ae2" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-05-23T14:28:47.155975500Z" />
-        </State>
+        <State />
+      </entry>
+      <entry key="testAppTimeSpentEntityJsonMapping()">
+        <State />
+      </entry>
+      <entry key="testNavigation()">
+        <State />
+      </entry>
+      <entry key="useAppContext()">
+        <State />
       </entry>
     </value>
   </component>

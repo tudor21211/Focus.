@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     //Location
     implementation("com.google.maps.android:maps-compose:5.0.1")
+    implementation(libs.androidx.navigation.testing)
     //ROOM
     val room_version = "2.6.1"
     val compose_version = "1.8.0"
@@ -85,6 +86,9 @@ dependencies {
     implementation ("androidx.room:room-ktx:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
 
+
+    //GSON TESTARE
+    implementation("com.google.code.gson:gson:2.8.8")
 
     //QR
     implementation ("com.google.zxing:core:3.4.1")
@@ -94,9 +98,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation("androidx.test:runner:1.4.0")
+    androidTestImplementation("androidx.test:rules:1.4.0")
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    androidTestImplementation ("androidx.test.espresso:espresso-intents:3.4.0")
 
 }

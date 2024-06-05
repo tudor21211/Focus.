@@ -57,6 +57,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.focusparentapp.Navigation.Screens
+import com.example.focusparentapp.Presentation.SharedViewModel
 import com.example.focusparentapp.QRscan.QrScanner
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.WebSockets.WebSocketConnector
@@ -65,7 +66,12 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun MainPageScreen(navController: NavController, context : Context, userViewModel: UsersViewModel) {
+fun MainPageScreen(
+    navController: NavController,
+    context : Context,
+    userViewModel: UsersViewModel,
+    sharedViewModel: SharedViewModel
+) {
 
     val systemUiController = rememberSystemUiController()
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
@@ -134,24 +140,31 @@ fun MainPageScreen(navController: NavController, context : Context, userViewMode
 //                    },
 //                    borderWidth = BorderStroke(1.dp, Color.Black) )
 //            }
-
+            val boyImages = listOf(R.drawable.boy2, R.drawable.boy3, R.drawable.boy4)
+            val girlImages = listOf(R.drawable.girl2, R.drawable.girl3, R.drawable.girl)
             items(users.size+1){index ->
-                if(index>0)
-                addButton(
-                    painterResource =
-                    if (index % 2 ==0) painterResource(id = R.drawable.boy)
-                    else painterResource(id = R.drawable.girl),
-                    onClick = {
-                       WebSocketConnector.reconnectWebSocket(context, users[index-1].userId)
-                       val webSocket = WebSocketConnector.getWebSocket()
-                       webSocket?.send("HELLO THERE "+users[index-1].userId)
-                       webSocket?.send("${users[index-1].userId} SEND_STATISTICS_TIME")
-                       navController.navigate("userMenu/${users[index-1].userId}")
-                  },
-                    borderWidth =BorderStroke(1.dp, Color.White) ,
-                    text = "Child $index" ,
-                    addText = true
-                )
+                if(index>0) {
+                    val imageResId = if (index % 2 == 0) {
+                        boyImages[(index / 2) % boyImages.size]
+                    } else {
+                        girlImages[(index / 2) % girlImages.size]
+                    }
+
+                    addButton(
+                        painterResource = painterResource(id = imageResId),
+                        onClick = {
+                            WebSocketConnector.reconnectWebSocket(context, users[index - 1].userId)
+                            val webSocket = WebSocketConnector.getWebSocket()
+                            webSocket?.send("HELLO THERE " + users[index - 1].userId)
+                            webSocket?.send("${users[index - 1].userId} SEND_STATISTICS_TIME")
+                            sharedViewModel.setUserDetails(index, imageResId)
+                            navController.navigate("userMenu/${users[index - 1].userId}")
+                        },
+                        borderWidth = BorderStroke(1.dp, Color.White),
+                        text = "Child $index",
+                        addText = true
+                    )
+                }
                 else
                     addButton(
                         painterResource = painterResource(id = R.drawable.plussign),

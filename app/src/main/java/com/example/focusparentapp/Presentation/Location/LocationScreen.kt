@@ -53,6 +53,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
 import com.example.focusparentapp.Navigation.Screens
+import com.example.focusparentapp.Presentation.SharedViewModel
 import com.example.focusparentapp.R
 import com.example.focusparentapp.RoomDB.Entities.LocationCoordinatesEntity
 import com.example.focusparentapp.RoomDB.ViewModels.AppStats
@@ -83,7 +84,7 @@ import kotlinx.coroutines.withContext
 import kotlin.math.min
 
 @Composable
-fun LocationScreen(navController: NavController, context: Context, userId: String, usersViewModel: UsersViewModel) {
+fun LocationScreen(navController: NavController, context: Context, userId: String, sharedViewModel: SharedViewModel, usersViewModel: UsersViewModel) {
     val systemUiController = rememberSystemUiController()
 
     val view = LocalView.current
@@ -92,6 +93,9 @@ fun LocationScreen(navController: NavController, context: Context, userId: Strin
     systemUiController.setStatusBarColor(Color.Black, darkIcons = false)
 
     val coordinates by usersViewModel.getCoordinates(userId).collectAsState(initial = null)
+
+    val userNumber = sharedViewModel.userNumber.collectAsState().value
+    val imageResId = sharedViewModel.imageResId.collectAsState().value
 
     if (coordinates == null) {
         LaunchedEffect(key1 = true) {
@@ -122,7 +126,7 @@ fun LocationScreen(navController: NavController, context: Context, userId: Strin
                 properties = mapProperties
             ) {
                 val bitmapDescriptor by remember {
-                    mutableStateOf(createBitmapDescriptor(context))
+                    mutableStateOf(imageResId?.let { createBitmapDescriptor(context, it) })
                 }
                 MarkerInfoWindowContent(
                     state = markerState.value,
@@ -192,9 +196,9 @@ val styleJson = """
     ]
 """.trimIndent()
 
-fun createBitmapDescriptor(context: Context): BitmapDescriptor {
+fun createBitmapDescriptor(context: Context, imageResId : Int): BitmapDescriptor {
     return BitmapDescriptorFactory.fromBitmap(
-        BitmapFactory.decodeResource(context.resources, R.drawable.girl)
+        BitmapFactory.decodeResource(context.resources, imageResId)
             .let { bitmap ->
                 Bitmap.createScaledBitmap(bitmap, 200, 200, false)
             }

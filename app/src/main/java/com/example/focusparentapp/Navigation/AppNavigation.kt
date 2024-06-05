@@ -25,12 +25,15 @@ import com.example.focusparentapp.Presentation.Tutorial.TutorialPager
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.focusparentapp.Presentation.SharedViewModel
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
     context : Context,
     usersViewModel: UsersViewModel,
+    sharedViewModel: SharedViewModel
 ) {
     val sharedPreferences = LocalContext.current.getSharedPreferences("TutorialFinished", Context.MODE_PRIVATE)
     val tutorialFinished = sharedPreferences.getBoolean("TutorialFinished", false)
@@ -53,7 +56,7 @@ fun SetupNavGraph(
         }
 
         composable(Screens.MainPage.route) {
-            MainPageScreen(navController, context, usersViewModel)
+            MainPageScreen(navController, context, usersViewModel, sharedViewModel)
         }
 
         composable(Screens.TutorialPager.route){
@@ -74,9 +77,11 @@ fun SetupNavGraph(
             Screens.UserMenu.route,
             arguments = listOf(navArgument("userId"){
                 type = NavType.StringType
-            })
+            },
+                )
         ){
-            UserMenu(navController, it.arguments?.getString("userId")!!, usersViewModel)
+
+            UserMenu(navController, it.arguments?.getString("userId")!!, sharedViewModel,  usersViewModel)
         }
 
         composable(
@@ -121,9 +126,9 @@ fun SetupNavGraph(
             Screens.LocationScreen.route,
             arguments = listOf(navArgument("userId"){
                 type = NavType.StringType
-            })
+            },)
         ){
-            LocationScreen(navController, context, it.arguments?.getString("userId")!!, usersViewModel)
+            LocationScreen(navController, context, it.arguments?.getString("userId")!!, sharedViewModel, usersViewModel)
         }
 
         composable(Screens.TestScreen.route){

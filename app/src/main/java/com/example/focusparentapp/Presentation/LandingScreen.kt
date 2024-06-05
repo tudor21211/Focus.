@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -127,6 +128,7 @@ fun LandingScreen(navController: NavController) {
                     .fillMaxWidth(.9f)
                     .fillMaxHeight(.1f)
                     .clip(shape = RoundedCornerShape(10.dp))
+                    .testTag("Get Started")
             ) {
                 Text(
                     text = "Get Started",

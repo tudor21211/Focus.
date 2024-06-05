@@ -21,7 +21,6 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE
         )]
 )
-
 data class PackageStatsEntity(
     val userId : String,
     val packageName : String,

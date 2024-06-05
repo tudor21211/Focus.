@@ -55,8 +55,6 @@ class QrScanner : ComponentActivity() {
             }
         }
 
-
-
      private fun checkCameraPermission(context: Context) {
         if (ContextCompat.checkSelfPermission(
                 context,

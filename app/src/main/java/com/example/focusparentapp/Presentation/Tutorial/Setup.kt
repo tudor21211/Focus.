@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -122,9 +123,8 @@ fun Setup(navController : NavController,context : Context) {
                     QrScanner::class.java
                 )
                 (context as Activity).startActivityForResult(myIntent, 100)
-//TODO check if the result is correct
             },
-            modifier = Modifier.size(100.dp) ) {
+            modifier = Modifier.size(100.dp).testTag("ScanQR")) {
                 Icon(
                     painterResource(id = R.drawable.scan),
                     modifier = Modifier.fillMaxSize(.9f),

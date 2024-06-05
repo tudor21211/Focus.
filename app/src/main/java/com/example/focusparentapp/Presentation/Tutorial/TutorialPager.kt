@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -108,7 +109,7 @@ fun TutorialPager(navController: NavController, sharedPreferences: SharedPrefere
             )
         }
     }
-    HorizontalPager(state = pagerState) { page ->
+    HorizontalPager(state = pagerState, modifier = Modifier.testTag("TutorialPager")) { page ->
         Card(
             Modifier
                 .fillMaxSize(1f)
@@ -133,7 +134,7 @@ fun TutorialPager(navController: NavController, sharedPreferences: SharedPrefere
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(start = 5.dp, end = 5.dp)
+                modifier = Modifier.padding(start = 5.dp, end = 5.dp).testTag("Page${page + 1}")
                 ) {
                 Spacer(modifier = Modifier.fillMaxHeight(.3f))
                 Image(painter = painterResource(id = images[page]), contentDescription = "" )

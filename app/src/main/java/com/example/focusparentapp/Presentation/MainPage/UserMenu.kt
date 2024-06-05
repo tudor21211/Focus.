@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.focusparentapp.Navigation.Screens
+import com.example.focusparentapp.Presentation.SharedViewModel
 import com.example.focusparentapp.R
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
@@ -62,7 +64,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun UserMenu(navController: NavController, userId : String, usersViewModel: UsersViewModel){
+fun UserMenu(navController: NavController, userId : String, sharedViewModel: SharedViewModel, usersViewModel: UsersViewModel){
 
     val systemUiController = rememberSystemUiController()
     SideEffect {
@@ -86,9 +88,8 @@ fun UserMenu(navController: NavController, userId : String, usersViewModel: User
         }
     }
 
-    LaunchedEffect(Unit) {
-
-    }
+    val userNumber = sharedViewModel.userNumber.collectAsState().value
+    val imageResId = sharedViewModel.imageResId.collectAsState().value
 
     val colorStops = arrayOf(
         0.2f to Color(0xFFE2E1EB),
@@ -111,8 +112,8 @@ fun UserMenu(navController: NavController, userId : String, usersViewModel: User
                 .fillMaxHeight()
         ) {
             imageWidget(
-                painterResource = painterResource(id = R.drawable.girl),
-                "Child One",
+                painterResource = painterResource(id = imageResId ?: R.drawable.boy),
+                "Child $userNumber",
                 deviceType,
                 email
             )

@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 class PackagesViewModel (private val userDao: UsersDAO) : ViewModel() {
 
-
     suspend fun insertPackage(packageEntity: PackageEntity) {
         userDao.insertPackage(packageEntity)
     }

@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.Text
@@ -35,11 +36,14 @@ import okhttp3.Request
 import okhttp3.internal.wait
 import java.util.Timer
 import androidx.navigation.compose.rememberNavController
+import com.example.focusparentapp.Presentation.SharedViewModel
+
 class MainActivity : ComponentActivity() {
 
     private lateinit var userViewModel: UsersViewModel
     private lateinit var appDatabase: AppDatabase
     private lateinit var navController : NavHostController
+    private val sharedViewModel: SharedViewModel by viewModels()
     @OptIn(ExperimentalAnimationApi::class)
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +56,7 @@ class MainActivity : ComponentActivity() {
             FocusParentAppTheme {
                 // A surface container using the 'background' color from the theme
                 navController = rememberNavController()
-                SetupNavGraph(navController, this , userViewModel)
+                SetupNavGraph(navController, this , userViewModel, sharedViewModel)
 
             }
         }
@@ -76,7 +80,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-
     }
 
 }
