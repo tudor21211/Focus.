@@ -2,6 +2,7 @@ package com.example.focusparentapp.Presentation.NetworkSettings
 
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,6 +25,8 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -81,18 +87,72 @@ fun WebsitesScreen(navController: NavController, userId: String, usersViewModel:
         1f to Color(0xFF0A101E)
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(brush = Brush.linearGradient(colorStops = colorStops)),
-        horizontalAlignment = Alignment.Start
-    ){
+    var myState1 by remember { mutableStateOf(false) }
+    var myState2 by remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(brush = Brush.linearGradient(colorStops = colorStops))) {
+
         TopBar(navController, route = "userMenu/${userId}", "")
-        expandableCard(title = "Block websites", textFieldLabel = "Enter a website URL" , type = "url", usersViewModel, userId )
-        expandableCard(title = "Block keywords", textFieldLabel = "Enter a keyword to filter" , type = "keyword", usersViewModel, userId)
+
+        // Expandable cards area
+        expandableCard(title = "Block websites", textFieldLabel = "Enter a website URL", type = "url", usersViewModel, userId)
+        expandableCard(title = "Block keywords", textFieldLabel = "Enter a keyword to filter", type = "keyword", usersViewModel, userId)
+
+        // Spacer to provide a visual separation and prevent the social media block features from being pushed too far down
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Social Media Block Features
+        SocialMediaBlockFeature("Block Instagram Reels", R.drawable.insta, myState1) { state ->
+            myState1 = state
+            sendStateChange(userId, "REELS", state)
+        }
+        SocialMediaBlockFeature("Block YouTube Shorts", R.drawable.yt, myState2) { state ->
+            myState2 = state
+            sendStateChange(userId, "SHORTS", state)
+        }
+        Spacer(modifier = Modifier.height(40.dp))
     }
 
 }
+
+fun sendStateChange(userId: String, feature: String, state: Boolean) {
+    val action = if (state) "UPDATE_$feature" else "UPDATE_$feature"
+    val jsonArray = JSONArray()
+    val jsonObject = JSONObject().apply{
+        put("$feature", state)
+    }
+    jsonArray.put(jsonObject)
+    val finalJsonObject = JSONObject().apply {
+        put("${userId}_$action", jsonArray) // Add the array to a final JSON object
+    }
+    val webSocket = WebSocketConnector.getWebSocket()
+    webSocket?.send(finalJsonObject.toString())
+}
+
+@Composable
+fun SocialMediaBlockFeature(title: String, iconId: Int, state: Boolean, onStateChange: (Boolean) -> Unit) {
+    Image(
+        painter = painterResource(id = iconId),
+        contentDescription = null,
+        modifier = Modifier.size(80.dp).padding(start = 20.dp)
+    )
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)) {
+
+        Text(text = title, fontSize = 30.sp, modifier = Modifier.weight(1f).padding(start = 10.dp), color = Color.White, fontFamily = FontFamily(Font(R.font.opensans_res)))
+        Checkbox(
+            checked = state,
+            onCheckedChange = { onStateChange(it) },
+            colors = CheckboxDefaults.colors(
+                uncheckedColor = Color.Red,
+                checkedColor = Color.Green,
+                checkmarkColor = Color.Black
+            )
+        )
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

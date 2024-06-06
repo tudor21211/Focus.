@@ -12,7 +12,7 @@ object WebSocketConnector {
     private val client = OkHttpClient()
 
     fun connectWebSocket(context: Context, endPoint: String) {
-        val request = Request.Builder().url("ws://192.168.0.137:8200/ws/$endPoint").build()
+        val request = Request.Builder().url("ws://192.168.0.139:8200/ws/$endPoint").build()
         //val request = Request.Builder().url("wss://fastapi-project-zgaflnvvcq-ey.a.run.app/ws/$endPoint").build()
         val listener = WebSocketManager(context)
         webSocket = client.newWebSocket(request, listener)

@@ -49,7 +49,7 @@ fun SetupNavGraph(
             Screens.Setup.route
         else
             Screens.MainPage.route
-//    Screens.LocationScreen.route
+//    Screens.WebsitesScreen.route
     ) {
         composable(Screens.LandingScreen.route) {
             LandingScreen(navController)
