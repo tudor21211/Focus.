@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -75,7 +76,7 @@ fun MainPageScreen(
 
     val systemUiController = rememberSystemUiController()
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-
+    var isAddingUser by remember { mutableStateOf(false) }
 
     SideEffect {
         systemUiController.setSystemBarsColor(Color(0xFF172238))
@@ -169,12 +170,14 @@ fun MainPageScreen(
                     addButton(
                         painterResource = painterResource(id = R.drawable.plussign),
                         onClick = {
+
                             val myIntent = Intent(
                                 context,
                                 QrScanner::class.java
                             )
                             (context as Activity).startActivityForResult(myIntent, 100)
-                        },
+                            isAddingUser = true
+                                  },
                         borderWidth =BorderStroke(1.dp, Color.White) ,
                         text = "Add Profile" ,
                         addText = true
@@ -195,6 +198,14 @@ fun MainPageScreen(
         Spacer(modifier = Modifier.fillMaxHeight(.03f))
 
         activitiesSection()
+    }
+    if (isAddingUser) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = Color.White)
+        }
     }
 
 

@@ -37,6 +37,7 @@ import okhttp3.internal.wait
 import java.util.Timer
 import androidx.navigation.compose.rememberNavController
 import com.example.focusparentapp.Presentation.SharedViewModel
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
 
@@ -95,6 +96,4 @@ fun connectWebSocket(context: Context, endPoint : String) {
     WebSocketConnector.connectWebSocket(context, endPoint)
     val webSocket = WebSocketConnector.getWebSocket()
     webSocket?.send("$endPoint SEND_FIRST_TIME_APPS_DETAILS")
-
-
 }

@@ -1,6 +1,7 @@
 package com.example.focusparentapp.Presentation.DeviceUse
 
 import android.graphics.drawable.shapes.Shape
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -55,6 +56,7 @@ import com.example.focusparentapp.Utils.Utils
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -71,20 +73,43 @@ fun DeviceUse(navController: NavController, userId: String, usersViewModel: User
         1f to Color(0xFF0A101E)
     )
 
-    //TODO remove hardcoded time array
-    val hardcodedTimeArray = listOf(150, 1800, 300, 3000, 4000)
-    val hardcodedTimeArraySorted = hardcodedTimeArray.sortedDescending()
     var maxTimeSpent = 0
-    var screenTracker by remember {
-        mutableStateOf<ScreenTracker>(ScreenTracker(0, ""))
-    }
-    var appsStats by remember {
-        mutableStateOf<List<AppStats>>(emptyList())
-    }
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            screenTracker = usersViewModel.getScreenTimeTracker(userId)
-            appsStats = usersViewModel.getStatsFromUser(userId)
+
+    var isLoading by remember { mutableStateOf(true) }
+    var screenTracker by remember { mutableStateOf<ScreenTracker>(ScreenTracker(0, "")) }
+    var appsStats by remember { mutableStateOf<List<AppStats>>(emptyList()) }
+
+    LaunchedEffect(userId) {
+        isLoading = true
+        Log.d("DeviceUse", "LaunchedEffect started, isLoading set to true")
+        try {
+            while (true) {
+                val newScreenTracker = withContext(Dispatchers.IO) {
+                    Log.d("DeviceUse", "Fetching screenTracker")
+                    usersViewModel.getScreenTimeTracker(userId)
+                }
+                val newAppsStats = withContext(Dispatchers.IO) {
+                    Log.d("DeviceUse", "Fetching appsStats")
+                    usersViewModel.getStatsFromUser(userId)
+                }
+
+                if (newScreenTracker != null && newAppsStats != null) {
+                    screenTracker = newScreenTracker
+                    appsStats = newAppsStats
+                    Log.d("DeviceUse", "Data fetched successfully")
+                    break
+                } else {
+                    Log.d("DeviceUse", "Data is null, retrying...")
+                    delay(500)
+                }
+            }
+        } catch (e: Exception) {
+            // Handle error
+            Log.e("DeviceUse", "Error fetching data", e)
+            e.printStackTrace()
+        } finally {
+            isLoading = false
+            Log.d("DeviceUse", "isLoading set to false")
         }
     }
 
@@ -99,138 +124,146 @@ fun DeviceUse(navController: NavController, userId: String, usersViewModel: User
             route = "userMenu/${userId}",
             lastUpdateDate = ""
         )
+        if (isLoading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = Color.White)
+            }
+        } else {
+            Spacer(modifier = Modifier.fillMaxHeight(.08f))
+            Column(
+                modifier = Modifier.padding(
+                    start = screenWidth * 0.05f,
+                    end = screenWidth * 0.05f,
+                    top = screenWidth * 0.05f,
+                    bottom = screenWidth * 0.05f
+                )
+            ) {
 
-        Spacer(modifier = Modifier.fillMaxHeight(.08f))
-        Column(
-            modifier = Modifier.padding(
-                start = screenWidth * 0.05f,
-                end = screenWidth * 0.05f,
-                top = screenWidth * 0.05f,
-                bottom = screenWidth * 0.05f
-            )
-        ) {
-
-            Row() {
-                Card(
-                    modifier = Modifier
-                        .padding(end = 4.dp)
-                        .border(
-                            border = BorderStroke(1.dp, Color.White),
-                            shape = RoundedCornerShape(15.dp)
+                Row() {
+                    Card(
+                        modifier = Modifier
+                            .padding(end = 4.dp)
+                            .border(
+                                border = BorderStroke(1.dp, Color.White),
+                                shape = RoundedCornerShape(15.dp)
+                            )
+                            .fillMaxWidth(.5f)
+                            .fillMaxHeight(.2f),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFF22355C)
                         )
-                        .fillMaxWidth(.5f)
-                        .fillMaxHeight(.2f),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFF22355C)
-                    )
-                ) {
+                    ) {
 
-                    Text(
-                        text = "Apps Launch Tracker ",
-                        modifier = Modifier.padding(10.dp),
-                        fontFamily = FontFamily(Font(R.font.opensans_res)),
-                        color = Color.White
-                    )
-                    Row() {
                         Text(
-                            text = screenTracker.launchTracker.toString(),
+                            text = "Apps Launch Tracker ",
+                            modifier = Modifier.padding(10.dp),
+                            fontFamily = FontFamily(Font(R.font.opensans_res)),
+                            color = Color.White
+                        )
+                        Row() {
+                            Text(
+                                text = screenTracker?.launchTracker.toString() ?: "Collecting data",
+                                modifier = Modifier.padding(10.dp),
+                                fontFamily = FontFamily(Font(R.font.opensans_res)),
+                                fontSize = 30.sp,
+                                color = Color.White
+                            )
+                            Text(
+                                text = "launches /24h",
+                                fontFamily = FontFamily(Font(R.font.opensans_res)),
+                                modifier = Modifier.padding(start = 15.dp, top = 40.dp),
+                                fontSize = 12.sp,
+                                color = Color.White
+                            )
+                        }
+
+
+                    }
+                    Card(
+                        modifier = Modifier
+                            .padding(start = 4.dp)
+                            .border(
+                                border = BorderStroke(1.dp, Color.White),
+                                shape = RoundedCornerShape(15.dp)
+                            )
+                            .fillMaxWidth(1f)
+                            .fillMaxHeight(.2f),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFF121B2E)
+                        )
+                    ) {
+                        Text(
+                            text = "Screen Time",
+                            modifier = Modifier.padding(10.dp),
+                            fontFamily = FontFamily(Font(R.font.opensans_res)),
+                            color = Color.White
+                        )
+
+                        Text(
+                            text = screenTracker?.screenTime ?: "Collecting data",
                             modifier = Modifier.padding(10.dp),
                             fontFamily = FontFamily(Font(R.font.opensans_res)),
                             fontSize = 30.sp,
                             color = Color.White
                         )
-                        Text(
-                            text = "launches /24h",
-                            fontFamily = FontFamily(Font(R.font.opensans_res)),
-                            modifier = Modifier.padding(start = 15.dp, top = 40.dp),
-                            fontSize = 12.sp,
-                            color = Color.White
-                        )
                     }
-
-
                 }
-                println("SCREEN TRACKER , ${screenTracker.screenTime}")
-                Card(
-                    modifier = Modifier
-                        .padding(start = 4.dp)
-                        .border(
-                            border = BorderStroke(1.dp, Color.White),
-                            shape = RoundedCornerShape(15.dp)
-                        )
-                        .fillMaxWidth(1f)
-                        .fillMaxHeight(.2f),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFF121B2E)
-                    )
+
+                Spacer(modifier = Modifier.fillMaxHeight(.08f))
+
+                LazyColumn(
+                    modifier = Modifier.padding(start = 10.dp)
                 ) {
-                    Text(
-                        text = "Screen Time",
-                        modifier = Modifier.padding(10.dp),
-                        fontFamily = FontFamily(Font(R.font.opensans_res)),
-                        color = Color.White
-                    )
+                    items(appsStats.size) {
+                        val it = appsStats[it]
+                        if (it.oneDayStats > maxTimeSpent)
+                            maxTimeSpent = it.oneDayStats.toInt()
 
-                    Text(
-                        text = screenTracker.screenTime,
-                        modifier = Modifier.padding(10.dp),
-                        fontFamily = FontFamily(Font(R.font.opensans_res)),
-                        fontSize = 30.sp,
-                        color = Color.White
-                    )
-                }
-            }
+                        var progress = (it.oneDayStats.toFloat()) / (maxTimeSpent.toFloat())
 
-            Spacer(modifier = Modifier.fillMaxHeight(.08f))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                        ) {
+                            Image(
+                                painter = rememberImagePainter(
+                                    data = Utils().byteStringToDrawable(
+                                        it.icon
+                                    )
+                                ),
+                                contentDescription = null,
+                                modifier = Modifier.size(47.dp)
+                            )
+                            Text(
+                                it.appName,
+                                color = Color.White,
+                                fontFamily = FontFamily(
+                                    Font(R.font.opensans_res)
+                                ),
+                                modifier = Modifier.padding(10.dp),
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                text = Utils.TimeUtils.convertMillisecondsToTime(
+                                    it.oneDayStats
+                                ),
+                                color = Color.White,
+                                fontFamily = FontFamily(
+                                    Font(R.font.opensans_res)
+                                ),
+                            )
 
-            LazyColumn(
-                modifier = Modifier.padding(start = 10.dp)
-            ) {
-                items(appsStats.size) {
-                    val it = appsStats[it]
-                    if (it.oneDayStats > maxTimeSpent)
-                        maxTimeSpent = it.oneDayStats.toInt()
+                        }
 
-                    var progress = (it.oneDayStats.toFloat()) / (maxTimeSpent.toFloat())
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(5.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    ) {
-                        Image(
-                            painter = rememberImagePainter(data = Utils().byteStringToDrawable(it.icon)),
-                            contentDescription = null,
-                            modifier = Modifier.size(47.dp)
+                        CustomLinearProgressIndicator(
+                            progress = progress,
+                            modifier = Modifier.fillMaxWidth(.95f)
                         )
-                        Text(
-                            it.appName,
-                            color = Color.White,
-                            fontFamily = FontFamily(
-                                Font(R.font.opensans_res)
-                            ),
-                            modifier = Modifier.padding(10.dp),
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text(
-                            text = Utils.TimeUtils.convertMillisecondsToTime(
-                                it.oneDayStats
-                            ),
-                            color = Color.White,
-                            fontFamily = FontFamily(
-                                Font(R.font.opensans_res)
-                            ),
-                        )
-
                     }
-
-                    CustomLinearProgressIndicator(
-                        progress = progress,
-                        modifier = Modifier.fillMaxWidth(.95f)
-                    )
                 }
             }
         }
