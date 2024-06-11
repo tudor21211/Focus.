@@ -34,6 +34,9 @@ interface UsersDAO {
     @Query("SELECT * FROM users")
     fun getAllUsers(): Flow<List<UserEntity>>
 
+    @Query("SELECT * FROM users WHERE userId = :userId")
+    fun getUserById(userId: String): LiveData<UserEntity>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPackage(note: PackageEntity)
 

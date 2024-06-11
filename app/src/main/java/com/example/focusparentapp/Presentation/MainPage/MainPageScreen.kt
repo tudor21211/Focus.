@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.media.Image
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -63,6 +66,7 @@ import com.example.focusparentapp.QRscan.QrScanner
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.WebSockets.WebSocketConnector
 import com.example.focusparentapp.connectWebSocket
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 
@@ -76,7 +80,8 @@ fun MainPageScreen(
 
     val systemUiController = rememberSystemUiController()
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    var isAddingUser by remember { mutableStateOf(false) }
+
+    val isLoading by sharedViewModel.isLoading.collectAsState()
 
     SideEffect {
         systemUiController.setSystemBarsColor(Color(0xFF172238))
@@ -91,46 +96,68 @@ fun MainPageScreen(
 
     var users by remember { mutableStateOf<List<UserEntity>>(emptyList()) }
 
+    var initialLoadCompleted by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         userViewModel.getAllUsers().collect { userList ->
             users = userList
+            if(users.isEmpty()) {
+                sharedViewModel.setLoadingState(true)
+            }
+            if (initialLoadCompleted) {
+                Log.d("MainPageScreen", "Finished loading users")
+                sharedViewModel.completeLoading()
+            } else {
+                initialLoadCompleted = true
+            }
+        }
+    }
+    LaunchedEffect(isLoading) {
+        if (isLoading) {
+            delay(20000)
+            sharedViewModel.setLoadingState(false)
+            Toast.makeText(context, "Connection timed-out", Toast.LENGTH_SHORT).show()
         }
     }
 
-
-    Column(
+    Box(
         modifier = Modifier
-
             .fillMaxSize()
             .background(brush = Brush.linearGradient(colorStops = colorStops))
-
     ) {
-
-        Text(
-            text = "My Family",
-            modifier = Modifier
-                .padding(top = 10.dp, bottom = 50.dp)
-                .align(Alignment.CenterHorizontally),
-            fontSize = 28.sp,
-            color = Color.White,
-            fontWeight = FontWeight(300),
-
-
-        )
-
-        Text(
-            text = "Connected devices",
-            fontWeight = FontWeight(600),
-            modifier = Modifier.padding(start = 10.dp),
-            fontSize = 20.sp,
-            color = Color.White
-        )
-        LazyRow(
+        Column(
             modifier = Modifier
 
-                .fillMaxWidth()
+                .fillMaxSize()
+                .background(brush = Brush.linearGradient(colorStops = colorStops))
+
         ) {
+
+
+            Text(
+                text = "My Family",
+                modifier = Modifier
+                    .padding(top = 10.dp, bottom = 50.dp)
+                    .align(Alignment.CenterHorizontally),
+                fontSize = 28.sp,
+                color = Color.White,
+                fontWeight = FontWeight(300),
+
+
+                )
+
+            Text(
+                text = "Connected devices",
+                fontWeight = FontWeight(600),
+                modifier = Modifier.padding(start = 10.dp),
+                fontSize = 20.sp,
+                color = Color.White
+            )
+            LazyRow(
+                modifier = Modifier
+
+                    .fillMaxWidth()
+            ) {
 //            for (user in users) {
 //                addButton(
 //                    painterResource = painterResource(id = R.drawable.boy) ,
@@ -141,74 +168,91 @@ fun MainPageScreen(
 //                    },
 //                    borderWidth = BorderStroke(1.dp, Color.Black) )
 //            }
-            val boyImages = listOf(R.drawable.boy2, R.drawable.boy3, R.drawable.boy4)
-            val girlImages = listOf(R.drawable.girl2, R.drawable.girl3, R.drawable.girl)
-            items(users.size+1){index ->
-                if(index>0) {
-                    val imageResId = if (index % 2 == 0) {
-                        boyImages[(index / 2) % boyImages.size]
-                    } else {
-                        girlImages[(index / 2) % girlImages.size]
-                    }
+                val boyImages = listOf(R.drawable.boy2, R.drawable.boy3, R.drawable.boy4)
+                val girlImages = listOf(R.drawable.girl2, R.drawable.girl3, R.drawable.girl)
+                items(users.size + 1) { index ->
+                    if (index > 0) {
+                        val imageResId = if (index % 2 == 0) {
+                            boyImages[(index / 2) % boyImages.size]
+                        } else {
+                            girlImages[(index / 2) % girlImages.size]
+                        }
 
-                    addButton(
-                        painterResource = painterResource(id = imageResId),
-                        onClick = {
-                            WebSocketConnector.reconnectWebSocket(context, users[index - 1].userId)
-                            val webSocket = WebSocketConnector.getWebSocket()
-                            webSocket?.send("HELLO THERE " + users[index - 1].userId)
-                            webSocket?.send("${users[index - 1].userId} SEND_STATISTICS_TIME")
-                            sharedViewModel.setUserDetails(index, imageResId)
-                            navController.navigate("userMenu/${users[index - 1].userId}")
-                        },
-                        borderWidth = BorderStroke(1.dp, Color.White),
-                        text = "Child $index",
-                        addText = true
-                    )
+                        addButton(
+                            painterResource = painterResource(id = imageResId),
+                            onClick = {
+                                WebSocketConnector.reconnectWebSocket(
+                                    context,
+                                    users[index - 1].userId
+                                )
+                                val webSocket = WebSocketConnector.getWebSocket()
+                                webSocket?.send("HELLO THERE " + users[index - 1].userId)
+                                webSocket?.send("${users[index - 1].userId} SEND_STATISTICS_TIME")
+                                sharedViewModel.setUserDetails(index, imageResId)
+                                navController.navigate("userMenu/${users[index - 1].userId}")
+                            },
+                            borderWidth = BorderStroke(1.dp, Color.White),
+                            text = "Child $index",
+                            addText = true
+                        )
+                    } else
+                        addButton(
+                            painterResource = painterResource(id = R.drawable.plussign),
+                            onClick = {
+                                sharedViewModel.setLoadingState(true)
+                                val myIntent = Intent(
+                                    context,
+                                    QrScanner::class.java
+                                )
+                                (context as Activity).startActivityForResult(myIntent, 100)
+                            },
+                            borderWidth = BorderStroke(1.dp, Color.White),
+                            text = "Add Profile",
+                            addText = true
+                        )
                 }
-                else
-                    addButton(
-                        painterResource = painterResource(id = R.drawable.plussign),
-                        onClick = {
 
-                            val myIntent = Intent(
-                                context,
-                                QrScanner::class.java
-                            )
-                            (context as Activity).startActivityForResult(myIntent, 100)
-                            isAddingUser = true
-                                  },
-                        borderWidth =BorderStroke(1.dp, Color.White) ,
-                        text = "Add Profile" ,
-                        addText = true
-                    )
+            }
+
+            Spacer(modifier = Modifier.fillMaxHeight(.2f))
+
+            Text(
+                text = "Activities",
+                fontWeight = FontWeight(600),
+                modifier = Modifier.padding(start = 20.dp),
+                fontSize = 20.sp,
+                color = Color.White
+            )
+            Spacer(modifier = Modifier.fillMaxHeight(.03f))
+
+            activitiesSection()
+
+        }
+
+    }
+    if (isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF172238)),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator(color = Color.White)
+                Text(
+                    "Adding new profile...",
+                    color = Color.White,
+                    fontFamily = FontFamily(Font(R.font.opensans_res)),
+                    fontSize = 25.sp
+                )
             }
 
         }
-
-        Spacer(modifier = Modifier.fillMaxHeight(.2f))
-
-        Text(
-            text = "Activities",
-            fontWeight = FontWeight(600),
-            modifier = Modifier.padding(start = 20.dp),
-            fontSize = 20.sp,
-            color = Color.White
-        )
-        Spacer(modifier = Modifier.fillMaxHeight(.03f))
-
-        activitiesSection()
     }
-    if (isAddingUser) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(color = Color.White)
-        }
-    }
-
-
 
 }
 
@@ -287,3 +331,4 @@ fun emptyCard(){
         content = {}
     )
 }
+

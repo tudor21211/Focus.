@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
 
     suspend fun insertUserAndPackages(user: UserEntity, packages: List<PackageEntity>, timeSpent: List<Long>) {
+
         // Insert user into users table
         userDao.insertUser(user)
 
@@ -48,7 +49,9 @@ class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
         return userDao.getAllUsers()
     }
 
-
+    fun getUserById(userId: String): LiveData<UserEntity> {
+        return userDao.getUserById(userId)
+    }
 
     suspend fun updateUser(user: UserEntity) {
         userDao.updateUser(user)
