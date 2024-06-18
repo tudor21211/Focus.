@@ -1,11 +1,9 @@
 package com.example.focusparentapp.Presentation.Restrictions
 
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,18 +17,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,30 +40,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.Popup
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.example.focusparentapp.Presentation.Apps.TopBar
-import com.example.focusparentapp.Presentation.Apps.appDisplayCard
 import com.example.focusparentapp.R
 import com.example.focusparentapp.RoomDB.ViewModels.AppInfo
 import com.example.focusparentapp.RoomDB.ViewModels.TimeSpentByUser
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
 import com.example.focusparentapp.Utils.Utils
+import com.example.focusparentapp.Utils.Utils.TimeUtils.convertMillisecondsToTime
 import com.example.focusparentapp.WebSockets.WebSocketConnector
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
@@ -76,7 +66,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
-import com.example.focusparentapp.Utils.Utils.TimeUtils.convertMillisecondsToTime
 
 @Composable
 fun RestrictionsScreen(navController: NavController, userId : String, usersViewModel: UsersViewModel){
@@ -114,7 +103,6 @@ fun RestrictionsScreen(navController: NavController, userId : String, usersViewM
     Column(
         modifier = Modifier
             .fillMaxSize()
-            //.border(1.dp, Color.Black)
             .background(brush = Brush.linearGradient(colorStops = colorStops))
             .then(if (showDialog.value) Modifier.blur(30.dp) else Modifier),
         horizontalAlignment = Alignment.Start
@@ -164,7 +152,6 @@ fun blockAppDisplayCard(appName: String, appPackage: String, icon: Drawable, sho
         ){
             Image(
                 painter = rememberAsyncImagePainter(model = icon),
-                //painter = icon,
                 contentDescription = null,
                 modifier = Modifier
                     .size(80.dp)
@@ -344,7 +331,7 @@ fun sendRestrictMessage(appPackage : String , userId: String, code : Int){
     }
     jsonArray.put(jsonObject)
     val finalJsonObject = JSONObject().apply {
-        put("${userId}_BLOCK_PACKAGE", jsonArray) // Add the array to a final JSON object
+        put("${userId}_BLOCK_PACKAGE", jsonArray)
     }
     webSocket?.send(finalJsonObject.toString())
 }

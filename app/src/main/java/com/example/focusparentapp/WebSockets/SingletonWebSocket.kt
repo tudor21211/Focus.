@@ -1,13 +1,10 @@
 package com.example.focusparentapp.WebSockets
 
 import android.content.Context
-import androidx.activity.viewModels
 import com.example.focuschildapp.com.example.focuschildapp.WebSockets.WebSocketManager
-import com.example.focusparentapp.Presentation.SharedViewModel
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
-import okhttp3.WebSocketListener
 
 object WebSocketConnector {
     private var webSocket: WebSocket? = null

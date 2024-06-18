@@ -1,9 +1,7 @@
 package com.example.focusparentapp.Presentation.MainPage
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,10 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material3.Button
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -43,7 +38,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -56,7 +50,6 @@ import androidx.navigation.NavController
 import com.example.focusparentapp.Navigation.Screens
 import com.example.focusparentapp.Presentation.SharedViewModel
 import com.example.focusparentapp.R
-import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
 import com.example.focusparentapp.WebSockets.WebSocketConnector
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -100,14 +93,12 @@ fun UserMenu(navController: NavController, userId : String, sharedViewModel: Sha
     Column(
         modifier = Modifier
             .fillMaxSize()
-            //.border(1.dp, Color.Black)
             .background(brush = Brush.linearGradient(colorStops = colorStops)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TopBar(navController = navController)
         Column(
             modifier = Modifier
-                //.border(1.dp, Color.Black)
                 .fillMaxWidth(.95f)
                 .fillMaxHeight()
         ) {
@@ -167,7 +158,6 @@ fun TopBar(navController: NavController){
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp)
-        //.border(1.dp, Color.Black)
         ,
         horizontalArrangement = Arrangement.SpaceBetween
     ){
@@ -200,7 +190,6 @@ fun imageWidget(painterResource : Painter, userName : String, deviceName : Strin
     Row(
         modifier = Modifier
             .padding(top = 30.dp, bottom = 5.dp, end = 10.dp)
-            //.border(1.dp, Color.Black)
             .fillMaxWidth(),
     ){
         Box(

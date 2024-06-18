@@ -34,7 +34,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -55,13 +54,11 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.focusparentapp.Presentation.Apps.TopBar
-import com.example.focusparentapp.Presentation.Restrictions.sendRestrictMessage
 import com.example.focusparentapp.R
 import com.example.focusparentapp.RoomDB.Entities.BlockedWebsiteEntity
 import com.example.focusparentapp.RoomDB.Entities.RestrictedKeywordsEntity
@@ -96,14 +93,11 @@ fun WebsitesScreen(navController: NavController, userId: String, usersViewModel:
 
         TopBar(navController, route = "userMenu/${userId}", "")
 
-        // Expandable cards area
         expandableCard(title = "Block websites", textFieldLabel = "Enter a website URL", type = "url", usersViewModel, userId)
         expandableCard(title = "Block keywords", textFieldLabel = "Enter a keyword to filter", type = "keyword", usersViewModel, userId)
 
-        // Spacer to provide a visual separation and prevent the social media block features from being pushed too far down
         Spacer(modifier = Modifier.weight(1f))
 
-        // Social Media Block Features
         SocialMediaBlockFeature("Block Instagram Reels", R.drawable.insta, myState1) { state ->
             myState1 = state
             sendStateChange(userId, "REELS", state)
@@ -125,7 +119,7 @@ fun sendStateChange(userId: String, feature: String, state: Boolean) {
     }
     jsonArray.put(jsonObject)
     val finalJsonObject = JSONObject().apply {
-        put("${userId}_$action", jsonArray) // Add the array to a final JSON object
+        put("${userId}_$action", jsonArray)
     }
     val webSocket = WebSocketConnector.getWebSocket()
     webSocket?.send(finalJsonObject.toString())
@@ -236,7 +230,7 @@ fun textField(label: String, type: String, usersViewModel: UsersViewModel, userI
     var toastText = ""
     if (type == "url") toastText = "URL added succesfully to blocklist!"
     else if (type == "keyword") toastText = "Keyword succesfully addded to blocklist!"
-    val toast = Toast.makeText(LocalContext.current, toastText, Toast.LENGTH_LONG) // in Activity
+    val toast = Toast.makeText(LocalContext.current, toastText, Toast.LENGTH_LONG)
 
 
     Column(
@@ -255,7 +249,7 @@ fun textField(label: String, type: String, usersViewModel: UsersViewModel, userI
             maxLines = 1,
             modifier = Modifier.fillMaxWidth(.9f),
             colors = TextFieldDefaults.textFieldColors(
-                focusedTextColor =  Color.White, // Text color
+                focusedTextColor =  Color.White,
                 containerColor = Color(0xFF000000),
                 cursorColor = Color.Green,
                 focusedIndicatorColor = Color(0xFF39E913),
@@ -279,8 +273,6 @@ fun textField(label: String, type: String, usersViewModel: UsersViewModel, userI
                             sendRestrictKeyword(text.toLowerCase(),userId)
                         }
                    }
-//                    if (type == "url") RestrictedAppsManager.addRestrictedUrl(text.toLowerCase())
-//                    else if (type == "keyword") RestrictedAppsManager.addRestrictedKeyword(text.toLowerCase())
                     text = ""
                     onEnterPressed()
                     keyboardController?.hide()
@@ -327,14 +319,6 @@ fun blockedWebsite(text : String, type : String, usersViewModel:UsersViewModel, 
                         }
                     }
 
-//                    if (type == "url") {
-//                        RestrictedAppsManager.removeRestrictedUrl(text)
-//                        onDeletePressed()
-//                    }
-//                    else if (type == "keyword") {
-//                        RestrictedAppsManager.removeRestrictedKeyword(text)
-//                        onDeletePressed()
-//                    }
                 }
 
             ) {
@@ -355,7 +339,7 @@ fun sendRestrictWebsite(website : String , userId: String){
     }
     jsonArray.put(jsonObject)
     val finalJsonObject = JSONObject().apply {
-        put("${userId}_BLOCK_WEBSITE", jsonArray) // Add the array to a final JSON object
+        put("${userId}_BLOCK_WEBSITE", jsonArray)
     }
     webSocket?.send(finalJsonObject.toString())
 }
@@ -369,7 +353,7 @@ fun sendRestrictKeyword(keyword : String , userId: String){
     }
     jsonArray.put(jsonObject)
     val finalJsonObject = JSONObject().apply {
-        put("${userId}_BLOCK_KEYWORD", jsonArray) // Add the array to a final JSON object
+        put("${userId}_BLOCK_KEYWORD", jsonArray)
     }
     webSocket?.send(finalJsonObject.toString())
 }
@@ -385,7 +369,7 @@ fun deleteBlockedWebsite(website : String , userId: String){
     }
     jsonArray.put(jsonObject)
     val finalJsonObject = JSONObject().apply {
-        put("${userId}_REMOVE_WEBSITE", jsonArray) // Add the array to a final JSON object
+        put("${userId}_REMOVE_WEBSITE", jsonArray)
     }
     webSocket?.send(finalJsonObject.toString())
 }

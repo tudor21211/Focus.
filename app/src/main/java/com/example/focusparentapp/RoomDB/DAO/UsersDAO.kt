@@ -120,8 +120,6 @@ interface UsersDAO {
 
 
     //STATS QUERIES
-//    @Query("SELECT \"appName\", \"icon\" FROM packages INNER JOIN packages_stats ON packages.packageName = packages_stats.packageName WHERE packages_stats.userId = :userId ORDER BY \"timeSpent\" DESC")
-//    fun getStatsFromUser(userId: String) : List<AppStats>
 
     @Query("SELECT packages.appName as \"appName\", packages.icon as \"icon\", packages_stats.oneDay as \"oneDayStats\", packages_stats.threeDays as \"threeDaysStats\", packages_stats.oneWeek as \"oneWeekStats\", packages_stats.oneMonth as \"oneMonthStats\"\n" +
             "    FROM packages\n" +
@@ -135,6 +133,7 @@ interface UsersDAO {
 
     @Query("SELECT launchTracker, screenTime FROM screen_time_tracker WHERE userId = :userId")
     fun getScreenTimeTracker(userId: String) : ScreenTracker
+
 
 
     //LOCATION

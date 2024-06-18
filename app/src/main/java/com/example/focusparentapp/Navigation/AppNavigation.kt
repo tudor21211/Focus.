@@ -1,18 +1,16 @@
 package com.example.focusparentapp.Navigation
 
 import android.content.Context
-import android.view.Window
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.focusparentapp.Presentation.Apps.AppsScreen
 import com.example.focusparentapp.Presentation.DeviceBound
 import com.example.focusparentapp.Presentation.DeviceUse.DeviceUse
-//import com.google.accompanist.navigation.animation.AnimatedNavHost
-//import com.google.accompanist.navigation.animation.composable
 import com.example.focusparentapp.Presentation.LandingScreen
 import com.example.focusparentapp.Presentation.Location.LocationScreen
 import com.example.focusparentapp.Presentation.MainPage.MainPageScreen
@@ -20,14 +18,11 @@ import com.example.focusparentapp.Presentation.MainPage.TestScreen
 import com.example.focusparentapp.Presentation.MainPage.UserMenu
 import com.example.focusparentapp.Presentation.NetworkSettings.WebsitesScreen
 import com.example.focusparentapp.Presentation.Restrictions.RestrictionsScreen
+import com.example.focusparentapp.Presentation.SharedViewModel
 import com.example.focusparentapp.Presentation.Tutorial.Setup
 import com.example.focusparentapp.Presentation.Tutorial.TutorialPager
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import com.example.focusparentapp.Presentation.SharedViewModel
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
@@ -39,7 +34,6 @@ fun SetupNavGraph(
     val tutorialFinished = sharedPreferences.getBoolean("TutorialFinished", false)
     val firstQrScannedSharedPref = LocalContext.current.getSharedPreferences("FirstQrScanned", Context.MODE_PRIVATE)
     val firstQrScanned = firstQrScannedSharedPref.getBoolean("FirstQrScanned", false)
-//change to LandingPage start destination
     NavHost(
         navController = navController,
         startDestination =
@@ -49,7 +43,6 @@ fun SetupNavGraph(
             Screens.Setup.route
         else
             Screens.MainPage.route
-//    Screens.WebsitesScreen.route
     ) {
         composable(Screens.LandingScreen.route) {
             LandingScreen(navController)

@@ -4,7 +4,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Suite
 import org.junit.runners.Suite.SuiteClasses
 
-// Adaugă toate clasele de test în această suită
+
 @RunWith(Suite::class)
 @SuiteClasses(
     PackageEntityTest::class,

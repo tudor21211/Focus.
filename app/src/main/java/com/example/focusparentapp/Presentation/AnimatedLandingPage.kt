@@ -9,25 +9,26 @@ class AnimatedLandingPage : ViewModel() {
 
     companion object {
         val motivation = listOf(
-            "Your time is limited, don't waste it living someone else's life.",
-            "Believe you can and you're halfway there.",
-            "The best way to predict the future is to create it.",
-            "Do it with passion or not at all.",
-            "The future depends on what you do today.",
-            "Don't count the days, make the days count.",
-            "The only limit to our realization of tomorrow will be our doubts of today.",
-            "Dreams don't work unless you do.",
-            "You are never too old to set another goal or to dream a new dream.",
-            "The only place where success comes before work is in the dictionary.",
-            "Success is stumbling from failure to failure with no loss of enthusiasm.",
-            "The secret to getting ahead is getting started.",
-            "It's not about having time, it's about making time.",
-            "The only person you are destined to become is the person you decide to be.",
-            "Don't stop when you're tired. Stop when you're done.",
-            "The only way to achieve the impossible is to believe it is possible.",
-            "Do something today that your future self will thank you for.",
-            "Work hard in silence, let your success be the noise."
+            "Setting limits helps children learn self-discipline.",
+            "Guiding your child's screen time today shapes their future.",
+            "Creating safe boundaries online helps keep your child safe.",
+            "Parental control is an act of love and protection.",
+            "What you teach your child today will echo in their future.",
+            "Make every moment count with your child, online and offline.",
+            "Instilling good habits now builds a strong foundation for tomorrow.",
+            "Your guidance today leads to their success tomorrow.",
+            "Every rule you set is a step towards your child's safety.",
+            "Empowering your child with the right choices starts with you.",
+            "Every limit you set helps them grow stronger and smarter.",
+            "Your involvement today makes a difference in their tomorrow.",
+            "Teaching balance and boundaries is a gift to your child.",
+            "The best security you can offer is your presence and guidance.",
+            "Investing time in your child's online safety is investing in their future.",
+            "Strong boundaries today lead to safe explorations tomorrow.",
+            "Your vigilance today ensures their safety in the digital world.",
+            "Helping your child navigate technology wisely is a lifelong gift."
         ).asSequence().asFlow().onEach { delay(2500) }
     }
+
 
 }

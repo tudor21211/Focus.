@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -32,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
@@ -43,12 +41,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlin.math.absoluteValue
 import androidx.compose.ui.util.lerp
 import androidx.navigation.NavController
 import com.example.focusparentapp.Navigation.Screens
 import com.example.focusparentapp.R
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -94,16 +92,15 @@ fun TutorialPager(navController: NavController, sharedPreferences: SharedPrefere
         Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        repeat(4) { // Change 4 to your actual number of pages
+        repeat(4) {
             val isCurrentPage = pagerState.currentPage == it
             val color = if (pagerState.currentPage == it) {
-                Color.White // Current page color
+                Color.White
             } else {
-                Color.Gray // Other page color
+                Color.Gray
             }
             Spacer(modifier = Modifier.size(8.dp))
             Circle(
-                //modifier = Modifier.size(12.dp),
                 color = color,
                 isCurrentPage = isCurrentPage
             )

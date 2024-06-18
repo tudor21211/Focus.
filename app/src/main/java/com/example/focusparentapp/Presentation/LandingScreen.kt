@@ -1,6 +1,5 @@
 package com.example.focusparentapp.Presentation
 
-import android.content.Context
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -32,8 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -49,7 +46,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun LandingScreen(navController: NavController) {
 
-    val motivation by AnimatedLandingPage.motivation.collectAsState(initial = "Enjoy free time without distractions")
+    val motivation by AnimatedLandingPage.motivation.collectAsState(initial = "Setting limits helps children learn self-discipline.")
 
     val systemUiController = rememberSystemUiController()
 

@@ -2,7 +2,6 @@ package com.example.focusparentapp.RoomDB.Entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.sql.Timestamp
 
 @Entity(tableName = "locationCoordinates")
 data class LocationCoordinatesEntity (

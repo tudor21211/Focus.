@@ -2,7 +2,6 @@ package com.example.focusparentapp.RoomDB.Entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "packages_stats",

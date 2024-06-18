@@ -1,6 +1,5 @@
 package com.example.focusparentapp.RoomDB.ViewModels
 
-import android.graphics.drawable.Drawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -15,7 +14,6 @@ import com.example.focusparentapp.RoomDB.Entities.ScreenTimeTrackerEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
 import com.example.focusparentapp.RoomDB.Relations.UserPackageCrossRef
 import com.example.focusparentapp.RoomDB.Relations.UserWithPackages
-import com.example.focusparentapp.Utils.Utils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -23,15 +21,13 @@ class UsersViewModel (private val userDao: UsersDAO) : ViewModel() {
 
     suspend fun insertUserAndPackages(user: UserEntity, packages: List<PackageEntity>, timeSpent: List<Long>) {
 
-        // Insert user into users table
         userDao.insertUser(user)
 
-        // Insert packages into packages table
         packages.forEach { packageEntity ->
             userDao.insertPackage(packageEntity)
         }
         val userPackages = mutableListOf<UserPackageCrossRef>()
-        // Create user-package relationships and insert into user_packages table
+
         packages.forEachIndexed { index, packageEntity ->
             val userPackageCrossRef = UserPackageCrossRef(user.userId, packageEntity.packageName, timeSpent[index])
             userPackages.add(userPackageCrossRef)

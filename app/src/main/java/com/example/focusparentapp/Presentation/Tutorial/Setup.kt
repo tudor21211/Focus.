@@ -31,9 +31,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
-import com.example.focusparentapp.Navigation.Screens
 import com.example.focusparentapp.QRscan.QrScanner
 import com.example.focusparentapp.R
 import com.google.accompanist.systemuicontroller.rememberSystemUiController

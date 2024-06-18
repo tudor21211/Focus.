@@ -1,28 +1,24 @@
 package com.example.focuschildapp.com.example.focuschildapp.WebSockets
 
-import org.json.JSONObject
-import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.provider.Settings
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
-import com.example.focusparentapp.Presentation.SharedViewModel
 import com.example.focusparentapp.RoomDB.Entities.LocationCoordinatesEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageEntity
 import com.example.focusparentapp.RoomDB.Entities.PackageStatsEntity
 import com.example.focusparentapp.RoomDB.Entities.ScreenTimeTrackerEntity
 import com.example.focusparentapp.RoomDB.Entities.UserEntity
-import com.example.focusparentapp.RoomDB.ViewModels.PackagesViewModel
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
 import com.example.websocket.RoomDB.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.*
+import okhttp3.Response
+import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okio.ByteString
 import org.json.JSONException
+import org.json.JSONObject
 
 class WebSocketManager(private val context: Context) : WebSocketListener() {
 
@@ -37,7 +33,6 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
         super.onOpen(webSocket, response)
-        //webSocket.send("Parent connected")
         println("WebSocket connection established.")
     }
 
@@ -147,8 +142,6 @@ class WebSocketManager(private val context: Context) : WebSocketListener() {
                 }
             }
         }
-        //TODO REMOVE THE COMMENT
-
 
             jsonObject.has("UPDATE_APPS_DATA") -> {
             val jsonArray = jsonObject.getJSONArray("UPDATE_APPS_DATA")

@@ -73,7 +73,6 @@ fun AppsScreen(navController: NavController, userId : String, usersViewModel: Us
     Column(
         modifier = Modifier
             .fillMaxSize()
-            //.border(1.dp, Color.Black)
             .background(brush = Brush.linearGradient(colorStops = colorStops)),
         horizontalAlignment = Alignment.Start
     ) {

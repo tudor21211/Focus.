@@ -1,6 +1,5 @@
 package com.example.focusparentapp.Presentation.DeviceUse
 
-import android.graphics.drawable.shapes.Shape
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -22,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,7 +35,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -45,15 +42,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.example.focusparentapp.Navigation.Screens
-import com.example.focusparentapp.Presentation.MainPage.TopBar
 import com.example.focusparentapp.R
-import com.example.focusparentapp.RoomDB.ViewModels.AppInfo
 import com.example.focusparentapp.RoomDB.ViewModels.AppStats
 import com.example.focusparentapp.RoomDB.ViewModels.ScreenTracker
 import com.example.focusparentapp.RoomDB.ViewModels.UsersViewModel
 import com.example.focusparentapp.Utils.Utils
-import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -104,7 +97,6 @@ fun DeviceUse(navController: NavController, userId: String, usersViewModel: User
                 }
             }
         } catch (e: Exception) {
-            // Handle error
             Log.e("DeviceUse", "Error fetching data", e)
             e.printStackTrace()
         } finally {
