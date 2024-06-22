@@ -5,6 +5,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -71,6 +73,8 @@ fun DeviceUse(navController: NavController, userId: String, usersViewModel: User
     var isLoading by remember { mutableStateOf(true) }
     var screenTracker by remember { mutableStateOf<ScreenTracker>(ScreenTracker(0, "")) }
     var appsStats by remember { mutableStateOf<List<AppStats>>(emptyList()) }
+    var selectedTimeInterval by remember { mutableStateOf("1 Day") }
+    var filteredStats by remember { mutableStateOf<List<AppStats>>(emptyList()) }
 
     LaunchedEffect(userId) {
         isLoading = true
@@ -89,6 +93,8 @@ fun DeviceUse(navController: NavController, userId: String, usersViewModel: User
                 if (newScreenTracker != null && newAppsStats != null) {
                     screenTracker = newScreenTracker
                     appsStats = newAppsStats
+                    filteredStats = filterAndSortStats(newAppsStats, selectedTimeInterval)
+                    maxTimeSpent = filteredStats.maxOfOrNull { it.oneDayStats.toInt() } ?: 0
                     Log.d("DeviceUse", "Data fetched successfully")
                     break
                 } else {
@@ -104,6 +110,12 @@ fun DeviceUse(navController: NavController, userId: String, usersViewModel: User
             Log.d("DeviceUse", "isLoading set to false")
         }
     }
+
+    LaunchedEffect(selectedTimeInterval) {
+        filteredStats = filterAndSortStats(appsStats, selectedTimeInterval)
+        maxTimeSpent = filteredStats.maxOfOrNull { it.oneDayStats.toInt() } ?: 0
+    }
+
 
 
     Column(
@@ -203,11 +215,26 @@ fun DeviceUse(navController: NavController, userId: String, usersViewModel: User
 
                 Spacer(modifier = Modifier.fillMaxHeight(.08f))
 
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    timeIntervalButton("1 Day", selectedTimeInterval == "1 Day") {
+                        selectedTimeInterval = "1 Day"
+                    }
+                    timeIntervalButton("3 Days", selectedTimeInterval == "3 Days") {
+                        selectedTimeInterval = "3 Days"
+                    }
+                    timeIntervalButton("1 Week", selectedTimeInterval == "1 Week") {
+                        selectedTimeInterval = "1 Week"
+                    }
+                    timeIntervalButton("1 Month", selectedTimeInterval == "1 Month") {
+                        selectedTimeInterval = "1 Month"
+                    }
+                }
+
                 LazyColumn(
                     modifier = Modifier.padding(start = 10.dp)
                 ) {
-                    items(appsStats.size) {
-                        val it = appsStats[it]
+                    items(filteredStats.size) {
+                        val it = filteredStats[it]
                         if (it.oneDayStats > maxTimeSpent)
                             maxTimeSpent = it.oneDayStats.toInt()
 
@@ -318,3 +345,44 @@ fun statsWidget(){
         )
     }
 }
+
+
+@Composable
+fun timeIntervalButton(
+    timeInterval : String,
+    isSelected : Boolean,
+    onClick: () -> Unit
+){
+
+    val borderColor = if (isSelected) Color.Gray else Color.White
+    val interactionSource = remember { MutableInteractionSource() }
+    Card (
+        modifier =
+        Modifier
+            .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
+            .padding(bottom = 10.dp, start= 10.dp)
+            .border(
+                border = BorderStroke(1.dp, borderColor),
+                shape = RoundedCornerShape(10.dp)
+            )
+    ){
+        Text(
+            text = timeInterval,
+            color = borderColor,
+            fontFamily = FontFamily(Font(R.font.opensans_res)),
+            modifier = Modifier.padding(10.dp)
+        )
+    }
+}
+
+fun filterAndSortStats(stats: List<AppStats>, interval: String): List<AppStats> {
+    val filteredStats = when (interval) {
+        "1 Day" -> stats // Assuming oneDayStats is default
+        "3 Days" -> stats.map { it.copy(oneDayStats = it.threeDaysStats) }
+        "1 Week" -> stats.map { it.copy(oneDayStats = it.oneWeekStats) }
+        "1 Month" -> stats.map { it.copy(oneDayStats = it.oneMonthStats) }
+        else -> stats
+    }
+    return filteredStats.sortedByDescending { it.oneDayStats }
+}
+
