@@ -29,36 +29,24 @@ The project addresses challenges such as excessive screen time, exposure to inap
   - Persistent server connection to ensure constant monitoring.
 
 ## Technologies Used
-### Mobile Development
 ![image](https://github.com/user-attachments/assets/c09cb083-9ad7-4e14-858b-ec49bf251d7d)
-
-- **Kotlin:** For developing the Android-native applications.
-
 ![image](https://github.com/user-attachments/assets/590d8d7e-439d-4ec7-809d-e62cfed2e1da)
-
-- **Jetpack Compose:** For a modern, declarative UI approach.
-- 
 ![image](https://github.com/user-attachments/assets/6d039222-86eb-4026-a27f-feb0e00d7428)
-
-- **SQLite & Room Database:** For local data storage.
-
 ![image](https://github.com/user-attachments/assets/6594174d-80b1-4e32-9173-aca8e6c68830)
+![image](https://github.com/user-attachments/assets/14884b65-82d6-4ca3-936f-4866c57f8848)
+![image](https://github.com/user-attachments/assets/a07b022b-34fc-4a7c-877b-a621daec099c)
+![image](https://github.com/user-attachments/assets/afa1588d-fead-4ee3-a385-6bac0c5adc67)
 
+### Mobile Development
+- **Kotlin:** For developing the Android-native applications.
+- **Jetpack Compose:** For a modern, declarative UI approach.
+- **SQLite & Room Database:** For local data storage.
 - **Firebase Authentication:** Secure user authentication.
 
 ### Backend
-
-![image](https://github.com/user-attachments/assets/14884b65-82d6-4ca3-936f-4866c57f8848)
-
 - **FastAPI:** For building the backend API with high performance.
 - **WebSockets:** For real-time bi-directional communication between parent and child devices.
 
 ### Deployment
-
-![image](https://github.com/user-attachments/assets/a07b022b-34fc-4a7c-877b-a621daec099c)
-
 - **Docker:** Containerization for backend services.
-
-![image](https://github.com/user-attachments/assets/afa1588d-fead-4ee3-a385-6bac0c5adc67)
-
 - **Google Cloud Platform (Cloud Run):** Hosting backend services with seamless integration.
